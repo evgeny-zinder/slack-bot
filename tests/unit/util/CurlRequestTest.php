@@ -12,7 +12,7 @@ namespace slackbot\util {
     }
 }
 
-namespace tests\slackbot\util {
+namespace tests\util {
 
     use slackbot\util\CurlRequest;
 

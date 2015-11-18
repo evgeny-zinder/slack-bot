@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\slackbot\models;
+namespace tests\models;
 
 use slackbot\models\Config;
 use slackbot\util\FileLoader;
@@ -94,7 +94,7 @@ CONFIG;
             $this->parserMock,
             $loaderMock
         );
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
     }
 
     /** @test */
@@ -113,7 +113,7 @@ CONFIG;
             new Parser(),
             $loaderMock
         );
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
 
     }
 
@@ -121,7 +121,7 @@ CONFIG;
     public function shouldReturnExistingSection()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             [
                 'path' => 'var/slackbot.log',
@@ -135,7 +135,7 @@ CONFIG;
     public function shouldReturnEmptyArrayOnNonExistentSection()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             [],
             $config->getSection('non-existent-section')
@@ -146,7 +146,7 @@ CONFIG;
     public function shouldReturnExistingEntry()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             'var/slackbot.log',
             $config->getEntry('log.path')
@@ -157,7 +157,7 @@ CONFIG;
     public function shouldReturnFalseOnNonExistentEntry()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             null,
             $config->getEntry('log.non-existent-entry')
@@ -168,7 +168,7 @@ CONFIG;
     public function shouldReturnFalseOnNonExistentSectionEntry()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             null,
             $config->getEntry('non-existent-section.path')
@@ -179,7 +179,7 @@ CONFIG;
     public function shouldReturnExistingSectionFromArray()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             'api',
             $config->getEntryFromArray('send', 'type=api', 'type')
@@ -190,7 +190,7 @@ CONFIG;
     public function shouldReturnFalseOnNonExistentEntryFromArray()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('config.yml');
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             null,
             $config->getEntryFromArray('send', 'type=api', 'non-existent-entry')
@@ -201,9 +201,7 @@ CONFIG;
     public function shouldReturnFalseOnNonExistentEntryFromArraySection()
     {
         $config = new Config($this->parserMock, $this->loader);
-
-        $config->loadData('config.yml');
-
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             null,
             $config->getEntryFromArray('non-existent-section', 'type=api', 'type')
@@ -215,9 +213,7 @@ CONFIG;
     {
         $this->setExpectedException('\LogicException', 'Invalid config entry search criteria');
         $config = new Config($this->parserMock, $this->loader);
-
-        $config->loadData('config.yml');
-
+        $config->loadData('tests/data/config.yml');
         $this->assertEquals(
             null,
             $config->getEntryFromArray('send', 'invalid-condition', 'type')

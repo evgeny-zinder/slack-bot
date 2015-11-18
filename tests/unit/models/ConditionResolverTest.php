@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\slackbot\models;
+namespace tests\models;
 
 use slackbot\models\ConditionResolver;
 
@@ -119,7 +119,7 @@ class ConditionResolverTest extends \PHPUnit_Framework_TestCase
         return [
             ['some invalid condition', [], 'LogicException'],
             ['$a + - 1', [], 'LogicException'],
-            ['$a +++ 1', [], 'LogicException']
+            ['$a +++ 1', [], 'LogicException'],
         ];
     }
 }
