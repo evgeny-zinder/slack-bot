@@ -1,8 +1,15 @@
 <?php
 
-require realpath(__DIR__ . '/../vendor/autoload.php');
-
 use slackbot\models\Registry;
+
+$autoloadFiles = array(__DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php');
+
+foreach ($autoloadFiles as $autoloadFile) {
+    if (file_exists($autoloadFile)) {
+        require_once $autoloadFile;
+    }
+}
 
 $config = new \slackbot\models\Config(
     new \Symfony\Component\Yaml\Parser(),

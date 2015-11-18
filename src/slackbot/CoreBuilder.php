@@ -118,10 +118,6 @@ class CoreBuilder
         $container['command_test'] = function() {
             return new TestCommandHandler();
         };
-        $container['command_gitlog'] = function() {
-            return new GitLogCommandHandler();
-        };
-
 
         $container['core_processor']->addRequestHandler($container['request_test']);
 
@@ -134,7 +130,6 @@ class CoreBuilder
         $container['core_processor']->addActionHandler($container['action_break']);
 
         $container['core_processor']->addCommandHandler($container['command_test']);
-        $container['core_processor']->addCommandHandler($container['command_gitlog']);
 
         return $container;
     }
