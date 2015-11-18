@@ -1,0 +1,34 @@
+{
+  "name": "evgeny-zinder/slack-bot",
+  "description": "Slack Bot",
+  "license": "MIT",
+  "keywords": [
+    "command-line client",
+    "slack"
+  ],
+  "homepage": "https://github.com/evgeny-zinder/slack-bot",
+  "type": "library",
+  "minimum-stability": "dev",
+  "bin": [
+    "bin/slackbot.php"
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "symfony/console": "2.6",
+    "symfony/config": "2.6",
+    "symfony/yaml": "2.6",
+    "textalk/websocket": "1.0.*",
+    "pimple/pimple": "~3.0",
+    "capmousse/react-restify": "~0.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.1.*",
+    "mockery/mockery": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "slackbot\\": "src/slackbot",
+      "tests\\slackbot\\": "tests"
+    }
+  }
+}
