@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/evgeny-zinder/slack-bot.svg?branch=master)](https://travis-ci.org/evgeny-zinder/slack-bot)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/?branch=master)
-[![StyleCI](https://styleci.io/repos/45424393/shield)](https://styleci.io/repos/45424393)
+[![StyleCI](https://styleci.io/repos/46425062/shield)](https://styleci.io/repos/46425062)
 
 # Slack Bot Framewotk
 
