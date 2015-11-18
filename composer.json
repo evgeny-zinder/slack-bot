@@ -1,17 +1,12 @@
 {
   "name": "evgeny-zinder/slack-bot",
-  "description": "Slack Bot",
+  "description": "Slack bot PHP framework",
   "license": "MIT",
-  "keywords": [
-    "command-line client",
-    "slack"
-  ],
+  "keywords": ["slack", "bot"],
   "homepage": "https://github.com/evgeny-zinder/slack-bot",
   "type": "library",
   "minimum-stability": "dev",
-  "bin": [
-    "bin/slackbot.php"
-  ],
+  "bin": ["bin/slackbot.php"],
   "require": {
     "php": ">=5.4.0",
     "symfony/console": "2.6",
