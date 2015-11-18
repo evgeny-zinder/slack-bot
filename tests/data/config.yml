@@ -1,0 +1,43 @@
+appearance:
+  name: Slack bot
+
+receive:
+  - name: WebSocket
+    type: rtm
+    token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    enabled: true
+
+  - name: Outgoing WebHook
+    type: webhook
+    token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    enabled: true
+
+  - name: Slash commands
+    type: command
+    token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    enabled: true
+
+send:
+  - name: WebSocket
+    type: rtm
+    token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    enabled: true
+
+  - name: Incoming WebHook
+    type: webhook
+    url: https://hooks.slack.com/services/XXXXXXXXXX/XXXXXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    enabled: true
+
+  - name: Slack API
+    type: api
+    token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    enabled: true
+
+log:
+  path: var/slackbot.log
+  level: 4
+
+server:
+  port: 8888
+  pidfile: var/core.pid
+  rtmpidfile: var/rtm.pid

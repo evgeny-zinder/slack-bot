@@ -1,0 +1,5 @@
+actions:
+  - title: Send requested message to channel
+    action: send_message
+    recipients: "#general"
+    message: this is a bot test
