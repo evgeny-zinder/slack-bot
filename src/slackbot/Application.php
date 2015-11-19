@@ -7,12 +7,13 @@ use slackbot\models\Registry;
 class Application
 {
     /** @var \Symfony\Component\Console\Application */
-    private $app;
+    protected $app;
 
     /** @var models\Config */
-    private $config;
+    protected $config;
 
-    private $container;
+    /** @var \Pimple\Container */
+    protected $container;
 
     public function __construct($argv)
     {
@@ -36,11 +37,6 @@ class Application
 
     }
 
-    public function getApp()
-    {
-        return $this->app;
-    }
-
     public function bootstrap()
     {
         $coreBuilder = new \slackbot\CoreBuilder();
@@ -61,5 +57,15 @@ class Application
 
     public function run() {
         $this->app->run();
+    }
+
+    public function getApp()
+    {
+        return $this->app;
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
     }
 }
