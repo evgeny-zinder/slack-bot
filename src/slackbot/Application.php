@@ -3,6 +3,7 @@
 namespace slackbot;
 
 use slackbot\models\Registry;
+use Symfony\Component\Yaml\Exception\RuntimeException;
 
 class Application
 {
@@ -29,7 +30,7 @@ class Application
                     if (file_exists($matches[1]) && is_readable($matches[1])){
                         $this->config->loadData($matches[1]);
                     } else {
-                        die('Config file not accessible');
+                        throw new RuntimeException('Config file not accessible');
                     }
                 }
             }

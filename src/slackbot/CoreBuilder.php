@@ -14,7 +14,6 @@ use slackbot\handlers\action\LoopActionHandler;
 use slackbot\handlers\action\SendMessageActionHandler;
 use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
-use slackbot\handlers\command\GitLogCommandHandler;
 use slackbot\handlers\command\TestCommandHandler;
 use slackbot\handlers\request\TestRtmRequestHandler;
 use slackbot\models\ConditionResolver;
