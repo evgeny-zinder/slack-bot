@@ -18,7 +18,7 @@ class TestRtmRequestHandler extends BaseRequestHandler
             if (
                 Util::arrayGet($data, 'type') === 'message'
             ) {
-                return true;
+                return false;
             }
         }
         return false;
