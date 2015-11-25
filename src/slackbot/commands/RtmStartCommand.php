@@ -11,6 +11,7 @@ use slackbot\util\CurlRequest;
 use WebSocket\Exception;
 use Symfony\Component\Console\Input\InputOption;
 use slackbot\Util;
+use slackbot\util\Posix;
 
 /**
  * Class RtmStartCommand
