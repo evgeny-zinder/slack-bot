@@ -19,6 +19,7 @@ use slackbot\Util;
 class RtmStartCommand extends Command
 {
     const BASE_URL = 'https://slack.com/api/rtm.start';
+    const PID_FILE = 'var/rtm.pid';
 
     /** @var Config */
     private $config;
@@ -55,6 +56,11 @@ class RtmStartCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->checkPidFile()) {
+            $output->write('Error: RTM listener is already running, exiting');
+            return;
+        }
+
         $token = $this->getToken();
         $urlParams = [
             'token' => $token
@@ -109,5 +115,21 @@ class RtmStartCommand extends Command
             throw new \LogicException('No valid RTM config entries found');
         }
         return $token;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function checkPidFile()
+    {
+        if (file_exists(self::PID_FILE)) {
+            $pid = file_get_contents(self::PID_FILE);
+            if (Posix::isPidActive($pid)) {
+                return false;
+            }
+            unlink(self::PID_FILE);
+        }
+        file_put_contents(self::PID_FILE, getmypid());
+        return true;
     }
 }
