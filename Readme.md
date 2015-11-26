@@ -1,4 +1,4 @@
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/bb5b31e1-42cd-40fd-b322-77f353e4efd3/mini.png)](https://insight.sensiolabs.com/projects/bb5b31e1-42cd-40fd-b322-77f353e4efd3)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/9f062b20-712b-4b26-a0a3-88fc509bb911/mini.png)](https://insight.sensiolabs.com/projects/9f062b20-712b-4b26-a0a3-88fc509bb911)
 [![Build Status](https://travis-ci.org/evgeny-zinder/slack-bot.svg?branch=master)](https://travis-ci.org/evgeny-zinder/slack-bot)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/evgeny-zinder/slack-bot/?branch=master)
