@@ -1,0 +1,64 @@
+---
+- hosts: all
+  tasks:
+
+    ###
+    # Essentials
+    ###
+    - name: update packages
+      command: apt-get update
+
+    - name: install essintial packages
+      apt: pkg={{item}} state=installed
+      with_items:
+      - mc
+      - htop
+      - vim
+      - git
+      - fish
+      - supervisor
+
+    - name: enable fish as default shell for vagrant user
+      command: chsh vagrant -s /usr/bin/fish
+
+    - name: enable fish as default shell for root user
+      command: chsh root -s /usr/bin/fish
+
+    - name: set host name temporarily
+      command: hostname slackbot.dev
+
+    - name: set host name
+      command: echo "slackbot.dev" > /etc/hostname
+
+
+    ###
+    # Creating directories
+    ###
+    - name: setup app symlink
+      command: ln -s /vagrant /opt/slackbot
+
+    ###
+    # Configuring supervisord
+    ###
+    - name: install supervisor server config
+      copy: src=files/server.conf dest=/etc/supervisor/conf.d/ mode=0644
+
+    - name: install supervisor listener config
+      copy: src=files/listener.conf dest=/etc/supervisor/conf.d/ mode=0644
+
+    ###
+    # PHP setup
+    ###
+    - name: install PHP modules
+      apt: pkg={{item}} state=installed
+      with_items:
+      - php5-cli
+      - php5-json
+      - php5-curl
+      - php5-mcrypt
+
+    ###
+    # finalizating
+    ###
+    - name: restart supervisor
+      command: service supervisor restart

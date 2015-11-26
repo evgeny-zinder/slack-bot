@@ -7,7 +7,7 @@ php:
   - hhvm
   - nightly
 install:
-   - composer install
+  - composer install
 after_script:
   - phpunit --coverage-clover=coverage.clover
   - wget https://scrutinizer-ci.com/ocular.phar

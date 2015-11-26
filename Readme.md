@@ -38,7 +38,7 @@ Features:
 
         php bin/slackbot.php playbook:run --playbook=examples/0-simple-message.yml
 
-## Roadmap
+## Roadmap to 1.0
 
 ### Core development
 1. [X] Refactor bot to use react engine
@@ -57,6 +57,17 @@ Features:
 14. [ ] Unit tests coverage
 15. [ ] Refactor config, remove unused auth data
 16. [ ] Start using bot presence config section
+17. [ ] Add Vagrant config file
+18. [ ] Add multi-connection support
+19. [ ] Refactor playbook-side configs
+     * [ ] Server can run without any credentials
+     * [ ] SlackApi credentials are being set during method call
+20. [ ] Add multi-connection support (serverId, multi RTM listeners)
+21. [ ] Add slackbot service control infrastructure (start/stop/restart/reload config)
+22. [ ] ACL helper
+23. [ ] !halt, !restart for trusted users
+24. [ ] !console / !exit
+     * [ ] strict ACL here
 
 ### Actions
 1. [X] user input
@@ -65,6 +76,9 @@ Features:
 4. [X] next loop iteration
 5. [X] exit loop
 6. [ ] stop playbook execution
+7. [ ] Refactor user input
+    * [ ] add custom messages before, after, on error
+    * [ ] add validation function
 
 
 ### Unit tests coverage
@@ -99,4 +113,13 @@ Features:
 9. [ ] handlers\requests
     * [ ] Base
 
+### Documentation
+1. [ ] github.io site
+2. [ ] overview
+3. [ ] usage examples
+4. [ ] actions guide
+5. [ ] "create own action" guide
+6. [ ] request handlers guide
+7. [ ] "create own request handler" guide
+8. [ ] migrate roadmap to site
 
