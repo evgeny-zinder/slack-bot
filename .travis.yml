@@ -15,6 +15,6 @@ after_script:
 notifications:
   email:
     recipients:
-]      - evgeny.zinder@gmail.com
+      - evgeny.zinder@gmail.com
     on_success: change
     on_failure: change
