@@ -54,6 +54,7 @@ class Application
             $this->config,
             $this->container['curl_request']
         ));
+        $this->app->add(new \slackbot\commands\RtmStopCommand());
     }
 
     public function run() {
