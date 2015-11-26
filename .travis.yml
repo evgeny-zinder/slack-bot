@@ -12,3 +12,9 @@ after_script:
   - phpunit --coverage-clover=coverage.clover
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+notifications:
+  email:
+    recipients:
+]      - evgeny.zinder@gmail.com
+    on_success: change
+    on_failure: change
