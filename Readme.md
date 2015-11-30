@@ -57,7 +57,7 @@ Features:
 14. [ ] Unit tests coverage
 15. [ ] Refactor config, remove unused auth data
 16. [ ] Start using bot presence config section
-17. [ ] Add Vagrant config file
+17. [X] Add Vagrant config file
 18. [ ] Add multi-connection support
 19. [ ] Refactor playbook-side configs
      * [ ] Server can run without any credentials
@@ -65,9 +65,6 @@ Features:
 20. [ ] Add multi-connection support (serverId, multi RTM listeners)
 21. [ ] Add slackbot service control infrastructure (start/stop/restart/reload config)
 22. [ ] ACL helper
-23. [ ] !halt, !restart for trusted users
-24. [ ] !console / !exit
-     * [ ] strict ACL here
 
 ### Actions
 1. [X] user input
@@ -80,6 +77,10 @@ Features:
     * [ ] add custom messages before, after, on error
     * [ ] add validation function
 
+### Commands
+1. [ ] !halt, !restart for trusted users
+2. [ ] !console / !exit
+    * [ ] very strict ACL here
 
 ### Unit tests coverage
 1. [ ] models

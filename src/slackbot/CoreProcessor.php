@@ -90,6 +90,7 @@ class CoreProcessor
         {
             foreach ($this->actionHandlers as $handler) {
                 if ($handler->canProcessAction($dto)) {
+                    $handler->processAction($dto);
                 }
             }
         }

@@ -16,10 +16,12 @@ use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
 use slackbot\handlers\command\TestCommandHandler;
 use slackbot\handlers\request\TestRtmRequestHandler;
+use slackbot\models\ArgvParser;
 use slackbot\models\ConditionResolver;
 use slackbot\models\Config;
 use slackbot\models\Registry;
 use slackbot\models\Variables;
+use slackbot\models\VariablesPlacer;
 use slackbot\util\CurlRequest;
 use slackbot\util\FileLoader;
 use slackbot\util\PostParser;
@@ -29,10 +31,16 @@ use slackbot\models\SlackFacade;
 
 class CoreBuilder
 {
-    public function buildContainer(Config $config = null)
+    public function buildContainer(Config $config = null, ArgvParser $argvParser)
     {
         $container = new Container();
 
+        $container['variables_placer'] = function() {
+            return new VariablesPlacer();
+        };
+        $container['argv_parser'] = function() use ($argvParser) {
+            return $argvParser;
+        };
         $container['yaml_parser'] = function() {
             return new Parser();
         };
@@ -149,7 +157,6 @@ class CoreBuilder
             $executor = new PlaybookExecutor(Registry::get('container')['core_processor']);
             Variables::clear();
             $executor->execute($playbook);
-
             $response->write('Playbook executed successfully');
             $response->end();
 

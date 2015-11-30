@@ -3,6 +3,7 @@
 namespace slackbot\commands;
 
 use slackbot\CoreBuilder;
+use slackbot\models\ArgvParser;
 use slackbot\models\Registry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +21,7 @@ class PlaybookRunCommand extends Command
                 'playbook',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Playbook to be run'
+                'Playbook to run'
             )->addOption(
                 'host',
                 null,
@@ -33,7 +34,7 @@ class PlaybookRunCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Slackbot port',
                 '8888'
-            );
+            )->ignoreValidationErrors();
     }
 
     /**
@@ -49,6 +50,13 @@ class PlaybookRunCommand extends Command
         }
 
         $playbook = file_get_contents($playbookFile);
+
+        /** @var \slackbot\models\VariablesPlacer $variablesPlacer */
+        $variablesPlacer = Registry::get('container')['variables_placer'];
+        $variablesPlacer->setVars(Registry::get('container')['argv_parser']->all());
+        $variablesPlacer->setText($playbook);
+        $playbook = $variablesPlacer->place();
+
         $url = sprintf(
             'http://%s:%d/playbook/run/',
             $input->getOption('host'),
@@ -70,20 +78,4 @@ class PlaybookRunCommand extends Command
 
         echo $response['body'];
     }
-
-    /**
-     * @return \Pimple\Container
-     */
-    protected function buildContainer($configPath)
-    {
-        $builder = new CoreBuilder();
-        $container = $builder->buildContainer();
-
-        if (file_exists($configPath)) {
-            $container['config']->loadData($configPath);
-        }
-
-        return $container;
-    }
-
 }

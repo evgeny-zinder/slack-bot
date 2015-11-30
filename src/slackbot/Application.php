@@ -2,6 +2,7 @@
 
 namespace slackbot;
 
+use slackbot\models\ArgvParser;
 use slackbot\models\Registry;
 use Symfony\Component\Yaml\Exception\RuntimeException;
 
@@ -16,6 +17,9 @@ class Application
     /** @var \Pimple\Container */
     protected $container;
 
+    /** @var models\ArgvParser */
+    protected $argParser;
+
     public function __construct($argv)
     {
         $this->config = new \slackbot\models\Config(
@@ -23,25 +27,23 @@ class Application
             new \slackbot\util\FileLoader()
         );
 
-        if (is_array($argv) && count($argv)) {
-            foreach ($argv as $args) {
-                preg_match('/--config\=(.+)/', $args, $matches);
-                if (count($matches) === 2) {
-                    if (file_exists($matches[1]) && is_readable($matches[1])){
-                        $this->config->loadData($matches[1]);
-                    } else {
-                        throw new RuntimeException('Config file not accessible');
-                    }
-                }
-            }
-        }
+        $this->argParser = new ArgvParser($argv);
 
+        $configFile = $this->argParser->get('config');
+        if (file_exists($configFile) && is_readable($configFile)) {
+            $this->config->loadData($configFile);
+        } else {
+            throw new RuntimeException('Config file not accessible');
+        }
     }
 
     public function bootstrap()
     {
         $coreBuilder = new \slackbot\CoreBuilder();
-        $this->container = $coreBuilder->buildContainer($this->config);
+        $this->container = $coreBuilder->buildContainer(
+            $this->config,
+            $this->argParser
+        );
         Registry::set('container', $this->container);
 
         $this->app = new \Symfony\Component\Console\Application('CMS Slack Bot', '@package_version@');
