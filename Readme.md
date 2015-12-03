@@ -47,8 +47,9 @@ Features:
 4. [X] Add config overwrite ability to playbooks
 5. [X] Implement InputManager with timed message subscriptions
 6. [X] Implement OutputManager wih RTM and API support and RTM priority
-7. [ ] Refactor playbook:run to run without --config parameter
-8. [ ]
+7. [X] Refactor playbook:run to run without --config parameter
+8. [ ] Add basic auth to playbooks
+    * [ ] auth node should be added to config and used by server
 9. [ ] Implement cron subsystem
 10. [X] Implement internal queue and user input based on it
 11. [X] Add variables support to playbooks. Vars should be passed from command line
@@ -67,6 +68,7 @@ Features:
 22. [ ] ACL helper
 23. [ ] Admin users config entry
 24. [ ] Disable-commands config entry
+25. [ ]
 
 ### Actions
 1. [X] user input

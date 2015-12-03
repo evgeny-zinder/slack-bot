@@ -24,7 +24,8 @@ class SlackApiTest extends \PHPUnit_Framework_TestCase
             ])
             ->once();
 
-        $slackApi = new SlackApi($token, $curlRequestMock);
+        $slackApi = new SlackApi($curlRequestMock);
+        $slackApi->setToken($token);
         $slackApi->channelsList();
     }
 
@@ -48,7 +49,8 @@ class SlackApiTest extends \PHPUnit_Framework_TestCase
             ])
             ->once();
 
-        $slackApi = new SlackApi($token, $curlRequestMock);
+        $slackApi = new SlackApi($curlRequestMock);
+        $slackApi->setToken($token);
         $slackApi->chatPostMessage('#general', 'this is a test');
     }
 
