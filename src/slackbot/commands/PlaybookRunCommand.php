@@ -2,8 +2,6 @@
 
 namespace slackbot\commands;
 
-use slackbot\CoreBuilder;
-use slackbot\models\ArgvParser;
 use slackbot\models\Registry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

@@ -9,15 +9,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CapMousse\ReactRestify\Runner;
 use slackbot\CoreBuilder;
-use slackbot\models\Config;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Yaml\Parser;
 
 class ServerStartCommand extends Command
 {
-    const PID_FILE = 'var/core.pid';
-    const DEFAULT_PORT = 8888;
-
     protected function configure()
     {
         $this
@@ -26,7 +21,7 @@ class ServerStartCommand extends Command
             ->addOption(
                 'config',
                 null,
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_REQUIRED,
                 'Config file location'
             );
     }
@@ -43,9 +38,12 @@ class ServerStartCommand extends Command
             return;
         }
 
-        $builder = new CoreBuilder();
-
-        $server = $this->buildServer($builder);
+        /** @var CoreBuilder $builder */
+        $builder = new CoreBuilder(
+            Registry::get('container')['config'],
+            Registry::get('container')['arg_parser`']
+        );
+        $server = $builder->buildServer();
         $this->runServer($server);
     }
 
@@ -54,34 +52,21 @@ class ServerStartCommand extends Command
      */
     protected function checkPidFile()
     {
-        if (file_exists(self::PID_FILE)) {
-            $pid = file_get_contents(self::PID_FILE);
+        $config = Registry::get('container')['config'];
+        $pidFile = $config->getEntry('server.pidfile');
+        if ($pidFile == null) {
+            throw new \RuntimeException('server.pidfile value should be set in config');
+        }
+
+        if (file_exists($pidFile)) {
+            $pid = file_get_contents($pidFile);
             if (Posix::isPidActive($pid)) {
                 return false;
             }
-            unlink(self::PID_FILE);
+            unlink($pidFile);
         }
-        file_put_contents(self::PID_FILE, getmypid());
+        file_put_contents($pidFile, getmypid());
         return true;
-    }
-
-    public function buildContainer(CoreBuilder $builder, $configPath = null)
-    {
-        $config = new Config(new Parser());
-        if (file_exists($configPath)) {
-            $config->loadData($configPath);
-        }
-
-        return $builder->buildContainer($config);
-    }
-
-    /**
-     * @return \CapMousse\ReactRestify\Server
-     */
-    protected function buildServer(CoreBuilder $builder)
-    {
-        $server = $builder->buildServer();
-        return $server;
     }
 
     /**
@@ -89,9 +74,12 @@ class ServerStartCommand extends Command
      */
     protected function runServer($server)
     {
+        $port = Registry::get('container')['config']->getEntry('server.port');
+        if ($port == null) {
+            throw new \RuntimeException('server.port value should be set in config');
+        }
+
         $runner = new Runner($server);
-        $runner->listen(
-            Registry::get('container')['config']->getEntry('server.port') ?: self::DEFAULT_PORT
-        );
+        $runner->listen($port);
     }
 }

@@ -35,6 +35,11 @@ class CoreBuilder
     {
         $container = new Container();
 
+        $container['config'] = function() use ($config, $container) {
+            return ($config !== null)
+                ? $config
+                : new Config($container['yaml_parser'], $container['file_loader']);
+        };
         $container['variables_placer'] = function() {
             return new VariablesPlacer();
         };
@@ -47,11 +52,6 @@ class CoreBuilder
         $container['file_loader'] = function() {
             return new FileLoader();
         };
-        $container['config'] = function() use ($config, $container) {
-            return ($config !== null)
-                ? $config
-                : new Config($container['yaml_parser'], $container['file_loader']);
-        };
         $container['curl_request'] = function() {
             return new CurlRequest();
         };
@@ -59,10 +59,14 @@ class CoreBuilder
             return new PostParser();
         };
         $container['slack_api'] = function(Container $container) {
-            return new SlackApi(
-                $container['config']->getEntryFromArray('send', 'type=api', 'token'),
+            $slackApi = new SlackApi(
                 $container['curl_request']
             );
+            $token = $container['config']->getEntry('auth.token');
+            if ($token !== null) {
+                $slackApi->setToken($token);
+            }
+            return $slackApi;
         };
         $container['slack_facade'] = function(Container $container) {
             return new SlackFacade(
@@ -138,6 +142,8 @@ class CoreBuilder
 
         $container['core_processor']->addCommandHandler($container['command_test']);
 
+        $container['server'] = $this->buildServer();
+
         return $container;
     }
 
@@ -154,11 +160,23 @@ class CoreBuilder
             $yamlParser = Registry::get('container')['yaml_parser'];
             $playbook = $yamlParser->parse($playbook);
 
+            /** @var SlackApi $slackApi */
+            $slackApi = Registry::get('container')['slack_api'];
+            $playbookToken = Util::arrayGet(Util::arrayGet($playbook, 'auth'), 'token');
+            if ($playbookToken !== null) {
+                $oldToken = $slackApi->getToken();
+                $slackApi->setToken($playbookToken);
+            }
+
             $executor = new PlaybookExecutor(Registry::get('container')['core_processor']);
             Variables::clear();
             $executor->execute($playbook);
             $response->write('Playbook executed successfully');
             $response->end();
+
+            if ($playbookToken !== null) {
+                $slackApi->setToken($oldToken);
+            }
 
             $fileName = basename($parsedData['filename']);
             echo '[INFO] Executing playbook file ' . $fileName . "\n";

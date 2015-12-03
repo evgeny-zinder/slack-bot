@@ -32,8 +32,6 @@ class Application
         $configFile = $this->argParser->get('config');
         if (file_exists($configFile) && is_readable($configFile)) {
             $this->config->loadData($configFile);
-        } else {
-            throw new RuntimeException('Config file not accessible');
         }
     }
 

@@ -60,9 +60,4 @@ class Config
         }
         return null;
     }
-
-    public function getEntryFromArray($section, $searchCriteria, $field) {
-        $data = $this->getSectionFromArray($section, $searchCriteria);
-        return Util::arrayGet($data, $field);
-    }
 }

@@ -1,0 +1,17 @@
+appearance:
+  name: Slack bot
+
+auth:
+  token: xoxb-XXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX
+
+log:
+  path: var/logs/slackbot.log
+  level: 4
+
+server:
+  port: 8888
+  pidfile: var/core.pid
+  rtmpidfile: var/rtm.pid
+
+admins:
+  - @your-username-or-group-here

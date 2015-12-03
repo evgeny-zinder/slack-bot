@@ -111,9 +111,9 @@ class RtmStartCommand extends Command
 
     private function getToken()
     {
-        $token = $this->config->getEntryFromArray('send', 'type=rtm', 'token');
+        $token = $this->config->getEntry('auth.token');
         if ($token === null) {
-            throw new \LogicException('No valid RTM config entries found');
+            throw new \LogicException('No intergration token found in config');
         }
         return $token;
     }

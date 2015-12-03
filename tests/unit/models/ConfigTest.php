@@ -175,48 +175,4 @@ CONFIG;
         );
     }
 
-    /** @test */
-    public function shouldReturnExistingSectionFromArray()
-    {
-        $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
-        $this->assertEquals(
-            'api',
-            $config->getEntryFromArray('send', 'type=api', 'type')
-        );
-    }
-
-    /** @test */
-    public function shouldReturnFalseOnNonExistentEntryFromArray()
-    {
-        $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
-        $this->assertEquals(
-            null,
-            $config->getEntryFromArray('send', 'type=api', 'non-existent-entry')
-        );
-    }
-
-    /** @test */
-    public function shouldReturnFalseOnNonExistentEntryFromArraySection()
-    {
-        $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
-        $this->assertEquals(
-            null,
-            $config->getEntryFromArray('non-existent-section', 'type=api', 'type')
-        );
-    }
-
-    /** @test */
-    public function shouldReturnFalseOnBadEntryFromArraySearchCondition()
-    {
-        $this->setExpectedException('\LogicException', 'Invalid config entry search criteria');
-        $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
-        $this->assertEquals(
-            null,
-            $config->getEntryFromArray('send', 'invalid-condition', 'type')
-        );
-    }
 }

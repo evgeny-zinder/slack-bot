@@ -11,9 +11,18 @@ class SlackApi
     private $token;
     private $curlRequest;
 
-    public function __construct($token, CurlRequest $curlRequest) {
-        $this->token = $token;
+    public function __construct(CurlRequest $curlRequest) {
         $this->curlRequest = $curlRequest;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    public function setToken($token)
+    {
+        $this->token = $token;
     }
 
     public function chatPostMessage($channel, $message, $options = []) {

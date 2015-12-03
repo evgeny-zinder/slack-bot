@@ -47,14 +47,14 @@ Features:
 4. [X] Add config overwrite ability to playbooks
 5. [X] Implement InputManager with timed message subscriptions
 6. [X] Implement OutputManager wih RTM and API support and RTM priority
-7. [ ] Implement webhook route
-8. [ ] Implement slash command route
+7. [ ] Refactor playbook:run to run without --config parameter
+8. [ ]
 9. [ ] Implement cron subsystem
 10. [X] Implement internal queue and user input based on it
-11. [ ] Add variables support to playbooks. Vars should be passed from command line
+11. [X] Add variables support to playbooks. Vars should be passed from command line
 12. [X] !-commands interface and demo implementation
 13. [ ] Message formatting helper
-14. [ ] Unit tests coverage
+14. [ ]
 15. [ ] Refactor config, remove unused auth data
 16. [ ] Start using bot presence config section
 17. [X] Add Vagrant config file
@@ -65,6 +65,8 @@ Features:
 20. [ ] Add multi-connection support (serverId, multi RTM listeners)
 21. [ ] Add slackbot service control infrastructure (start/stop/restart/reload config)
 22. [ ] ACL helper
+23. [ ] Admin users config entry
+24. [ ] Disable-commands config entry
 
 ### Actions
 1. [X] user input
@@ -81,6 +83,8 @@ Features:
 1. [ ] !halt, !restart for trusted users
 2. [ ] !console / !exit
     * [ ] very strict ACL here
+3. [ ] !tell
+
 
 ### Unit tests coverage
 1. [ ] models
