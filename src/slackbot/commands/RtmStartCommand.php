@@ -68,6 +68,8 @@ class RtmStartCommand extends Command
         ];
         $authUrl = self::BASE_URL . '?' . http_build_query($urlParams);
 
+        $serverUrl = $this->getServerUrl();
+
         $result = $this->curlRequest->getCurlResult($authUrl);
         $result = json_decode($result['body'], true);
         $socketUrl = $result['url'];
@@ -88,7 +90,7 @@ class RtmStartCommand extends Command
                     );
                     try {
                         $this->curlRequest->getCurlResult(
-                            'http://localhost:8888/process/message/',
+                            $serverUrl,
                             [
                                 CURLOPT_POST => true,
                                 CURLOPT_POSTFIELDS => [
@@ -121,7 +123,7 @@ class RtmStartCommand extends Command
     /**
      * @return bool
      */
-    protected function checkPidFile()
+    private function checkPidFile()
     {
         if (file_exists(self::PID_FILE)) {
             $pid = file_get_contents(self::PID_FILE);
@@ -132,5 +134,12 @@ class RtmStartCommand extends Command
         }
         file_put_contents(self::PID_FILE, getmypid());
         return true;
+    }
+
+    private function getServerUrl()
+    {
+        $host = $this->config->getEntry('server.host') ?: 'localhost';
+        $port = $this->config->getEntry('server.host') ?: '8888';
+        return sprintf('http://%s:%s/process/message/', $host, $port);
     }
 }

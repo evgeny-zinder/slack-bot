@@ -86,6 +86,8 @@ Features:
 2. [ ] !console / !exit
     * [ ] very strict ACL here
 3. [ ] !tell
+4. [ ] !help - basic usage info
+5. [ ] !list - list of commands available (ACL counts)
 
 
 ### Unit tests coverage
