@@ -69,6 +69,7 @@ class RtmStartCommand extends Command
         $authUrl = self::BASE_URL . '?' . http_build_query($urlParams);
 
         $serverUrl = $this->getServerUrl();
+        echo "[DEBUG] Server URL: {$serverUrl}\n";
 
         $result = $this->curlRequest->getCurlResult($authUrl);
         $result = json_decode($result['body'], true);
@@ -139,7 +140,7 @@ class RtmStartCommand extends Command
     private function getServerUrl()
     {
         $host = $this->config->getEntry('server.host') ?: 'localhost';
-        $port = $this->config->getEntry('server.host') ?: '8888';
+        $port = $this->config->getEntry('server.port') ?: '8888';
         return sprintf('http://%s:%s/process/message/', $host, $port);
     }
 }
