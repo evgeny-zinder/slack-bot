@@ -4,7 +4,6 @@ namespace slackbot;
 
 use slackbot\models\ArgvParser;
 use slackbot\models\Registry;
-use Symfony\Component\Yaml\Exception\RuntimeException;
 
 class Application
 {

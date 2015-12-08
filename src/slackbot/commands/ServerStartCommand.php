@@ -54,7 +54,7 @@ class ServerStartCommand extends Command
     {
         $config = Registry::get('container')['config'];
         $pidFile = $config->getEntry('server.pidfile');
-        if ($pidFile == null) {
+        if ($pidFile === null) {
             throw new \RuntimeException('server.pidfile value should be set in config');
         }
 
@@ -75,7 +75,7 @@ class ServerStartCommand extends Command
     protected function runServer($server)
     {
         $port = Registry::get('container')['config']->getEntry('server.port');
-        if ($port == null) {
+        if ($port === null) {
             throw new \RuntimeException('server.port value should be set in config');
         }
 
