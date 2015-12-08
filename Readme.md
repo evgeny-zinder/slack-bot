@@ -55,9 +55,9 @@ Features:
 11. [X] Add variables support to playbooks. Vars should be passed from command line
 12. [X] !-commands interface and demo implementation
 13. [ ] Message formatting helper
-14. [ ]
+14. [ ] Admin users config entry
 15. [ ] Refactor config, remove unused auth data
-16. [ ] Start using bot presence config section
+16. [ ] Disable-commands config entry
 17. [X] Add Vagrant config file
 18. [ ] Add multi-connection support
 19. [ ] Refactor playbook-side configs
@@ -66,9 +66,6 @@ Features:
 20. [ ] Add multi-connection support (serverId, multi RTM listeners)
 21. [ ] Add slackbot service control infrastructure (start/stop/restart/reload config)
 22. [ ] ACL helper
-23. [ ] Admin users config entry
-24. [ ] Disable-commands config entry
-25. [ ]
 
 ### Actions
 1. [X] user input

@@ -182,7 +182,6 @@ class CoreProcessor
                     }
                 }
 
-
                 if (!$allowed) {
                     $this->slackFacade->multiSendMessage(
                         [ Util::arrayGet($dto->getData(), 'channel') ],
@@ -195,7 +194,9 @@ class CoreProcessor
                 }
 
                 unset($words[0]);
-                $commandHandler->processCommand($words, Util::arrayGet($dto->getData(), 'channel'));
+                if ($commandHandler->canProcessCommand($words, Util::arrayGet($dto->getData(), 'channel'))) {
+                    $commandHandler->processCommand($words, Util::arrayGet($dto->getData(), 'channel'));
+                }
             }
         }
     }

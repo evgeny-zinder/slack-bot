@@ -115,6 +115,6 @@ class SlackFacade
     {
         $groupId = $this->getGroupIdByName($groupId);
         $data = $this->getSlackApi()->groupsInfo($groupId);
-        return Util::arrayGet(Util::arrayGet($data, 'channel'), 'members') ?: [];
+        return Util::arrayGet(Util::arrayGet($data, 'group'), 'members') ?: [];
     }
 }

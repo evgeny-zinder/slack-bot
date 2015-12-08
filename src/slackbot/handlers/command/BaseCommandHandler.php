@@ -9,6 +9,11 @@ abstract class BaseCommandHandler implements CommandHandlerInterface
     abstract public function getName();
     abstract public function processCommand(array $args, $channel);
 
+    public function canProcessCommand(array $args, $channel)
+    {
+        return true;
+    }
+
     public function getAcl()
     {
         return CommandHandlerInterface::ACL_ANY;

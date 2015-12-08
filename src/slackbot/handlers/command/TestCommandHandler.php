@@ -17,6 +17,11 @@ class TestCommandHandler extends BaseCommandHandler
         ];
     }
 
+    public function canProcessCommand(array $args, $channel) {
+        $config = $this->getContainer()['config'];
+        return $config->getEntry('server.id') == 'debug';
+    }
+
     public function processCommand(array $args, $channel)
     {
         $this->postMessage($channel, 'You\'ve asked for: ' . json_encode($args));
