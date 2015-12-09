@@ -61,7 +61,6 @@ class CoreProcessor
 
     public function processRequest(RequestDto $dto)
     {
-        // First of all, we process RequestInterface classes
         if (count($this->requestHandlers) > 0)
         {
             foreach ($this->requestHandlers as $handler) {
