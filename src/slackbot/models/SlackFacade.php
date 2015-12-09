@@ -69,6 +69,10 @@ class SlackFacade
 
     public function getRecipientIdByName($name)
     {
+        if ($name[0] == '<') {
+            return preg_replace('/[\<\>\#\@]*/', '', $name);
+        }
+
         switch ($name[0]) {
             case '@': return $this->getUserIdByName(substr($name, 1));
             case '#': return $this->getChannelIdByName(substr($name, 1));
