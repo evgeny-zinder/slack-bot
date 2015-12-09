@@ -8,13 +8,13 @@
 
 ## Intro
 
-This framework is designed for creating bots for Slack chat
+This framework is designed for creating Slack chat bots
 
 Framework-based app skeleton: https://github.com/evgeny-zinder/slack-bot-app-skeleton
 
 Features:
  * communicates with Slack using real-time WebSocket connection
- * able to respond to any message patterns
+ * able to respond (by running callback PHP functions) to any message patterns
  * able to run ansible-style playbooks with extensible set of actions
 
 ## Installation
