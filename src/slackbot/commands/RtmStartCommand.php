@@ -12,6 +12,7 @@ use WebSocket\Exception;
 use Symfony\Component\Console\Input\InputOption;
 use slackbot\Util;
 use slackbot\util\Posix;
+use slackbot\models\Registry;
 
 /**
  * Class RtmStartCommand
@@ -20,7 +21,6 @@ use slackbot\util\Posix;
 class RtmStartCommand extends Command
 {
     const BASE_URL = 'https://slack.com/api/rtm.start';
-    const PID_FILE = 'var/rtm.pid';
 
     /** @var Config */
     private $config;
@@ -57,7 +57,8 @@ class RtmStartCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->checkPidFile()) {
+        $config = Registry::get('container')['config'];
+        if (!$this->checkPidFile($config->getEntry('server.rtmpidfile'))) {
             $output->write('Error: RTM listener is already running, exiting');
             return;
         }
@@ -124,16 +125,16 @@ class RtmStartCommand extends Command
     /**
      * @return bool
      */
-    private function checkPidFile()
+    private function checkPidFile($pidFile)
     {
-        if (file_exists(self::PID_FILE)) {
-            $pid = file_get_contents(self::PID_FILE);
+        if (file_exists($pidFile)) {
+            $pid = file_get_contents($pidFile);
             if (Posix::isPidActive($pid)) {
                 return false;
             }
-            unlink(self::PID_FILE);
+            unlink($pidFile);
         }
-        file_put_contents(self::PID_FILE, getmypid());
+        file_put_contents($pidFile, getmypid());
         return true;
     }
 
