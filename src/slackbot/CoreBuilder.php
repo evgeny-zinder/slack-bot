@@ -11,6 +11,7 @@ use slackbot\handlers\action\ContinueActionHandler;
 use slackbot\handlers\action\BreakActionHandler;
 use slackbot\handlers\action\IfActionHandler;
 use slackbot\handlers\action\LoopActionHandler;
+use slackbot\handlers\action\RunCommandActionHandler;
 use slackbot\handlers\action\SendMessageActionHandler;
 use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
@@ -125,6 +126,11 @@ class CoreBuilder
         $container['action_break'] = function() {
             return new BreakActionHandler();
         };
+        $container['action_run_command'] = function(Container $container) {
+            return new RunCommandActionHandler(
+                $container['slack_facade']
+            );
+        };
 
         $container['command_test'] = function() {
             return new TestCommandHandler();
@@ -139,6 +145,7 @@ class CoreBuilder
         $container['core_processor']->addActionHandler($container['action_user_input']);
         $container['core_processor']->addActionHandler($container['action_continue']);
         $container['core_processor']->addActionHandler($container['action_break']);
+        $container['core_processor']->addActionHandler($container['action_run_command']);
 
         $container['core_processor']->addCommandHandler($container['command_test']);
 
@@ -184,6 +191,8 @@ class CoreBuilder
         });
 
         $server->post('/process/message/', function (Request $request, Response $response, $next) {
+            echo '[INFO] Got message from RTM process' . "\n";
+
             $rawData = $request->getData();
             $postParser = Registry::get('container')['post_parser'];
             $parsedData = $postParser->parse($rawData);
@@ -195,7 +204,6 @@ class CoreBuilder
             $dto->setData(json_decode(Util::arrayGet($parsedData, 'message'), true));
             $coreProcessor->processRequest($dto);
 
-            echo '[INFO] Got message from RTM process' . "\n";
             $next();
         });
 

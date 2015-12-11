@@ -11,9 +11,10 @@ class TestCommandHandler extends BaseCommandHandler
 
     public function getAcl()
     {
-        // one can also use CommandHandlerInterface::ACL_ANY;
+        // one can also use CommandHandlerInterface::ACL_ANY, CommandHandlerInterface::ACL_ADMIN
+        // or user/group/channel name
         return [
-            '#general'
+            CommandHandlerInterface::ACL_ANY
         ];
     }
 
