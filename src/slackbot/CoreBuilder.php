@@ -29,6 +29,7 @@ use slackbot\util\PostParser;
 use Symfony\Component\Yaml\Parser;
 use slackbot\models\SlackApi;
 use slackbot\models\SlackFacade;
+use Cron\CronExpression;
 
 class CoreBuilder
 {
@@ -43,6 +44,9 @@ class CoreBuilder
         };
         $container['variables_placer'] = function() {
             return new VariablesPlacer();
+        };
+        $container['cron_expression'] = function() {
+            return CronExpression::factory('@daily');
         };
         $container['argv_parser'] = function() use ($argvParser) {
             return $argvParser;
@@ -132,6 +136,7 @@ class CoreBuilder
             );
         };
 
+
         $container['command_test'] = function() {
             return new TestCommandHandler();
         };
@@ -205,6 +210,11 @@ class CoreBuilder
             $coreProcessor->processRequest($dto);
 
             $next();
+        });
+
+        $server->get('/info/cron/', function (Request $request, Response $response, $next) {
+            $response->writeJson(Registry::get('container')['config']->getSection('cron'));
+            $response->end();
         });
 
         return $server;

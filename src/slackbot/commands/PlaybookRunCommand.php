@@ -7,9 +7,24 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use slackbot\models\VariablesPlacer;
+use slackbot\util\CurlRequest;
 
 class PlaybookRunCommand extends Command
 {
+    /** @var VariablesPlacer */
+    private $variablesPlacer;
+
+    /** @var CurlRequest */
+    private $curlRequest;
+
+    public function __construct(CurlRequest $curlRequest, VariablesPlacer $variablesPlacer)
+    {
+        parent::__construct();
+        $this->curlRequest = $curlRequest;
+        $this->variablesPlacer = $variablesPlacer;
+    }
+
     protected function configure()
     {
         $this
@@ -50,9 +65,8 @@ class PlaybookRunCommand extends Command
         $playbook = file_get_contents($playbookFile);
 
         /** @var \slackbot\models\VariablesPlacer $variablesPlacer */
-        $variablesPlacer = Registry::get('container')['variables_placer'];
-        $variablesPlacer->setVars(Registry::get('container')['argv_parser']->all());
-        $variablesPlacer->setText($playbook);
+        $this->variablesPlacer->setVars(Registry::get('container')['argv_parser']->all());
+        $this->variablesPlacer->setText($playbook);
         $playbook = $variablesPlacer->place();
 
         $url = sprintf(
@@ -61,8 +75,7 @@ class PlaybookRunCommand extends Command
             $input->getOption('port')
         );
 
-        $curlRequest = Registry::get('container')['curl_request'];
-        $response = $curlRequest->getCurlResult(
+        $response = $this->curlRequest->getCurlResult(
             $url,
             [
                 CURLOPT_POST => true,

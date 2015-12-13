@@ -48,12 +48,20 @@ class Application
         $this->app->add(new \slackbot\commands\ServerStartCommand());
         $this->app->add(new \slackbot\commands\ServerStopCommand());
         $this->app->add(new \slackbot\commands\ServerStatusCommand());
-        $this->app->add(new \slackbot\commands\PlaybookRunCommand());
+        $this->app->add(new \slackbot\commands\PlaybookRunCommand(
+            $this->container['curl_request'],
+            $this->container['variables_placer']
+        ));
         $this->app->add(new \slackbot\commands\RtmStartCommand(
             $this->config,
             $this->container['curl_request']
         ));
         $this->app->add(new \slackbot\commands\RtmStopCommand());
+        $this->app->add(new \slackbot\commands\CronWorkerCommand(
+            $this->container['curl_request'],
+            $this->container['cron_expression']
+        ));
+
     }
 
     public function run() {

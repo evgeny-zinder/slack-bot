@@ -12,7 +12,6 @@ use WebSocket\Exception;
 use Symfony\Component\Console\Input\InputOption;
 use slackbot\Util;
 use slackbot\util\Posix;
-use slackbot\models\Registry;
 
 /**
  * Class RtmStartCommand
@@ -57,8 +56,7 @@ class RtmStartCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = Registry::get('container')['config'];
-        if (!$this->checkPidFile($config->getEntry('server.rtmpidfile'))) {
+        if (!$this->checkPidFile($this->config->getEntry('server.rtmpidfile'))) {
             $output->write('Error: RTM listener is already running, exiting');
             return;
         }

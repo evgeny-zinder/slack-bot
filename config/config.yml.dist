@@ -4,10 +4,6 @@ appearance:
 auth:
   token: xoxb-XXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX
 
-log:
-  path: var/logs/slackbot.log
-  level: 4
-
 server:
   port: 8888
   pidfile: var/core.pid
@@ -15,3 +11,8 @@ server:
 
 admins:
   - @your-username-or-group-here
+
+cron:
+  - name: Run test command every hour
+    time: "* */1 * * *"
+    playbook: sample.yml
