@@ -3,13 +3,25 @@
 namespace slackbot\commands;
 
 use slackbot\util\Posix;
+use slackbot\models\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ServerStopCommand extends Command
 {
-    const PID_FILE = 'var/core.pid';
+    /** @var Config */
+    private $config;
+
+    /**
+     * RtmStopCommand constructor.
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        parent::__construct();
+        $this->config = $config;
+    }
 
     protected function configure()
     {
@@ -25,15 +37,16 @@ class ServerStopCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (file_exists(self::PID_FILE)) {
-            $pid = file_get_contents(self::PID_FILE);
+        $pidFile = $this->config->getEntry($this->config->getEntry('server.pidfile'));
+        if (file_exists($pidFile)) {
+            $pid = file_get_contents($pidFile);
             if (Posix::isPidActive($pid)) {
                 posix_kill($pid, SIGINT);
                 echo 'Slackbot server stopped';
             } else {
                 echo 'Slackbot server is not running';
             }
-            unlink(self::PID_FILE);
+            unlink($pidFile);
         } else {
             echo 'Slackbot server is not running';
         }

@@ -10,9 +10,34 @@ use Symfony\Component\Console\Output\OutputInterface;
 use CapMousse\ReactRestify\Runner;
 use slackbot\CoreBuilder;
 use Symfony\Component\Console\Input\InputOption;
+use slackbot\models\Config;
+use slackbot\models\ArgvParser;
 
+/**
+ * Class ServerStartCommand
+ * Starts core server
+ *
+ * @package slackbot\commands
+ */
 class ServerStartCommand extends Command
 {
+    /** @var Config */
+    private $config;
+
+    /** @var ArgvParser */
+    private $argParser;
+
+
+    public function __construct(Config $config, ArgvParser $argvParser)
+    {
+        parent::__construct();
+        $this->config = $config;
+        $this->argParser = $argvParser;
+    }
+
+    /**
+     * Console command configuration
+     */
     protected function configure()
     {
         $this
@@ -39,22 +64,23 @@ class ServerStartCommand extends Command
         }
 
         /** @var CoreBuilder $builder */
-        $builder = new CoreBuilder(
-            Registry::get('container')['config'],
-            Registry::get('container')['arg_parser`']
-        );
+        $builder = new CoreBuilder($this->config, $this->argParser);
+
+        /** @var \CapMousse\ReactRestify\Server $server */
         $server = $builder->buildServer();
         $this->runServer($server);
     }
 
     /**
+     * Checks if another server process with the same config is running
+     *
      * @return bool
      */
     protected function checkPidFile()
     {
         $config = Registry::get('container')['config'];
         $pidFile = $config->getEntry('server.pidfile');
-        if ($pidFile === null) {
+        if (null === $pidFile) {
             throw new \RuntimeException('server.pidfile value should be set in config');
         }
 
@@ -70,12 +96,12 @@ class ServerStartCommand extends Command
     }
 
     /**
-     * @param $server
+     * @param $server \CapMousse\ReactRestify\Server Pre-configured server instance to run
      */
     protected function runServer($server)
     {
         $port = Registry::get('container')['config']->getEntry('server.port');
-        if ($port === null) {
+        if (null === $port) {
             throw new \RuntimeException('server.port value should be set in config');
         }
 

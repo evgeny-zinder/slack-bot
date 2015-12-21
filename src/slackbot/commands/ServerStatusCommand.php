@@ -3,14 +3,35 @@
 namespace slackbot\commands;
 
 use slackbot\util\Posix;
+use slackbot\models\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class ServerStatusCommand
+ * Checks core server status
+ *
+ * @package slackbot\commands
+ */
 class ServerStatusCommand extends Command
 {
-    const PID_FILE = 'var/core.pid';
+    /** @var Config */
+    private $config;
 
+    /**
+     * RtmStopCommand constructor.
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        parent::__construct();
+        $this->config = $config;
+    }
+
+    /**
+     * Console command configuration
+     */
     protected function configure()
     {
         $this
@@ -25,8 +46,9 @@ class ServerStatusCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (file_exists(self::PID_FILE)) {
-            $pid = file_get_contents(self::PID_FILE);
+        $pidFile = $this->config->getEntry($this->config->getEntry('server.pidfile'));
+        if (file_exists($pidFile)) {
+            $pid = file_get_contents($pidFile);
             if (Posix::isPidActive($pid)) {
                 echo 'Slackbot server is running';
             } else {

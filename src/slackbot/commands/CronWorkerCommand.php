@@ -3,6 +3,7 @@
 namespace slackbot\commands;
 
 use slackbot\Util;
+use slackbot\util\FileLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,6 +11,13 @@ use Symfony\Component\Console\Input\InputOption;
 use slackbot\util\CurlRequest;
 use Cron\CronExpression;
 
+/**
+ * Class CronWorkerCommand
+ * Cron worker to be running by system cron every minute:
+ *     * * * * * php bin/slackbot.php cron:run --host=localhost --port=8888
+ *
+ * @package slackbot\commands
+ */
 class CronWorkerCommand extends Command
 {
     /** @var CurlRequest */
@@ -18,13 +26,30 @@ class CronWorkerCommand extends Command
     /** @var CronExpression */
     private $cronExpression;
 
-    public function __construct(CurlRequest $curlRequest, CronExpression $cronExpression)
+    /** @var FileLoader */
+    private $fileLoader;
+
+    /**
+     * CronWorkerCommand constructor.
+     * @param CurlRequest $curlRequest cURL interface
+     * @param CronExpression $cronExpression Cron expression parser & evaluator
+     * @param FileLoader $fileLoader File loading interface
+     */
+    public function __construct(
+        CurlRequest $curlRequest,
+        CronExpression $cronExpression,
+        FileLoader $fileLoader
+    )
     {
         parent::__construct();
         $this->curlRequest = $curlRequest;
         $this->cronExpression = $cronExpression;
+        $this->fileLoader = $fileLoader;
     }
 
+    /**
+     * Console command configuration
+     */
     protected function configure()
     {
         $this
@@ -64,19 +89,15 @@ class CronWorkerCommand extends Command
                 CURLOPT_TIMEOUT_MS => 100000
             ]
         )['body'], true);
-        if (!is_array($response) || count($response) === 0) {
-            return;
+        if (!is_array($response) || 0 === count($response)) {
+            throw new \RuntimeException('Error connecting to core server');
         }
 
         foreach ($response as $cronItem) {
             $this->cronExpression->setExpression(Util::arrayGet($cronItem, 'time'));
             if ($this->cronExpression->isDue()) {
                 $playbookFile = Util::arrayGet($cronItem, 'playbook');
-                if (!file_exists($playbookFile)) {
-                    throw new \RuntimeException('Can\'t load playbook for cron execution: ' . $playbookFile);
-                }
-
-                $playbook = file_get_contents($playbookFile);
+                $playbook = $this->fileLoader->load($playbookFile);
 
                 $url = sprintf(
                     'http://%s:%d/playbook/run/',

@@ -15,6 +15,8 @@ use slackbot\util\Posix;
 
 /**
  * Class RtmStartCommand
+ * Starts RTM WebSocker listener
+ *
  * @package slackbot\commands
  */
 class RtmStartCommand extends Command
@@ -27,6 +29,23 @@ class RtmStartCommand extends Command
     /** @var CurlRequest */
     private $curlRequest;
 
+    /** @var Client */
+    private $client;
+
+    /** @var string */
+    private $authUrl;
+
+    /** @var string */
+    private $socketUrl;
+
+    /** @var string */
+    private $serverUrl;
+
+    /**
+     * RtmStartCommand constructor.
+     * @param Config $config Config data storage
+     * @param CurlRequest $curlRequest cURL interface
+     */
     public function __construct(
         Config $config,
         CurlRequest $curlRequest
@@ -36,6 +55,9 @@ class RtmStartCommand extends Command
         $this->curlRequest = $curlRequest;
     }
 
+    /**
+     * Console command configuration
+     */
     protected function configure()
     {
         $this
@@ -61,60 +83,23 @@ class RtmStartCommand extends Command
             return;
         }
 
-        $token = $this->getToken();
-        $urlParams = [
-            'token' => $token
-        ];
-        $authUrl = self::BASE_URL . '?' . http_build_query($urlParams);
+        $this->authUrl = $this->getAuthUrl();
+        $this->socketUrl = $this->getSocketUrl();
+        $this->serverUrl = $this->getServerUrl();
+        echo "[INFO] Server URL: {$this->serverUrl}\n";
 
-        $serverUrl = $this->getServerUrl();
-        echo "[DEBUG] Server URL: {$serverUrl}\n";
-
-        $result = $this->curlRequest->getCurlResult($authUrl);
-        $result = json_decode($result['body'], true);
-        $socketUrl = $result['url'];
-
-        $client = new Client($socketUrl);
-        $client->setTimeout(86400 * 1000);
-        while (1) {
-            try {
-                $data = $client->receive();
-
-                $parsedData = json_decode($data, true);
-                if ($parsedData['type'] == 'message') {
-                    echo sprintf(
-                        "[INFO] Got message: '%s' from %s in %s\n",
-                        $parsedData['text'],
-                        Util::arrayGet($parsedData, 'user') ?: 'bot',
-                        Util::arrayGet($parsedData, 'channel') ?: 'unknown channel'
-                    );
-                    try {
-                        $this->curlRequest->getCurlResult(
-                            $serverUrl,
-                            [
-                                CURLOPT_POST => true,
-                                CURLOPT_POSTFIELDS => [
-                                    'message' => $data
-                                ]
-                            ]
-                        );
-                    }
-                    catch (\Exception $e) {}
-                }
-            } catch (Exception $e) {
-                $result = $this->curlRequest->getCurlResult($authUrl);
-                $result = json_decode($result['body'], true);
-                $socketUrl = $result['url'];
-                $client = new Client($socketUrl);
-                $client->setTimeout(86400 * 1000);
-            }
-        }
+        $this->client = $this->createClient();
+        $this->processLoop();
     }
 
+    /**
+     * @return string
+     * @throws \LogicException
+     */
     private function getToken()
     {
         $token = $this->config->getEntry('auth.token');
-        if ($token === null) {
+        if (null === $token) {
             throw new \LogicException('No intergration token found in config');
         }
         return $token;
@@ -136,10 +121,87 @@ class RtmStartCommand extends Command
         return true;
     }
 
+    /**
+     * @return string
+     */
     private function getServerUrl()
     {
         $host = $this->config->getEntry('server.host') ?: 'localhost';
         $port = $this->config->getEntry('server.port') ?: '8888';
         return sprintf('http://%s:%s/process/message/', $host, $port);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSocketUrl()
+    {
+        $result = $this->curlRequest->getCurlResult($this->authUrl);
+        $result = json_decode($result['body'], true);
+        $socketUrl = $result['url'];
+        return $socketUrl;
+    }
+
+    /**
+     * @return Client
+     */
+    protected function createClient()
+    {
+        $client = new Client($this->socketUrl);
+        $client->setTimeout(86400 * 1000);
+        return $client;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthUrl()
+    {
+        $token = $this->getToken();
+        $urlParams = [
+            'token' => $token
+        ];
+        $authUrl = self::BASE_URL . '?' . http_build_query($urlParams);
+        return $authUrl;
+    }
+
+    /**
+     * Main execution loop
+     * @throws \Exception
+     */
+    protected function processLoop()
+    {
+        while (1) {
+            try {
+                $data = $this->client->receive();
+
+                $parsedData = json_decode($data, true);
+                if ('message' === $parsedData['type']) {
+                    echo sprintf(
+                        "[INFO] Got message: '%s' from %s in %s\n",
+                        $parsedData['text'],
+                        Util::arrayGet($parsedData, 'user') ?: 'bot',
+                        Util::arrayGet($parsedData, 'channel') ?: 'unknown channel'
+                    );
+                    try {
+                        $this->curlRequest->getCurlResult(
+                            $this->serverUrl,
+                            [
+                                CURLOPT_POST => true,
+                                CURLOPT_POSTFIELDS => [
+                                    'message' => $data
+                                ]
+                            ]
+                        );
+                    } catch (\Exception $e) {
+                    }
+                }
+            } catch (Exception $e) {
+                $result = $this->curlRequest->getCurlResult($this->authUrl);
+                $result = json_decode($result['body'], true);
+                $this->socketUrl = $result['url'];
+                $this->client = $this->createClient($this->socketUrl);
+            }
+        }
     }
 }

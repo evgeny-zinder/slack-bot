@@ -4,7 +4,17 @@ namespace slackbot;
 
 use slackbot\models\ArgvParser;
 use slackbot\models\Registry;
+use slackbot\models\Config;
+use Symfony\Component\Yaml\Parser;
+use slackbot\util\FileLoader;
+use slackbot\commands as commands;
+use Symfony\Component\Console\Application as ConsoleApp;
 
+/**
+ * Class Application
+ * Main core server class
+ * @package slackbot
+ */
 class Application
 {
     /** @var \Symfony\Component\Console\Application */
@@ -19,11 +29,15 @@ class Application
     /** @var models\ArgvParser */
     protected $argParser;
 
+    /**
+     * Application constructor.
+     * @param $argv array CLI arguments
+     */
     public function __construct($argv)
     {
-        $this->config = new \slackbot\models\Config(
-            new \Symfony\Component\Yaml\Parser(),
-            new \slackbot\util\FileLoader()
+        $this->config = new Config(
+            new Parser(),
+            new FileLoader()
         );
 
         $this->argParser = new ArgvParser($argv);
@@ -34,45 +48,69 @@ class Application
         }
     }
 
+    /**
+     * Configures console application
+     */
     public function bootstrap()
     {
-        $coreBuilder = new \slackbot\CoreBuilder();
+        $coreBuilder = new CoreBuilder();
         $this->container = $coreBuilder->buildContainer(
             $this->config,
             $this->argParser
         );
         Registry::set('container', $this->container);
 
-        $this->app = new \Symfony\Component\Console\Application('CMS Slack Bot', '@package_version@');
+        $this->app = new ConsoleApp('CMS Slack Bot', '@package_version@');
 
-        $this->app->add(new \slackbot\commands\ServerStartCommand());
-        $this->app->add(new \slackbot\commands\ServerStopCommand());
-        $this->app->add(new \slackbot\commands\ServerStatusCommand());
-        $this->app->add(new \slackbot\commands\PlaybookRunCommand(
-            $this->container['curl_request'],
-            $this->container['variables_placer']
+        $this->app->add(new commands\ServerStartCommand(
+            $this->container['config'],
+            $this->container['argv_parser']
         ));
-        $this->app->add(new \slackbot\commands\RtmStartCommand(
+        $this->app->add(new commands\ServerStopCommand(
+            $this->container['config']
+        ));
+        $this->app->add(new commands\ServerStatusCommand(
+            $this->container['config']
+        ));
+        $this->app->add(new commands\PlaybookRunCommand(
+            $this->container['curl_request'],
+            $this->container['variables_placer'],
+            $this->container['file_loader']
+        ));
+        $this->app->add(new commands\RtmStartCommand(
             $this->config,
             $this->container['curl_request']
         ));
-        $this->app->add(new \slackbot\commands\RtmStopCommand());
-        $this->app->add(new \slackbot\commands\CronWorkerCommand(
+        $this->app->add(new commands\RtmStopCommand(
+            $this->container['config']
+        ));
+        $this->app->add(new commands\CronWorkerCommand(
             $this->container['curl_request'],
-            $this->container['cron_expression']
+            $this->container['cron_expression'],
+            $this->container['file_loader']
         ));
 
     }
 
+    /**
+     * Runs the main loop
+     * @throws \Exception
+     */
     public function run() {
         $this->app->run();
     }
 
+    /**
+     * @return ConsoleApp
+     */
     public function getApp()
     {
         return $this->app;
     }
 
+    /**
+     * @return \Pimple\Container
+     */
     public function getContainer()
     {
         return $this->container;

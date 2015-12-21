@@ -3,6 +3,7 @@
 namespace slackbot\commands;
 
 use slackbot\models\Registry;
+use slackbot\util\FileLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,6 +11,12 @@ use Symfony\Component\Console\Input\InputOption;
 use slackbot\models\VariablesPlacer;
 use slackbot\util\CurlRequest;
 
+/**
+ * Class PlaybookRunCommand
+ * Executes YAML playbook file
+ *
+ * @package slackbot\commands
+ */
 class PlaybookRunCommand extends Command
 {
     /** @var VariablesPlacer */
@@ -18,13 +25,29 @@ class PlaybookRunCommand extends Command
     /** @var CurlRequest */
     private $curlRequest;
 
-    public function __construct(CurlRequest $curlRequest, VariablesPlacer $variablesPlacer)
-    {
+    /** @var FileLoader */
+    private $fileLoader;
+
+    /**
+     * PlaybookRunCommand constructor.
+     * @param CurlRequest $curlRequest cURL interface
+     * @param VariablesPlacer $variablesPlacer Utility to replace playbook variables
+     * @param FileLoader $fileLoader File loading interface
+     */
+    public function __construct(
+        CurlRequest $curlRequest,
+        VariablesPlacer $variablesPlacer,
+        FileLoader $fileLoader
+    ) {
         parent::__construct();
         $this->curlRequest = $curlRequest;
         $this->variablesPlacer = $variablesPlacer;
+        $this->fileLoader = $fileLoader;
     }
 
+    /**
+     * Console command configuration
+     */
     protected function configure()
     {
         $this
@@ -58,13 +81,9 @@ class PlaybookRunCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $playbookFile = $input->getOption('playbook');
-        if (!file_exists($playbookFile)) {
-            throw new \RuntimeException('Playbook file not found');
-        }
+        $playbook = $this->fileLoader->load($playbookFile);
 
-        $playbook = file_get_contents($playbookFile);
-
-        /** @var \slackbot\models\VariablesPlacer $variablesPlacer */
+        /** @var VariablesPlacer $variablesPlacer */
         $this->variablesPlacer->setVars(Registry::get('container')['argv_parser']->all());
         $this->variablesPlacer->setText($playbook);
         $playbook = $variablesPlacer->place();
