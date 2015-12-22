@@ -9,6 +9,10 @@ use slackbot\models\SlackFacade;
 use slackbot\models\Variables;
 use slackbot\Util;
 
+/**
+ * Class UserInputActionHandler
+ * @package slackbot\handlers\action
+ */
 class UserInputActionHandler extends BaseActionHandler
 {
     /** @var string */
@@ -20,6 +24,11 @@ class UserInputActionHandler extends BaseActionHandler
     /** @var string */
     private $recipientId;
 
+    /**
+     * UserInputActionHandler constructor.
+     * @param SlackFacade $slackFacade
+     * @param CoreProcessor $coreProcessor
+     */
     public function __construct(
         SlackFacade $slackFacade,
         CoreProcessor $coreProcessor
@@ -30,7 +39,7 @@ class UserInputActionHandler extends BaseActionHandler
 
     /**
      * @param ActionDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessAction(ActionDto $dto)
     {
@@ -50,7 +59,7 @@ class UserInputActionHandler extends BaseActionHandler
 
         // 1. Send "before" message
         $beforeMessage = Util::arrayGet($messages, 'before');
-        if ($beforeMessage !== null) {
+        if (null !== $beforeMessage) {
             $this->slackFacade->getSlackApi()->chatPostMessage($this->recipientId, $beforeMessage);
         }
 
@@ -60,17 +69,25 @@ class UserInputActionHandler extends BaseActionHandler
         $finish = $start + $this->getTimeoutSize(Util::arrayGet($dto->getData(), 'timeout'));
         $this->coreProcessor->addTimedMessageHandler(
             $this->handlerId,
-            array($this, 'checker'),
-            array($this, 'handler'),
+            [$this, 'checker'],
+            [$this, 'handler'],
             $start,
             $finish
         );
     }
 
+    /**
+     * @param RequestDto $dto
+     * @return bool
+     */
     public function checker(RequestDto $dto) {
         return (int) Util::arrayGet($dto->getData(), 'text') > 0;
     }
 
+    /**
+     * @param RequestDto $dto
+     * @return null
+     */
     public function handler(RequestDto $dto) {
         // 4a. Timeout, exiting
         if ($this->coreProcessor->isMessageTimedOut($this->handlerId)) {
@@ -82,6 +99,9 @@ class UserInputActionHandler extends BaseActionHandler
         // 4b. Processed. Setting variable.
         if ($this->coreProcessor->isMessageHandled($this->handlerId)) {
             $dto = $this->coreProcessor->getTimedMessageHandleResult($this->handlerId);
+            if (false === $dto) {
+                return;
+            }
             $this->coreProcessor->removeTimedMessageHandler($this->handlerId);
 
             $response = Util::arrayGet($dto->getData(), 'text');
@@ -92,13 +112,13 @@ class UserInputActionHandler extends BaseActionHandler
 
             // 5. Send "after" message
             $afterMessage = Util::arrayGet(Util::arrayGet($this->dtoData, 'messages'), 'after');
-            if ($afterMessage !== null) {
+            if (null !== $afterMessage) {
                 $this->slackFacade->getSlackApi()->chatPostMessage($this->recipientId, $afterMessage);
             }
 
             // 6. Processing other actions.
             $afterActions = Util::arrayGet($this->dtoData, 'after');
-            if (!count($afterActions)) {
+            if (0 === count($afterActions)) {
                 return;
             }
             foreach ($afterActions as $afterAction) {
@@ -109,13 +129,18 @@ class UserInputActionHandler extends BaseActionHandler
         }
 
     }
+
+    /**
+     * @param string $timeout timeout string in h/m/s, optionally - with unit at the end
+     * @return int timeout size in seconds
+     */
     private function getTimeoutSize($timeout) {
         switch (substr($timeout, -1)) {
-            case 's': $multiplyer = 1; break;
-            case 'm': $multiplyer = 60; break;
-            case 'h': $multiplyer = 60 * 60; break;
-            default: $multiplyer = 1; break;
+            case 's': $multiplier = 1; break;
+            case 'm': $multiplier = 60; break;
+            case 'h': $multiplier = 60 * 60; break;
+            default: $multiplier = 1; break;
         }
-        return (int) (substr($timeout, 0, -1) * $multiplyer);
+        return (int) (substr($timeout, 0, -1) * $multiplier);
     }
 }

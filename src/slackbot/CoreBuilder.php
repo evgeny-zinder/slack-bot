@@ -15,7 +15,6 @@ use slackbot\handlers\action\RunCommandActionHandler;
 use slackbot\handlers\action\SendMessageActionHandler;
 use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
-use slackbot\handlers\command\TestCommandHandler;
 use slackbot\handlers\request\TestRtmRequestHandler;
 use slackbot\models\ArgvParser;
 use slackbot\models\ConditionResolver;
@@ -38,7 +37,7 @@ class CoreBuilder
         $container = new Container();
 
         $container['config'] = function() use ($config, $container) {
-            return ($config !== null)
+            return (null !== $config)
                 ? $config
                 : new Config($container['yaml_parser'], $container['file_loader']);
         };
@@ -136,11 +135,6 @@ class CoreBuilder
             );
         };
 
-
-        $container['command_test'] = function() {
-            return new TestCommandHandler();
-        };
-
         $container['core_processor']->addRequestHandler($container['request_test']);
 
         $container['core_processor']->addActionHandler($container['action_send_message']);
@@ -151,8 +145,6 @@ class CoreBuilder
         $container['core_processor']->addActionHandler($container['action_continue']);
         $container['core_processor']->addActionHandler($container['action_break']);
         $container['core_processor']->addActionHandler($container['action_run_command']);
-
-        $container['core_processor']->addCommandHandler($container['command_test']);
 
         $container['server'] = $this->buildServer();
 
@@ -175,7 +167,7 @@ class CoreBuilder
             /** @var SlackApi $slackApi */
             $slackApi = Registry::get('container')['slack_api'];
             $playbookToken = Util::arrayGet(Util::arrayGet($playbook, 'auth'), 'token');
-            if ($playbookToken !== null) {
+            if (null !== $playbookToken) {
                 $oldToken = $slackApi->getToken();
                 $slackApi->setToken($playbookToken);
             }
@@ -186,7 +178,7 @@ class CoreBuilder
             $response->write('Playbook executed successfully');
             $response->end();
 
-            if ($playbookToken !== null) {
+            if (null !== $playbookToken) {
                 $slackApi->setToken($oldToken);
             }
 
@@ -207,7 +199,7 @@ class CoreBuilder
             $dto = new RequestDto();
             $dto->setSource('rtm');
             $dto->setData(json_decode(Util::arrayGet($parsedData, 'message'), true));
-            $coreProcessor->processRequest($dto);
+            $coreProcessor->process($dto);
 
             $next();
         });

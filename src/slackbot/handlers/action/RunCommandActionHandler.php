@@ -7,11 +7,15 @@ use slackbot\Util;
 use slackbot\models\Registry;
 use slackbot\handlers\command\CommandHandlerInterface;
 
+/**
+ * Class RunCommandActionHandler
+ * @package slackbot\handlers\action
+ */
 class RunCommandActionHandler extends BaseActionHandler
 {
     /**
      * @param ActionDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessAction(ActionDto $dto)
     {
@@ -29,7 +33,7 @@ class RunCommandActionHandler extends BaseActionHandler
 
         /** @var CommandHandlerInterface $command */
         $command = $container['command_' . $commandName];
-        if ($command === null) {
+        if (null === $command) {
             return;
         }
         $command->processCommand(

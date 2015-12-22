@@ -8,11 +8,20 @@ use slackbot\OutputManager;
 use slackbot\models\SlackFacade;
 use slackbot\Util;
 
+/**
+ * Class SendMessageActionHandler
+ * @package slackbot\handlers\action
+ */
 class SendMessageActionHandler extends BaseActionHandler
 {
     /** @var OutputManager */
     private $outputManager;
 
+    /**
+     * SendMessageActionHandler constructor.
+     * @param SlackFacade $slackFacade
+     * @param OutputManager $outputManager
+     */
     public function __construct(SlackFacade $slackFacade, OutputManager $outputManager)
     {
         parent::__construct($slackFacade);
@@ -21,7 +30,7 @@ class SendMessageActionHandler extends BaseActionHandler
 
     /**
      * @param ActionDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessAction(ActionDto $dto)
     {
@@ -35,7 +44,7 @@ class SendMessageActionHandler extends BaseActionHandler
     public function processAction(ActionDto $dto)
     {
         $recipients = preg_split('/\s*,\s*/', Util::arrayGet($dto->getData(), 'recipients'));
-        if (!count($recipients)) {
+        if (0 === count($recipients)) {
             return;
         }
         $recipientIds = [];
@@ -44,7 +53,7 @@ class SendMessageActionHandler extends BaseActionHandler
                 $recipientIds[] = $this->slackFacade->getRecipientIdByName($recipient);
             }
         }
-        if (count($recipientIds) === 0) {
+        if (0 === count($recipientIds)) {
             return;
         }
         $message = Util::arrayGet($dto->getData(), 'message');
@@ -53,10 +62,14 @@ class SendMessageActionHandler extends BaseActionHandler
         $this->outputManager->sendMessage($dto);
     }
 
+    /**
+     * @param $string
+     * @return string
+     */
     private function substituteVariables($string)
     {
         $vars = Variables::all();
-        if (count($vars) === 0) {
+        if (0 === count($vars)) {
             return $string;
         }
         foreach ($vars as $name => $value) {

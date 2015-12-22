@@ -9,7 +9,7 @@ class TestRtmRequestHandler extends BaseRequestHandler
 {
     /**
      * @param RequestDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessRequest(RequestDto $dto)
     {

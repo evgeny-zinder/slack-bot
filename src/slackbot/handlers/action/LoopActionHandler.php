@@ -8,8 +8,17 @@ use slackbot\models\Variables;
 use slackbot\models\ConditionResolver;
 use slackbot\Util;
 
+/**
+ * Class LoopActionHandler
+ * @package slackbot\handlers\action
+ */
 class LoopActionHandler extends BaseActionHandler
 {
+    /**
+     * LoopActionHandler constructor.
+     * @param SlackFacade $slackFacade
+     * @param ConditionResolver $conditionResolver
+     */
     public function __construct(SlackFacade $slackFacade, ConditionResolver $conditionResolver)
     {
         parent::__construct($slackFacade);
@@ -18,11 +27,11 @@ class LoopActionHandler extends BaseActionHandler
 
     /**
      * @param ActionDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return Util::arrayGet($dto->getData(), 'action') === 'loop';
+        return 'loop' === Util::arrayGet($dto->getData(), 'action');
     }
 
     /**
@@ -31,50 +40,58 @@ class LoopActionHandler extends BaseActionHandler
      */
     public function processAction(ActionDto $dto)
     {
-        if (Util::arrayGet($dto->getData(), 'type') === 'while') {
+        if ('while' === Util::arrayGet($dto->getData(), 'type')) {
             $this->processWhileLoop($dto);
-        } elseif (Util::arrayGet($dto->getData(), 'type') === 'until') {
+        } elseif ('until' === Util::arrayGet($dto->getData(), 'type')) {
             $this->processUntilLoop($dto);
         } else {
             throw new \LogicException('Bad loop type');
         }
     }
 
+    /**
+     * @param ActionDto $dto
+     * @return null
+     */
     private function processWhileLoop(ActionDto $dto) {
         $actions = Util::arrayGet($dto->getData(), 'actions');
         while ($this->conditionResolver->isConditionMet(
             Util::arrayGet($dto->getData(), 'condition'),
             Variables::all()
         )) {
-            if (Variables::get('flowcontrol.continue') === true) {
+            if (true === Variables::get('flowcontrol.continue')) {
                 Variables::remove('flowcontrol.continue');
                 continue;
             }
-            if (Variables::get('flowcontrol.break') === true) {
+            if (true === Variables::get('flowcontrol.break')) {
                 Variables::remove('flowcontrol.break');
                 break;
             }
+
             $this->processActions($actions);
         }
     }
 
+    /**
+     * @param ActionDto $dto
+     * @return null
+     */
     private function processUntilLoop(ActionDto $dto) {
         $actions = Util::arrayGet($dto->getData(), 'actions');
         while (!$this->conditionResolver->isConditionMet(
             Util::arrayGet($dto->getData(), 'condition'),
             Variables::all()
         )) {
-            if (Variables::get('flowcontrol.continue') === true) {
+            if (true === Variables::get('flowcontrol.continue')) {
                 Variables::remove('flowcontrol.continue');
                 continue;
             }
-            if (Variables::get('flowcontrol.break') === true) {
+            if (true === Variables::get('flowcontrol.break')) {
                 Variables::remove('flowcontrol.break');
                 break;
             }
 
             $this->processActions($actions);
         }
-
     }
 }

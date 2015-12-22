@@ -8,11 +8,20 @@ use slackbot\models\Variables;
 use slackbot\models\ConditionResolver;
 use slackbot\Util;
 
+/**
+ * Class IfActionHandler
+ * @package slackbot\handlers\action
+ */
 class IfActionHandler extends BaseActionHandler
 {
     /** @var ConditionResolver */
     private $conditionResolver;
 
+    /**
+     * IfActionHandler constructor.
+     * @param SlackFacade $slackFacade
+     * @param ConditionResolver $conditionResolver
+     */
     public function __construct(SlackFacade $slackFacade, ConditionResolver $conditionResolver)
     {
         parent::__construct($slackFacade);
@@ -21,11 +30,11 @@ class IfActionHandler extends BaseActionHandler
 
     /**
      * @param ActionDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return Util::arrayGet($dto->getData(), 'action') === 'if';
+        return 'if' === Util::arrayGet($dto->getData(), 'action');
     }
 
     /**

@@ -6,17 +6,21 @@ use slackbot\dto\ActionDto;
 use slackbot\models\Variables;
 use slackbot\Util;
 
+/**
+ * Class SetVariableActionHandler
+ * @package slackbot\handlers\action
+ */
 class SetVariableActionHandler extends BaseActionHandler
 {
     /**
      * @param ActionDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessAction(ActionDto $dto)
     {
         return
-            Util::arrayGet($dto->getData(), 'action') === 'set_variable'
-            || Util::arrayGet($dto->getData(), 'action') === 'set';
+            'set_variable' === Util::arrayGet($dto->getData(), 'action')
+            || 'set' === Util::arrayGet($dto->getData(), 'action');
     }
 
     /**

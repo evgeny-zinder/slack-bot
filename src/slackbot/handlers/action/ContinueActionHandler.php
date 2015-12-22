@@ -6,17 +6,21 @@ use slackbot\dto\ActionDto;
 use slackbot\models\Variables;
 use slackbot\Util;
 
+/**
+ * Class ContinueActionHandler
+ * @package slackbot\handlers\action
+ */
 class ContinueActionHandler extends BaseActionHandler
 {
     public function __construct() {}
 
     /**
      * @param ActionDto $dto
-     * @return boolean
+     * @return bool
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return Util::arrayGet($dto->getData(), 'action') === 'continue';
+        return  'continue' === Util::arrayGet($dto->getData(), 'action');
     }
 
     /**

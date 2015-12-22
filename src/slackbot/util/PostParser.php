@@ -2,8 +2,17 @@
 
 namespace slackbot\util;
 
+/**
+ * Class PostParser
+ * Tries to parse raw POST data
+ * @package slackbot\util
+ */
 class PostParser
 {
+    /**
+     * @param array $post
+     * @return array
+     */
     public function parse(array $post)
     {
         $rawData = $this->getRawData($post);
@@ -13,6 +22,11 @@ class PostParser
         return $parsedData;
     }
 
+    /**
+     * @param string $str1
+     * @param string $str2
+     * @return string
+     */
     public function strEquals($str1, $str2) {
         return substr($str1, 0, strlen($str2) === $str2);
     }
@@ -32,8 +46,8 @@ class PostParser
     }
 
     /**
-     * @param $rawData
-     * @return array
+     * @param array $rawData
+     * @return string
      */
     protected function getDelimiter(array $rawData)
     {
@@ -41,8 +55,8 @@ class PostParser
     }
 
     /**
-     * @param $rawData
-     * @param $delimiter
+     * @param array $rawData
+     * @param string $delimiter
      * @return array
      */
     protected function getSlicedRawData(array $rawData, $delimiter)
@@ -61,7 +75,7 @@ class PostParser
     }
 
     /**
-     * @param $slicedData
+     * @param array $slicedData
      * @return array
      */
     protected function getParsedData($slicedData)

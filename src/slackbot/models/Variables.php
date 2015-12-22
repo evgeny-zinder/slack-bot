@@ -4,8 +4,17 @@ namespace slackbot\models;
 
 use slackbot\Util;
 
+/**
+ * Class Variables
+ * @package slackbot\models
+ */
 class Variables
 {
+    /**
+     * Sets variable value
+     * @param string $name
+     * @param mixed $value
+     */
     public static function set($name, $value)
     {
         $vars = Registry::get('variables');
@@ -13,16 +22,29 @@ class Variables
         Registry::set('variables', $vars);
     }
 
+    /**
+     * Returns variable value
+     * @param string $name
+     * @return mixed
+     */
     public static function get($name)
     {
         return Util::arrayGet(Registry::get('variables'), $name);
     }
 
+    /**
+     * Gets associative array of all variables in "name => value" format
+     * @return array
+     */
     public static function all()
     {
-        return Registry::get('variables');
+        return Registry::get('variables') ?: [];
     }
 
+    /**
+     * Unset variable
+     * @param string $name
+     */
     public static function remove($name)
     {
         $vars = Registry::get('variables');
@@ -32,6 +54,9 @@ class Variables
         Registry::set('variables', $vars);
     }
 
+    /**
+     * Unset all variablesw
+     */
     public static function clear()
     {
         Registry::set('variables', []);

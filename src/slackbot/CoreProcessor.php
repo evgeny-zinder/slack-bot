@@ -10,6 +10,11 @@ use slackbot\handlers\request\RequestHandlerInterface;
 use slackbot\models\SlackFacade;
 use slackbot\Util;
 
+/**
+ * Class CoreProcessor
+ * Provides core functions to process requests, messages and playbook actions
+ * @package slackbot
+ */
 class CoreProcessor
 {
     /** @var array */
@@ -27,21 +32,42 @@ class CoreProcessor
     /** @var SlackFacade */
     private $slackFacade;
 
+    /**
+     * CoreProcessor constructor.
+     * @param SlackFacade $slackFacade
+     */
     public function __construct(SlackFacade $slackFacade)
     {
         $this->slackFacade = $slackFacade;
     }
 
+    /**
+     * Adds request handler to queue
+     * @param RequestHandlerInterface $handler
+     */
     public function addRequestHandler(RequestHandlerInterface $handler)
     {
         $this->requestHandlers[] = $handler;
     }
 
+    /**
+     * Adds action handler to queue
+     * @param ActionHandlerInterface $handler
+     */
     public function addActionHandler(ActionHandlerInterface $handler)
     {
         $this->actionHandlers[] = $handler;
     }
 
+    /**
+     * Adds timed message handler to queue
+     * If message is not processed during requested time - processing will fail
+     * @param string $handlerId ID to identify handler
+     * @param callable $checker function to check if message should be processes
+     * @param callable $handler function to process message
+     * @param int $startTime unix timestamp to start processing
+     * @param int $finishTime unix timestamp to stop processing
+     */
     public function addTimedMessageHandler($handlerId, $checker, $handler,  $startTime, $finishTime)
     {
         $this->timedMessageHandlers[$handlerId] = [
@@ -53,54 +79,82 @@ class CoreProcessor
         ];
     }
 
+    /**
+     * Adds command handler to queue
+     * @param CommandHandlerInterface $handler
+     */
     public function addCommandHandler(CommandHandlerInterface $handler)
     {
         $this->commandHandlers[] = $handler;
     }
 
-
-    public function processRequest(RequestDto $dto)
+    /**
+     * Main processing chain
+     * @param RequestDto $dto
+     */
+    public function process(RequestDto $dto)
     {
-        if (count($this->requestHandlers) > 0)
-        {
-            foreach ($this->requestHandlers as $handler) {
-                if ($handler->canProcessRequest($dto)) {
-                    if (
-                        !$handler->shouldReceiveOwnMessages() &&
-                        Util::arrayGet($dto->getData(), 'username') == 'bot'
-                    ) {
-                        continue;
-                    }
-                    $handler->processRequest($dto);
-                }
-            }
-        }
+        $this->processRequest($dto);
 
-        // Afterwards - times messages and !-commands
-        if (Util::arrayGet($dto->getData(), 'type') == 'message') {
+        if ('message' === Util::arrayGet($dto->getData(), 'type')) {
             $this->processCommand($dto);
             $this->processMessage($dto);
         }
     }
 
-    public function processAction(ActionDto $dto)
+    /**
+     * Processing raw request
+     * @param RequestDto $dto
+     */
+    protected function processRequest(RequestDto $dto)
     {
-        if (count($this->actionHandlers) > 0)
-        {
-            foreach ($this->actionHandlers as $handler) {
-                if ($handler->canProcessAction($dto)) {
-                    $handler->processAction($dto);
+        if (0 === count($this->requestHandlers)) {
+            return;
+        }
+
+        /** @var RequestHandlerInterface $handler */
+        foreach ($this->requestHandlers as $handler) {
+            if ($handler->canProcessRequest($dto)) {
+                if (
+                    !$handler->shouldReceiveOwnMessages() &&
+                    'bot' === Util::arrayGet($dto->getData(), 'username')
+                ) {
+                    continue;
                 }
+                $handler->processRequest($dto);
             }
         }
     }
 
+    /**
+     * Processing playbook action
+     * @param ActionDto $dto
+     */
+    public function processAction(ActionDto $dto)
+    {
+        if (0 === count($this->actionHandlers)) {
+            return;
+        }
+
+        /** @var ActionHandlerInterface $handler */
+        foreach ($this->actionHandlers as $handler) {
+            if ($handler->canProcessAction($dto)) {
+                $handler->processAction($dto);
+            }
+        }
+    }
+
+    /**
+     * Processes single user/bot message
+     * @param RequestDto $dto
+     * @return bool
+     */
     public function processMessage(RequestDto $dto) {
-        if (!count($this->timedMessageHandlers)) {
-            return false;
+        if (0 === count($this->timedMessageHandlers)) {
+            return;
         }
         foreach ($this->timedMessageHandlers as $handlerId => $handler) {
-            if ($handler['handled'] === true) {
+            if (true === $handler['handled']) {
                 continue;
             }
             $time = time();
@@ -118,20 +172,39 @@ class CoreProcessor
         }
     }
 
+    /**
+     * Checks if message was processed successfully
+     * @param string $handlerId
+     * @return bool
+     */
     public function isMessageHandled($handlerId) {
         return $this->timedMessageHandlers[$handlerId]['handled'];
     }
 
+    /**
+     * Checks if message has timed out
+     * @param string $handlerId
+     * @return bool
+     */
     public function isMessageTimedOut($handlerId) {
         return Util::arrayGet($this->timedMessageHandlers[$handlerId], 'timeout') === true;
     }
 
+    /**
+     * Clears timed message's "handled" flag
+     * @param string $handlerId
+     */
     public function clearTimedMessageHandlerFlag($handlerId)
     {
         $this->timedMessageHandlers[$handlerId]['handled'] = false;
         unset($this->timedMessageHandlers[$handlerId]['dto']);
     }
 
+    /**
+     * Returns timed message processing result or false if still unprocessed
+     * @param string $handlerId
+     * @return bool
+     */
     public function getTimedMessageHandleResult($handlerId)
     {
         if ($this->timedMessageHandlers[$handlerId]['handled']) {
@@ -140,63 +213,77 @@ class CoreProcessor
         return false;
     }
 
+    /**
+     * Removes timed message handler
+     * @param string $handlerId
+     */
     public function removeTimedMessageHandler($handlerId)
     {
         unset($this->timedMessageHandlers[$handlerId]);
     }
 
+    /**
+     * Processes !-command
+     * @param RequestDto $dto
+     */
     public function processCommand(RequestDto $dto)
     {
-        if (!count($this->commandHandlers)) {
-            return;
-        }
-
         $words = preg_split('/\s+/is', Util::arrayGet($dto->getData(), 'text'));
         $command = Util::arrayGet($words, 0);
-        if ($command === null) {
-            return;
-        }
-        if (substr($command, 0, 1) !== '!') {
+        if (null === $command || '!' !== substr($command, 0, 1)) {
             return;
         }
 
         $command = substr($command, 1);
 
+        /** @var CommandHandlerInterface $commandHandler */
         foreach ($this->commandHandlers as $commandHandler) {
-            if ($commandHandler->getName() === $command) {
-                $allowed = false;
-                $acl = $commandHandler->getAcl();
-                if ($acl === CommandHandlerInterface::ACL_ANY) {
-                    $allowed = true;
-                } else {
-                    $currentUser = Util::arrayGet($dto->getData(), 'user');
-                    $aclUsers = [];
-                    foreach ($acl as $aclItem) {
-                        $aclUsers = array_merge($aclUsers, $this->slackFacade->getRecipientUsersIds($aclItem));
-                    }
-                    $aclUsers = array_unique($aclUsers);
+            if ($commandHandler->getName() !== $command) {
+                continue;
+            }
 
-                    if (in_array($currentUser, $aclUsers)) {
-                        $allowed = true;
-                    }
-                }
+            $allowed = $this->checkAccess($dto, $commandHandler);
+            if (!$allowed) {
+                $this->slackFacade->multiSendMessage(
+                    [ Util::arrayGet($dto->getData(), 'channel') ],
+                    sprintf(
+                        'SYSTEM: access to command !%s denied',
+                        $commandHandler->getName()
+                    )
+                );
+                continue;
+            }
 
-                if (!$allowed) {
-                    $this->slackFacade->multiSendMessage(
-                        [ Util::arrayGet($dto->getData(), 'channel') ],
-                        sprintf(
-                            'SYSTEM: access to command !%s denied',
-                            $commandHandler->getName()
-                        )
-                    );
-                    continue;
-                }
-
-                unset($words[0]);
-                if ($commandHandler->canProcessCommand($words, Util::arrayGet($dto->getData(), 'channel'))) {
-                    $commandHandler->processCommand($words, Util::arrayGet($dto->getData(), 'channel'));
-                }
+            unset($words[0]);
+            if ($commandHandler->canProcessCommand($words, Util::arrayGet($dto->getData(), 'channel'))) {
+                $commandHandler->processCommand($words, Util::arrayGet($dto->getData(), 'channel'));
             }
         }
     }
+
+    /**
+     * @param RequestDto $dto
+     * @param $commandHandler
+     * @return bool
+     */
+    protected function checkAccess(RequestDto $dto, CommandHandlerInterface $commandHandler)
+    {
+        $acl = $commandHandler->getAcl();
+        if (CommandHandlerInterface::ACL_ANY === $acl) {
+            return true;
+        } else {
+            $currentUser = Util::arrayGet($dto->getData(), 'user');
+            $aclUsers = [];
+            foreach ($acl as $aclItem) {
+                $aclUsers = array_merge($aclUsers, $this->slackFacade->getRecipientUsersIds($aclItem));
+            }
+            $aclUsers = array_unique($aclUsers);
+
+            if (in_array($currentUser, $aclUsers)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
