@@ -19,7 +19,7 @@ class ConditionResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function validConditionsProvider()
+    public static function validConditionsProvider()
     {
         return [
             ['$a = 1', ['$a' => 1], true],

@@ -55,7 +55,7 @@ class Variables
     }
 
     /**
-     * Unset all variablesw
+     * Unset all variables
      */
     public static function clear()
     {

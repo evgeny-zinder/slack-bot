@@ -9,14 +9,20 @@ namespace slackbot;
 class Util
 {
     /**
-     * Error-safe array item getter
+     * Error-safe recursive array item getter
+     * Translates path "a.b.c" to 'a' => ['b' => ['c' => ... ]]]
      * @param array $array
-     * @param string $key
+     * @param string $path
      * @return string|null
      */
-    public static function arrayGet($array, $key)
-    {
-        if (!is_array($array)) return null;
-        return array_key_exists($key, $array) ? $array[$key] : null;
+    public static function arrayGet($array, $path) {
+        $path = explode('.', $path);
+        foreach ($path as $item) {
+            if (!is_array($array) || !array_key_exists($item, $array)) {
+                return null;
+            }
+            $array = $array[$item];
+        }
+        return $array;
     }
 }
