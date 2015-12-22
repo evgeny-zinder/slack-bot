@@ -63,7 +63,7 @@ class SendMessageActionHandler extends BaseActionHandler
     }
 
     /**
-     * @param $string
+     * @param string|null $string
      * @return string
      */
     private function substituteVariables($string)

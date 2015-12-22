@@ -25,7 +25,7 @@ class Variables
     /**
      * Returns variable value
      * @param string $name
-     * @return mixed
+     * @return string|null
      */
     public static function get($name)
     {
