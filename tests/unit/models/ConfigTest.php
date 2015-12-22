@@ -94,7 +94,7 @@ CONFIG;
             $this->parserMock,
             $loaderMock
         );
-        $config->loadData('tests/data/config.yml');
+        $config->loadData('tests/data/config-test.yml');
     }
 
     /** @test */
@@ -113,7 +113,7 @@ CONFIG;
             new Parser(),
             $loaderMock
         );
-        $config->loadData('tests/data/config.yml');
+        $config->loadData('tests/data/config-test.yml');
 
     }
 
@@ -121,7 +121,7 @@ CONFIG;
     public function shouldReturnExistingSection()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
+        $config->loadData('tests/data/config-test.yml');
         $this->assertEquals(
             [
                 'path' => 'var/slackbot.log',
@@ -135,7 +135,7 @@ CONFIG;
     public function shouldReturnEmptyArrayOnNonExistentSection()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
+        $config->loadData('tests/data/config-test.yml');
         $this->assertEquals(
             [],
             $config->getSection('non-existent-section')
@@ -146,7 +146,7 @@ CONFIG;
     public function shouldReturnExistingEntry()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
+        $config->loadData('tests/data/config-test.yml');
         $this->assertEquals(
             'var/slackbot.log',
             $config->getEntry('log.path')
@@ -157,7 +157,7 @@ CONFIG;
     public function shouldReturnFalseOnNonExistentEntry()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
+        $config->loadData('tests/data/config-test.yml');
         $this->assertEquals(
             null,
             $config->getEntry('log.non-existent-entry')
@@ -168,7 +168,7 @@ CONFIG;
     public function shouldReturnFalseOnNonExistentSectionEntry()
     {
         $config = new Config($this->parserMock, $this->loader);
-        $config->loadData('tests/data/config.yml');
+        $config->loadData('tests/data/config-test.yml');
         $this->assertEquals(
             null,
             $config->getEntry('non-existent-section.path')

@@ -48,12 +48,12 @@ class SlackFacade
     /**
      * Returns user ID (or user DM ID) by user name
      * @param string $userName
-     * @param bool $openChannel return DM channel ID instead of user ID
+     * @param bool $shouldOpenImChannel return DM channel ID instead of user ID
      * @return string
      */
-    public function getUserIdByName($userName, $openChannel = true) {
+    public function getUserIdByName($userName, $shouldOpenImChannel = true) {
         $userId = Util::arrayGet($this->getUserByName($userName), 'id');
-        if (!$openChannel) {
+        if (null === $userId || !$shouldOpenImChannel) {
             return $userId;
         }
         $imData = $this->getSlackApi()->imOpen($userId);
@@ -112,11 +112,15 @@ class SlackFacade
 
     /**
      * Returns recipient (user/channel/group) ID by its name
-     * @param $name
+     * @param string $name
      * @return string|null
      */
     public function getRecipientIdByName($name)
     {
+        if (!is_string($name)) {
+            return null;
+        }
+
         if ('<' === $name[0]) {
             return preg_replace('/[\<\>\#\@]*/', '', $name);
         }
@@ -136,7 +140,11 @@ class SlackFacade
     public function getRecipientIdsByNames(array $names) {
         $ids = [];
         foreach ($names as $name) {
-            $ids[] = $this->getRecipientIdByName($name);
+            $id = $this->getRecipientIdByName($name);
+            if (null === $id) {
+                continue;
+            }
+            $ids[] = $id;
         }
         return array_unique($ids);
     }
@@ -164,8 +172,14 @@ class SlackFacade
      */
     public function getRecipientUsersIds($recipientId)
     {
+        if (!is_string($recipientId)) {
+            return [];
+        }
+
         switch ($recipientId[0]) {
-            case '@': return [$this->getUserIdByName(substr($recipientId, 1), false)];
+            case '@':
+                return null !== ($userId = $this->getUserIdByName(substr($recipientId, 1), false))
+                    ? [$userId] : [];
             case '#': return $this->getChannelUsersIds(substr($recipientId, 1));
             default: return $this->getGroupUsersIds($recipientId);
         }
@@ -180,6 +194,9 @@ class SlackFacade
     public function getChannelUsersIds($channelId)
     {
         $channelId = $this->getChannelIdByName($channelId);
+        if (null === $channelId) {
+            return [];
+        }
         $data = $this->getSlackApi()->channelsInfo($channelId);
         return Util::arrayGet(Util::arrayGet($data, 'channel'), 'members') ?: [];
     }
@@ -192,6 +209,9 @@ class SlackFacade
     public function getGroupUsersIds($groupId)
     {
         $groupId = $this->getGroupIdByName($groupId);
+        if (null === $groupId) {
+            return [];
+        }
         $data = $this->getSlackApi()->groupsInfo($groupId);
         return Util::arrayGet(Util::arrayGet($data, 'group'), 'members') ?: [];
     }
