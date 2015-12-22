@@ -96,7 +96,7 @@ class ServerStartCommand extends Command
     }
 
     /**
-     * @param $server \CapMousse\ReactRestify\Server Pre-configured server instance to run
+     * @param \CapMousse\ReactRestify\Server $server \CapMousse\ReactRestify\Server Pre-configured server instance to run
      */
     protected function runServer($server)
     {

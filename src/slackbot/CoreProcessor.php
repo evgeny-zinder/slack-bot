@@ -68,7 +68,7 @@ class CoreProcessor
      * @param int $startTime unix timestamp to start processing
      * @param int $finishTime unix timestamp to stop processing
      */
-    public function addTimedMessageHandler($handlerId, $checker, $handler,  $startTime, $finishTime)
+    public function addTimedMessageHandler($handlerId, $checker, $handler, $startTime, $finishTime)
     {
         $this->timedMessageHandlers[$handlerId] = [
             'checker' => $checker,
@@ -147,7 +147,7 @@ class CoreProcessor
     /**
      * Processes single user/bot message
      * @param RequestDto $dto
-     * @return bool
+     * @return boolean|null
      */
     public function processMessage(RequestDto $dto) {
         if (0 === count($this->timedMessageHandlers)) {
@@ -245,7 +245,7 @@ class CoreProcessor
             $allowed = $this->checkAccess($dto, $commandHandler);
             if (!$allowed) {
                 $this->slackFacade->multiSendMessage(
-                    [ Util::arrayGet($dto->getData(), 'channel') ],
+                    [Util::arrayGet($dto->getData(), 'channel')],
                     sprintf(
                         'SYSTEM: access to command !%s denied',
                         $commandHandler->getName()

@@ -106,6 +106,7 @@ class RtmStartCommand extends Command
     }
 
     /**
+     * @param string|null $pidFile
      * @return bool
      */
     private function checkPidFile($pidFile)

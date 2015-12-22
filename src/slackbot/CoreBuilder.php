@@ -155,7 +155,7 @@ class CoreBuilder
     {
         $server = new Server("SlackBot", "0.1");
 
-        $server->post('/playbook/run/', function (Request $request, Response $response, $next) {
+        $server->post('/playbook/run/', function(Request $request, Response $response, $next) {
             $rawData = $request->getData();
             $postParser = Registry::get('container')['post_parser'];
             $parsedData = $postParser->parse($rawData);
@@ -187,7 +187,7 @@ class CoreBuilder
             $next();
         });
 
-        $server->post('/process/message/', function (Request $request, Response $response, $next) {
+        $server->post('/process/message/', function(Request $request, Response $response, $next) {
             echo '[INFO] Got message from RTM process' . "\n";
 
             $rawData = $request->getData();
@@ -204,7 +204,7 @@ class CoreBuilder
             $next();
         });
 
-        $server->get('/info/cron/', function (Request $request, Response $response, $next) {
+        $server->get('/info/cron/', function(Request $request, Response $response, $next) {
             $response->writeJson(Registry::get('container')['config']->getSection('cron'));
             $response->end();
         });

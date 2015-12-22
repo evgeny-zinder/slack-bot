@@ -78,7 +78,7 @@ class SlackFacade
     /**
      * Returns public channel ID by its name
      * @param $channelName
-     * @return null
+     * @return string|null
      */
     public function getChannelIdByName($channelName)
     {
@@ -188,7 +188,7 @@ class SlackFacade
 
     /**
      * Returns list of channel user IDs
-     * @param $channelId
+     * @param string $channelId
      * @return array
      */
     public function getChannelUsersIds($channelId)
@@ -203,7 +203,7 @@ class SlackFacade
 
     /**
      * Returns list of group user IDs
-     * @param $groupId
+     * @param string $groupId
      * @return array
      */
     public function getGroupUsersIds($groupId)
