@@ -99,7 +99,7 @@ class UserInputActionHandler extends BaseActionHandler
         // 4b. Processed. Setting variable.
         if ($this->coreProcessor->isMessageHandled($this->handlerId)) {
             $dto = $this->coreProcessor->getTimedMessageHandleResult($this->handlerId);
-            if (false === $dto) {
+            if (null === $dto) {
                 return;
             }
             $this->coreProcessor->removeTimedMessageHandler($this->handlerId);

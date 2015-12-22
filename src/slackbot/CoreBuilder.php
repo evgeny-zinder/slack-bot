@@ -167,6 +167,8 @@ class CoreBuilder
             /** @var SlackApi $slackApi */
             $slackApi = Registry::get('container')['slack_api'];
             $playbookToken = Util::arrayGet(Util::arrayGet($playbook, 'auth'), 'token');
+
+            $oldToken = null;
             if (null !== $playbookToken) {
                 $oldToken = $slackApi->getToken();
                 $slackApi->setToken($playbookToken);
@@ -207,6 +209,8 @@ class CoreBuilder
         $server->get('/info/cron/', function(Request $request, Response $response, $next) {
             $response->writeJson(Registry::get('container')['config']->getSection('cron'));
             $response->end();
+
+            $next();
         });
 
         return $server;

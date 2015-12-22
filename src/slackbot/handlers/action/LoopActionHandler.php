@@ -14,6 +14,9 @@ use slackbot\Util;
  */
 class LoopActionHandler extends BaseActionHandler
 {
+    /** @var ConditionResolver */
+    private $conditionResolver;
+
     /**
      * LoopActionHandler constructor.
      * @param SlackFacade $slackFacade

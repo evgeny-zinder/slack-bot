@@ -13,7 +13,7 @@ class Util
      * Translates path "a.b.c" to 'a' => ['b' => ['c' => ... ]]]
      * @param array $array
      * @param string $path
-     * @return string|null
+     * @return mixed
      */
     public static function arrayGet($array, $path) {
         $path = explode('.', $path);

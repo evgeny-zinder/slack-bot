@@ -133,7 +133,7 @@ class RtmStartCommand extends Command
     }
 
     /**
-     * @return array
+     * @return string
      */
     protected function getSocketUrl()
     {
@@ -201,7 +201,7 @@ class RtmStartCommand extends Command
                 $result = $this->curlRequest->getCurlResult($this->authUrl);
                 $result = json_decode($result['body'], true);
                 $this->socketUrl = $result['url'];
-                $this->client = $this->createClient($this->socketUrl);
+                $this->client = $this->createClient();
             }
         }
     }

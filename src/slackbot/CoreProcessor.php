@@ -203,14 +203,14 @@ class CoreProcessor
     /**
      * Returns timed message processing result or false if still unprocessed
      * @param string $handlerId
-     * @return bool
+     * @return ActionDto|null
      */
     public function getTimedMessageHandleResult($handlerId)
     {
         if ($this->timedMessageHandlers[$handlerId]['handled']) {
             return $this->timedMessageHandlers[$handlerId]['dto'];
         }
-        return false;
+        return null;
     }
 
     /**
@@ -272,6 +272,9 @@ class CoreProcessor
         if (CommandHandlerInterface::ACL_ANY === $acl) {
             return true;
         } else {
+            if (!is_array($acl)) {
+                throw new \RuntimeException('Wrong ACL format: array expected');
+            }
             $currentUser = Util::arrayGet($dto->getData(), 'user');
             $aclUsers = [];
             foreach ($acl as $aclItem) {

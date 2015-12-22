@@ -83,10 +83,9 @@ class PlaybookRunCommand extends Command
         $playbookFile = $input->getOption('playbook');
         $playbook = $this->fileLoader->load($playbookFile);
 
-        /** @var VariablesPlacer $variablesPlacer */
         $this->variablesPlacer->setVars(Registry::get('container')['argv_parser']->all());
         $this->variablesPlacer->setText($playbook);
-        $playbook = $variablesPlacer->place();
+        $playbook =  $this->variablesPlacer->place();
 
         $url = sprintf(
             'http://%s:%d/playbook/run/',
