@@ -64,29 +64,4 @@ class Config
         list($section, $entry) = explode('.', $entry);
         return Util::arrayGet($this->getSection($section), $entry);
     }
-
-    /**
-     * Looks for entry in unnamed array by some criteria
-     * @param string $section section path
-     * @param string $searchCriteria
-     * @return null
-     */
-    public function getSectionFromArray($section, $searchCriteria) {
-        $data = $this->getSection($section);
-        if (!is_array($data)) {
-            return null;
-        }
-        $searchCriteriaData = explode('=', $searchCriteria);
-        $fieldName = Util::arrayGet($searchCriteriaData, 0);
-        $fieldValue = Util::arrayGet($searchCriteriaData, 1);
-        if (null === $fieldName || null === $fieldValue) {
-            throw new \LogicException('Invalid config entry search criteria');
-        }
-        foreach ($data as $item) {
-            if ($fieldValue === Util::arrayGet($item, $fieldName)) {
-                return $item;
-            }
-        }
-        return null;
-    }
 }

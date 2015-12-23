@@ -6,27 +6,67 @@ use slackbot\models\SlackApi;
 
 class SlackApiTest extends \PHPUnit_Framework_TestCase
 {
-    /** @test */
-    public function shouldProcessSimpleSlackRequests()
+    /**
+     * @test
+     * @dataProvider simpleRequestsProvider
+     */
+    public function shouldProcessSimpleSlackRequests($urlPart, $methodName, $methodArgs)
     {
         $token = 'token';
+        $curlPostFields = array_merge($methodArgs, ['token' => $token]);
         $curlRequestMock = \Mockery::mock('\slackbot\util\CurlRequest');
         $curlRequestMock
             ->shouldReceive('getCurlResult')
+            ->withArgs($methodArgs)
             ->withArgs([
-                'https://slack.com/api/channels.list',
+                'https://slack.com/api/' . $urlPart,
                 [
                     CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => [
-                        'token' => $token
-                    ]
+                    CURLOPT_POSTFIELDS => $curlPostFields
                 ]
             ])
             ->once();
 
         $slackApi = new SlackApi($curlRequestMock);
         $slackApi->setToken($token);
-        $slackApi->channelsList();
+        call_user_func_array([$slackApi, $methodName], array_values($methodArgs));
+    }
+
+    public static function simpleRequestsProvider()
+    {
+        return [
+            [
+                'channels.list',
+                'channelsList',
+                []
+            ],
+            [
+                'users.list',
+                'usersList',
+                []
+            ],
+            [
+                'groups.list',
+                'groupsList',
+                []
+            ],
+            [
+                'channels.info',
+                'channelsInfo',
+                ['channel' => '#general']
+            ],
+            [
+                'groups.info',
+                'groupsInfo',
+                ['group' => 'private-group']
+            ],
+            [
+                'im.open',
+                'imOpen',
+                ['user' => '@user']
+            ],
+
+        ];
     }
 
     /** @test */
@@ -54,4 +94,15 @@ class SlackApiTest extends \PHPUnit_Framework_TestCase
         $slackApi->chatPostMessage('#general', 'this is a test');
     }
 
+    /** @test */
+    public function shouldReturnToken()
+    {
+        $token = 'token';
+        $curlRequestMock = \Mockery::mock('\slackbot\util\CurlRequest');
+
+        $slackApi = new SlackApi($curlRequestMock);
+        $slackApi->setToken($token);
+
+        $this->assertEquals($token, $slackApi->getToken());
+    }
 }

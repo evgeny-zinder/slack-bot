@@ -41,6 +41,16 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function shouldRemoveVariableValues()
+    {
+        Variables::clear();
+        Variables::set('test1', '123');
+        Variables::remove('test1');
+        $this->assertEquals([], Variables::all());
+    }
+
+
+    /** @test */
     public function shouldClearAllVariableValues()
     {
         Variables::clear();
@@ -49,5 +59,4 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         Variables::clear();
         $this->assertEquals([], Variables::all());
     }
-
 }

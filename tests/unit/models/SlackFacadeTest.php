@@ -1717,7 +1717,7 @@ class SlackFacadeTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function shouldMultiSendMessageToSingleChannelWithOptionsBypas()
+    public function shouldMultiSendMessageToSingleChannelWithOptionsBypass()
     {
         $slackApiMock = \Mockery::mock('\slackbot\models\SlackApi');
         $slackApiMock
@@ -1745,6 +1745,19 @@ class SlackFacadeTest extends \PHPUnit_Framework_TestCase
         $slackFacade = new SlackFacade($slackApiMock);
         $slackFacade->multiSendMessage(['U00000001', 'U00000003', 'U00000002'], 'Test message', ['as_user' => true]);
     }
+
+    /** @test */
+    public function shouldNotMultiSendMessageToEmptyList()
+    {
+        $slackApiMock = \Mockery::mock('\slackbot\models\SlackApi');
+        $slackApiMock
+            ->shouldReceive('chatPostMessage')
+            ->never();
+
+        $slackFacade = new SlackFacade($slackApiMock);
+        $slackFacade->multiSendMessage([], 'Test message', ['as_user' => true]);
+    }
+
 
     // getRecipientUsersIds
     /** @test */

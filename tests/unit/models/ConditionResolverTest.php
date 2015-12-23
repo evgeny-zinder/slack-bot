@@ -105,7 +105,7 @@ class ConditionResolverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @dataProvider invalidConditionsProvider
-     * @xexpectedException Exception
+     * @expectedException \LogicException
      */
     public function shouldThrowExceptionOnInvalidCondition($condition, $variables, $exceptionName)
     {
@@ -117,9 +117,10 @@ class ConditionResolverTest extends \PHPUnit_Framework_TestCase
     public function invalidConditionsProvider()
     {
         return [
-            ['some invalid condition', [], 'LogicException'],
-            ['$a + - 1', [], 'LogicException'],
-            ['$a +++ 1', [], 'LogicException'],
+            ['some invalid condition', [], '\LogicException'],
+            ['$a + - 1', [], '\LogicException'],
+            ['$a +++ 1', [], '\LogicException'],
+            ['$a ! 1', [], '\LogicException'],
         ];
     }
 }
