@@ -23,6 +23,7 @@ class ArgvParser
      */
     public function __construct(array $argv) {
         $this->argv = $argv;
+        $this->args = [];
         $this->parse();
     }
 
@@ -38,7 +39,7 @@ class ArgvParser
         foreach ($this->argv as $arg) {
             $arg = str_replace('--', '', $arg);
             $argData = explode('=', $arg);
-            if (2 === count($argData)) {
+            if (2 === count($argData) && '' !== $argData[0] && '' !== $argData[1]) {
                 $this->args[$argData[0]] = $argData[1];
             }
         }

@@ -10,6 +10,17 @@ namespace slackbot\util {
             return call_user_func_array('\curl_exec', func_get_args());
         }
     }
+
+    function curl_error()
+    {
+        global $mockCurlError;
+        if (isset($mockCurlError) && $mockCurlError === true) {
+            return 'cURL timeout';
+        } else {
+            return call_user_func_array('\curl_error', func_get_args());
+        }
+    }
+
 }
 
 namespace tests\util {
@@ -30,6 +41,22 @@ namespace tests\util {
             $this->assertArrayHasKey('headers', $response);
             $this->assertArrayHasKey('body', $response);
             $this->assertEquals('<body></body>', $response['body']);
+            $mockCurlExec = false;
         }
+
+        /**
+         * @test
+         */
+        public function shouldThrowExceptionOnError()
+        {
+            global $mockCurlError;
+            $mockCurlError = true;
+            $this->setExpectedException('\Exception', 'Curl error: cURL timeout');
+
+            $curlRequest = new CurlRequest();
+            $curlRequest->getCurlResult('non-existent-url');
+            $mockCurlError = false;
+        }
+
     }
 }
