@@ -2,7 +2,6 @@
 
 namespace slackbot\handlers\request;
 
-use slackbot\Util;
 use slackbot\dto\RequestDto;
 
 class TestRtmRequestHandler extends BaseRequestHandler

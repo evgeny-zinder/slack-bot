@@ -6,7 +6,6 @@ use slackbot\dto\ActionDto;
 use slackbot\models\SlackFacade;
 use slackbot\models\Variables;
 use slackbot\models\ConditionResolver;
-use slackbot\Util;
 
 /**
  * Class IfActionHandler

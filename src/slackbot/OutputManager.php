@@ -4,7 +4,6 @@ namespace slackbot;
 
 use slackbot\dto\ActionDto;
 use slackbot\models\SlackFacade;
-use slackbot\Util;
 
 /**
  * Class OutputManager

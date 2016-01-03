@@ -6,7 +6,6 @@ use slackbot\dto\ActionDto;
 use slackbot\models\Variables;
 use slackbot\OutputManager;
 use slackbot\models\SlackFacade;
-use slackbot\Util;
 
 /**
  * Class SendMessageActionHandler

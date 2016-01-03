@@ -4,7 +4,6 @@ namespace slackbot\handlers\action;
 
 use slackbot\dto\ActionDto;
 use slackbot\models\Variables;
-use slackbot\Util;
 
 /**
  * Class SetVariableActionHandler

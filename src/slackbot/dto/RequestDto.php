@@ -2,8 +2,6 @@
 
 namespace slackbot\dto;
 
-use slackbot\Util;
-
 class RequestDto extends BaseDto
 {
     /** @var string */

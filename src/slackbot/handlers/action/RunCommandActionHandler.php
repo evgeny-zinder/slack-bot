@@ -3,7 +3,6 @@
 namespace slackbot\handlers\action;
 
 use slackbot\dto\ActionDto;
-use slackbot\Util;
 use slackbot\models\Registry;
 use slackbot\handlers\command\CommandHandlerInterface;
 
