@@ -34,7 +34,7 @@ class LoopActionHandler extends BaseActionHandler
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return 'loop' === Util::arrayGet($dto->getData(), 'action');
+        return 'loop' === $dto->getAction();
     }
 
     /**
@@ -43,9 +43,9 @@ class LoopActionHandler extends BaseActionHandler
      */
     public function processAction(ActionDto $dto)
     {
-        if ('while' === Util::arrayGet($dto->getData(), 'type')) {
+        if ('while' === $dto->get('type')) {
             $this->processWhileLoop($dto);
-        } elseif ('until' === Util::arrayGet($dto->getData(), 'type')) {
+        } elseif ('until' === $dto->get('type')) {
             $this->processUntilLoop($dto);
         } else {
             throw new \LogicException('Bad loop type');
@@ -57,9 +57,9 @@ class LoopActionHandler extends BaseActionHandler
      * @return null
      */
     private function processWhileLoop(ActionDto $dto) {
-        $actions = Util::arrayGet($dto->getData(), 'actions');
+        $actions = $dto->get('actions');
         while ($this->conditionResolver->isConditionMet(
-            Util::arrayGet($dto->getData(), 'condition'),
+            $dto->get('condition'),
             Variables::all()
         )) {
             if (true === Variables::get('flowcontrol.continue')) {
@@ -80,9 +80,9 @@ class LoopActionHandler extends BaseActionHandler
      * @return null
      */
     private function processUntilLoop(ActionDto $dto) {
-        $actions = Util::arrayGet($dto->getData(), 'actions');
+        $actions = $dto->get('actions');
         while (!$this->conditionResolver->isConditionMet(
-            Util::arrayGet($dto->getData(), 'condition'),
+            $dto->get('condition'),
             Variables::all()
         )) {
             if (true === Variables::get('flowcontrol.continue')) {

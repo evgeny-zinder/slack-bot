@@ -102,7 +102,7 @@ class CoreProcessor
     {
         $this->processRequest($dto);
 
-        if ('message' === Util::arrayGet($dto->getData(), 'type')) {
+        if ('message' === $dto->getType()) {
             $this->processCommand($dto);
             $this->processMessage($dto);
         }
@@ -123,7 +123,7 @@ class CoreProcessor
             if ($handler->canProcessRequest($dto)) {
                 if (
                     !$handler->shouldReceiveOwnMessages() &&
-                    'bot' === Util::arrayGet($dto->getData(), 'username')
+                    'bot' === $dto->getUsername()
                 ) {
                     continue;
                 }
@@ -238,7 +238,7 @@ class CoreProcessor
      */
     public function processCommand(RequestDto $dto)
     {
-        $words = preg_split('/\s+/is', Util::arrayGet($dto->getData(), 'text'));
+        $words = preg_split('/\s+/is', $dto->getText());
         $command = Util::arrayGet($words, 0);
         if (null === $command || '!' !== substr($command, 0, 1)) {
             return;
@@ -255,7 +255,7 @@ class CoreProcessor
             $allowed = $this->checkAccess($dto, $commandHandler);
             if (!$allowed) {
                 $this->slackFacade->multiSendMessage(
-                    [Util::arrayGet($dto->getData(), 'channel')],
+                    [$dto->getChannel()],
                     sprintf(
                         'SYSTEM: access to command !%s denied',
                         $commandHandler->getName()
@@ -265,8 +265,8 @@ class CoreProcessor
             }
 
             unset($words[0]);
-            if ($commandHandler->canProcessCommand($words, Util::arrayGet($dto->getData(), 'channel'))) {
-                $commandHandler->processCommand($words, Util::arrayGet($dto->getData(), 'channel'));
+            if ($commandHandler->canProcessCommand($words, $dto->getChannel())) {
+                $commandHandler->processCommand($words, $dto->getChannel());
             }
         }
     }
@@ -285,7 +285,7 @@ class CoreProcessor
             if (!is_array($acl)) {
                 throw new \RuntimeException('Wrong ACL format: array expected');
             }
-            $currentUser = Util::arrayGet($dto->getData(), 'user');
+            $currentUser = $dto->getUser();
             $aclUsers = [];
             foreach ($acl as $aclItem) {
                 $aclUsers = array_merge($aclUsers, $this->slackFacade->getRecipientUsersIds($aclItem));

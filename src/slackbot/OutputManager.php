@@ -29,10 +29,10 @@ class OutputManager
      */
     public function sendMessage(ActionDto $dto)
     {
-        $recipients = $this->parseRecipients(Util::arrayGet($dto->getData(), 'recipients'));
+        $recipients = $this->parseRecipients($dto->getRecipients());
         $this->slackFacade->multiSendMessage(
             $recipients,
-            Util::arrayGet($dto->getData(), 'message'),
+            $dto->getMessage(),
             [
                 'as_user' => true
             ]

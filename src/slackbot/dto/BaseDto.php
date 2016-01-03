@@ -7,7 +7,7 @@ use slackbot\Util;
 class BaseDto
 {
     /** @var array */
-    private $data;
+    protected $data;
 
     /**
      * @return array
@@ -28,11 +28,27 @@ class BaseDto
     }
 
     /**
+     * @param string $field field to get
+     * @return mixed
+     */
+    public function get($field)
+    {
+        return Util::arrayGet($this->data, $field);
+    }
+
+    /**
      * @return string
      */
     public function getUser()
     {
-        return Util::arrayGet($this->data, 'user');
+        return $this->get('user');
     }
 
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->get('message');
+    }
 }

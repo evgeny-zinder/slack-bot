@@ -34,7 +34,7 @@ class IfActionHandler extends BaseActionHandler
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return 'if' === Util::arrayGet($dto->getData(), 'action');
+        return 'if' === $dto->getAction();
     }
 
     /**
@@ -44,14 +44,14 @@ class IfActionHandler extends BaseActionHandler
     public function processAction(ActionDto $dto)
     {
         if ($this->conditionResolver->isConditionMet(
-            Util::arrayGet($dto->getData(), 'condition'),
+            $dto->get('condition'),
             Variables::all()
         )) {
-            $this->processActions(Util::arrayGet($dto->getData(), 'then'));
+            $this->processActions($dto->get('then'));
         } else {
-            $else = Util::arrayGet($dto->getData(), 'else');
+            $else = $dto->get('else');
             if (is_array($else) && count($else) > 0) {
-                $this->processActions(Util::arrayGet($dto->getData(), 'else'));
+                $this->processActions($else);
             }
         }
 

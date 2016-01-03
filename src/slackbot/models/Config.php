@@ -57,7 +57,7 @@ class Config
     /**
      * Returns entry by full path, ex. "server.name" returns "name" entry from "server" section
      * @param string $entry
-     * @return string|null
+     * @return mixed
      */
     public function getEntry($entry)
     {

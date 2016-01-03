@@ -19,7 +19,7 @@ class RunCommandActionHandler extends BaseActionHandler
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return Util::arrayGet($dto->getData(), 'action') === 'run_command';
+        return 'run_command' === $dto->get('action');
     }
 
     /**
@@ -29,7 +29,7 @@ class RunCommandActionHandler extends BaseActionHandler
     public function processAction(ActionDto $dto)
     {
         $container = Registry::get('container');
-        $commandName = Util::arrayGet($dto->getData(), 'command');
+        $commandName = $dto->get('command');
 
         /** @var CommandHandlerInterface $command */
         $command = $container['command_' . $commandName];
@@ -37,8 +37,8 @@ class RunCommandActionHandler extends BaseActionHandler
             return;
         }
         $command->processCommand(
-            Util::arrayGet($dto->getData(), 'args'),
-            Util::arrayGet($dto->getData(), 'channel')
+            $dto->get('args'),
+            $dto->get('channel')
         );
     }
 }

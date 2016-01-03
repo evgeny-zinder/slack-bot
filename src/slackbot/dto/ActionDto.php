@@ -2,26 +2,23 @@
 
 namespace slackbot\dto;
 
-class ActionDto
-{
-    /** @var array */
-    private $data;
+use slackbot\Util;
 
+class ActionDto extends BaseDto
+{
     /**
-     * @return array
+     * @return mixed
      */
-    public function getData()
+    public function getRecipients()
     {
-        return $this->data;
+        return $this->get('recipients');
     }
 
     /**
-     * @param array $data
-     * @return RequestDto
+     * @return mixed
      */
-    public function setData($data)
+    public function getAction()
     {
-        $this->data = $data;
-        return $this;
+        return $this->get('action');
     }
 }

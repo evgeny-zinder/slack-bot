@@ -20,7 +20,7 @@ class BreakActionHandler extends BaseActionHandler
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return 'break' === Util::arrayGet($dto->getData(), 'action');
+        return 'break' === $dto->getAction();
     }
 
     /**

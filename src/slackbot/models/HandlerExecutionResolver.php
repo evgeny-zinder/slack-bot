@@ -43,7 +43,7 @@ class HandlerExecutionResolver
             return true;
         }
 
-        $dtoChannel = Util::arrayGet($dto->getData(), 'channel');
+        $dtoChannel = $dto->getChannel();
         if (null === $dtoChannel) {
             return true;
         }

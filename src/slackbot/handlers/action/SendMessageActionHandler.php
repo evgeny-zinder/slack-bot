@@ -34,7 +34,7 @@ class SendMessageActionHandler extends BaseActionHandler
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return Util::arrayGet($dto->getData(), 'action') === 'send_message';
+        return 'send_message' === $dto->get('action');
     }
 
     /**
@@ -43,7 +43,7 @@ class SendMessageActionHandler extends BaseActionHandler
      */
     public function processAction(ActionDto $dto)
     {
-        $recipients = preg_split('/\s*,\s*/', Util::arrayGet($dto->getData(), 'recipients'));
+        $recipients = preg_split('/\s*,\s*/', $dto->get('recipients'));
         if (0 === count($recipients)) {
             return;
         }
@@ -56,7 +56,7 @@ class SendMessageActionHandler extends BaseActionHandler
         if (0 === count($recipientIds)) {
             return;
         }
-        $message = Util::arrayGet($dto->getData(), 'message');
+        $message = $dto->getMessage();
         $message = $this->substituteVariables($message);
         $dto->setData(array_merge($dto->getData(), ['message' => $message]));
         $this->outputManager->sendMessage($dto);

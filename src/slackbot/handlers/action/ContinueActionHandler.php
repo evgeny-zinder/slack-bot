@@ -20,7 +20,7 @@ class ContinueActionHandler extends BaseActionHandler
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return  'continue' === Util::arrayGet($dto->getData(), 'action');
+        return  'continue' === $dto->getAction();
     }
 
     /**

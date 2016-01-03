@@ -19,8 +19,8 @@ class SetVariableActionHandler extends BaseActionHandler
     public function canProcessAction(ActionDto $dto)
     {
         return
-            'set_variable' === Util::arrayGet($dto->getData(), 'action')
-            || 'set' === Util::arrayGet($dto->getData(), 'action');
+            'set_variable' === $dto->getAction()
+            || 'set' === $dto->getAction();
     }
 
     /**
@@ -29,8 +29,8 @@ class SetVariableActionHandler extends BaseActionHandler
      */
     public function processAction(ActionDto $dto)
     {
-        $name = Util::arrayGet($dto->getData(), 'name');
-        $value = Util::arrayGet($dto->getData(), 'value');
+        $name = $dto->get('name');
+        $value = $dto->get('value');
         switch ((string) $value) {
             case 'increment':
                 Variables::set(

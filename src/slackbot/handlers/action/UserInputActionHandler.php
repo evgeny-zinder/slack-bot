@@ -43,7 +43,7 @@ class UserInputActionHandler extends BaseActionHandler
      */
     public function canProcessAction(ActionDto $dto)
     {
-        return Util::arrayGet($dto->getData(), 'action') === 'user_input';
+        return 'user_input' === $dto->get('action');
     }
 
     /**
@@ -53,9 +53,9 @@ class UserInputActionHandler extends BaseActionHandler
     public function processAction(ActionDto $dto)
     {
         $this->dtoData = $dto->getData();
-        $recipient = Util::arrayGet($dto->getData(), 'recipient');
+        $recipient = $dto->get('recipient');
         $this->recipientId = $this->slackFacade->getUserIdByName(str_replace('@', '', $recipient));
-        $messages = Util::arrayGet($dto->getData(), 'messages');
+        $messages = $dto->get('messages');
 
         // 1. Send "before" message
         $beforeMessage = Util::arrayGet($messages, 'before');
@@ -66,7 +66,7 @@ class UserInputActionHandler extends BaseActionHandler
         // 2. Register timed message handler
         $this->handlerId = uniqid();
         $start = time();
-        $finish = $start + $this->getTimeoutSize(Util::arrayGet($dto->getData(), 'timeout'));
+        $finish = $start + $this->getTimeoutSize($dto->get('timeout'));
         $this->coreProcessor->addTimedMessageHandler(
             $this->handlerId,
             [$this, 'checker'],
@@ -81,7 +81,7 @@ class UserInputActionHandler extends BaseActionHandler
      * @return bool
      */
     public function checker(RequestDto $dto) {
-        return (int) Util::arrayGet($dto->getData(), 'text') > 0;
+        return (int) $dto->get('text') > 0;
     }
 
     /**
@@ -104,14 +104,14 @@ class UserInputActionHandler extends BaseActionHandler
             }
             $this->coreProcessor->removeTimedMessageHandler($this->handlerId);
 
-            $response = Util::arrayGet($dto->getData(), 'text');
+            $response = $dto->get('text');
             Variables::set(
                 Util::arrayGet($this->dtoData, 'variable'),
                 $response
             );
 
             // 5. Send "after" message
-            $afterMessage = Util::arrayGet(Util::arrayGet($this->dtoData, 'messages'), 'after');
+            $afterMessage = Util::arrayGet($this->dtoData, 'messages.after');
             if (null !== $afterMessage) {
                 $this->slackFacade->getSlackApi()->chatPostMessage($this->recipientId, $afterMessage);
             }
