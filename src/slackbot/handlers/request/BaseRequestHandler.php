@@ -28,7 +28,8 @@ abstract class BaseRequestHandler implements RequestHandlerInterface
      */
     public function getId()
     {
-        return __CLASS__;
+        $data = explode('\\', static::class);
+        return array_pop($data);
     }
 
     /**
@@ -43,7 +44,7 @@ abstract class BaseRequestHandler implements RequestHandlerInterface
      * @param RequestDto $dto
      * @return null
      */
-    abstract public function processRequest(RequestDto $dto);
+    abstract public function processRequest(RequestDto $dto, array $params);
 
     /**
      * Decides if bot's own messages should be passed to request handler

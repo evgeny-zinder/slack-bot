@@ -61,7 +61,35 @@ class Config
      */
     public function getEntry($entry)
     {
-        list($section, $entry) = explode('.', $entry);
+        if (false === strpos($entry, '.')) {
+            return $this->getSection($entry);
+        }
+        list($section, $entry) = explode('.', $entry, 2);
         return Util::arrayGet($this->getSection($section), $entry);
+    }
+
+    /**
+     * Returns array unnamed section bu its subkey
+     * @param string $path
+     * @param string $searchCriteria
+     * @return array
+     */
+    public function getSectionFromArray($path, $searchCriteria) {
+        $data = $this->getEntry($path);
+        if (!is_array($data)) {
+            return [];
+        }
+        $searchCriteriaData = explode('=', $searchCriteria);
+        $fieldName = Util::arrayGet($searchCriteriaData, 0);
+        $fieldValue = Util::arrayGet($searchCriteriaData, 1);
+        if (null === $fieldName || null === $fieldValue) {
+            throw new \LogicException('Invalid config entry search criteria');
+        }
+        foreach ($data as $item) {
+            if (Util::arrayGet($item, $fieldName) === $fieldValue) {
+                return $item;
+            }
+        }
+        return [];
     }
 }

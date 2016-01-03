@@ -18,7 +18,7 @@ class TestRtmRequestHandler extends BaseRequestHandler
             if (
                 Util::arrayGet($data, 'type') === 'message'
             ) {
-                return false;
+                return true;
             }
         }
         return false;
@@ -33,13 +33,13 @@ class TestRtmRequestHandler extends BaseRequestHandler
      * @param RequestDto $dto
      * @return null
      */
-    public function processRequest(RequestDto $dto)
+    public function processRequest(RequestDto $dto, array $params)
     {
         $messageText = Util::arrayGet($dto->getData(), 'text');
 
         $this->slackFacade->getSlackApi()->chatPostMessage(
             $dto->getData()['channel'],
-            'Said: ' . $messageText,
+            'Said: ' . $messageText . ', params: ' . json_encode($params),
             [
                 'parse' => 'full'
             ]

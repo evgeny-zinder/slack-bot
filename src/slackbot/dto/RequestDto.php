@@ -2,6 +2,8 @@
 
 namespace slackbot\dto;
 
+use slackbot\Util;
+
 class RequestDto
 {
     /** @var string */
@@ -44,5 +46,37 @@ class RequestDto
     {
         $this->data = $data;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return Util::arrayGet($this->data, 'message');
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return Util::arrayGet($this->data, 'username');
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        return Util::arrayGet($this->data, 'text');
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannel()
+    {
+        return Util::arrayGet($this->data, 'channel');
     }
 }

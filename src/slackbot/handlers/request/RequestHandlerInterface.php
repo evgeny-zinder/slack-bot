@@ -28,7 +28,8 @@ interface RequestHandlerInterface
 
     /**
      * @param RequestDto $request
+     * @param array $params
      * @return null
      */
-    public function processRequest(RequestDto $request);
+    public function processRequest(RequestDto $request, array $params);
 }

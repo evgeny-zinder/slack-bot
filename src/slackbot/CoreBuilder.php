@@ -19,6 +19,7 @@ use slackbot\handlers\request\TestRtmRequestHandler;
 use slackbot\models\ArgvParser;
 use slackbot\models\ConditionResolver;
 use slackbot\models\Config;
+use slackbot\models\HandlerExecutionResolver;
 use slackbot\models\Registry;
 use slackbot\models\Variables;
 use slackbot\models\VariablesPlacer;
@@ -81,9 +82,16 @@ class CoreBuilder
         $container['condition_resolver'] = function() {
             return new ConditionResolver();
         };
+        $container['handler_execution_resolver'] = function(Container $container) {
+            return new HandlerExecutionResolver(
+                $container['config'],
+                $container['slack_api']
+            );
+        };
         $container['core_processor'] = function(Container $container) {
             return new CoreProcessor(
-                $container['slack_facade']
+                $container['slack_facade'],
+                $container['handler_execution_resolver']
             );
         };
         $container['output_manager'] = function(Container $container) {

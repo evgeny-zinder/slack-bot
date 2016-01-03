@@ -7,6 +7,7 @@ use slackbot\dto\RequestDto;
 use slackbot\handlers\action\ActionHandlerInterface;
 use slackbot\handlers\command\CommandHandlerInterface;
 use slackbot\handlers\request\RequestHandlerInterface;
+use slackbot\models\HandlerExecutionResolver;
 use slackbot\models\SlackFacade;
 use slackbot\Util;
 
@@ -32,13 +33,18 @@ class CoreProcessor
     /** @var SlackFacade */
     private $slackFacade;
 
+    /** @var HandlerExecutionResolver */
+    private $executionResolver;
+
     /**
      * CoreProcessor constructor.
      * @param SlackFacade $slackFacade
+     * @param HandlerExecutionResolver $executionResolver
      */
-    public function __construct(SlackFacade $slackFacade)
+    public function __construct(SlackFacade $slackFacade, HandlerExecutionResolver $executionResolver)
     {
         $this->slackFacade = $slackFacade;
+        $this->executionResolver = $executionResolver;
     }
 
     /**
@@ -121,7 +127,11 @@ class CoreProcessor
                 ) {
                     continue;
                 }
-                $handler->processRequest($dto);
+
+                if (!$this->executionResolver->shouldExecute($handler, $dto)) {
+                    continue;
+                }
+                $handler->processRequest($dto, $this->executionResolver->getParams());
             }
         }
     }
