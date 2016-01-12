@@ -1831,7 +1831,7 @@ class SlackFacadeTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('groupsInfo')
             ->andReturn(
                 [
-                    'group' => [
+                    'channel' => [
                         'id' => 'G00000001',
                         'name' => 'some-group',
                         'members' => [
@@ -1958,7 +1958,7 @@ class SlackFacadeTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('groupsInfo')
             ->andReturn(
                 [
-                    'group' => [
+                    'channel' => [
                         'id' => 'G00000001',
                         'name' => 'some-group',
                         'members' => [

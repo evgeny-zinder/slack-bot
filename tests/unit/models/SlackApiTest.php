@@ -58,7 +58,7 @@ class SlackApiTest extends \PHPUnit_Framework_TestCase
             [
                 'groups.info',
                 'groupsInfo',
-                ['group' => 'private-group']
+                ['channel' => 'private-group']
             ],
             [
                 'im.open',
