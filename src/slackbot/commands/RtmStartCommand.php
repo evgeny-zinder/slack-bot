@@ -180,7 +180,7 @@ class RtmStartCommand extends Command
                 if ('message' === $parsedData['type']) {
                     echo sprintf(
                         "[INFO] Got message: '%s' from %s in %s\n",
-                        $parsedData['text'],
+                        Util::arrayGet($parsedData, 'text') ?: '<nothing>',
                         Util::arrayGet($parsedData, 'user') ?: 'bot',
                         Util::arrayGet($parsedData, 'channel') ?: 'unknown channel'
                     );

@@ -143,8 +143,6 @@ class CoreBuilder
             );
         };
 
-        $container['core_processor']->addRequestHandler($container['request_test']);
-
         $container['core_processor']->addActionHandler($container['action_send_message']);
         $container['core_processor']->addActionHandler($container['action_set_variable']);
         $container['core_processor']->addActionHandler($container['action_if']);
