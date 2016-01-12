@@ -59,10 +59,12 @@ class HandlerExecutionResolver
             return Util::arrayGet($handlerConfig, 'dm') ?: true;
         }
 
-        $dtoChannelInfo = $this->slackApi->channelsInfo($dtoChannel);
-        $dtoChannelName = Util::arrayGet($dtoChannelInfo, 'channel.name');
         if ('C' === $dtoChannelType) {
-            $dtoChannelName = '#' . $dtoChannelName;
+            $dtoChannelInfo = $this->slackApi->channelsInfo($dtoChannel);
+            $dtoChannelName = '#' . Util::arrayGet($dtoChannelInfo, 'channel.name');
+        } else {
+            $dtoChannelInfo = $this->slackApi->groupsInfo($dtoChannel);
+            $dtoChannelName = Util::arrayGet($dtoChannelInfo, 'group.name');
         }
 
         $handlerChannels = $this->config->getEntry('custom.' . $handlerId . '.channels');

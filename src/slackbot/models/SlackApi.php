@@ -100,7 +100,7 @@ class SlackApi
      */
     public function groupsInfo($groupId)
     {
-        $options['group'] = $groupId;
+        $options['channel'] = $groupId;
         return $this->processRequest(__FUNCTION__, $options);
     }
 
