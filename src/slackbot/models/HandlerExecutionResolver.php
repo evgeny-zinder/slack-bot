@@ -67,16 +67,17 @@ class HandlerExecutionResolver
             $dtoChannelName = Util::arrayGet($dtoChannelInfo, 'group.name');
         }
 
+        $defaultBehavior = $this->config->getEntry('custom.' . $handlerId . '.default');
         $handlerChannels = $this->config->getEntry('custom.' . $handlerId . '.channels');
         if (empty($handlerChannels)) {
-            return false;
+            return 'allow' === $defaultBehavior ? true : false;
         }
         $handlerChannelConfig = $this->config->getSectionFromArray(
             'custom.' . $handlerId . '.channels',
             'name=' . $dtoChannelName
         );
         if (empty($handlerChannelConfig)) {
-            return false;
+            return 'allow' === $defaultBehavior ? true : false;
         }
 
         $this->params = Util::arrayGet($handlerChannelConfig, 'params') ?: [];
