@@ -39,7 +39,8 @@ class HandlerExecutionResolver
      */
     public function shouldExecute(RequestHandlerInterface $handler, RequestDto $dto)
     {
-        if (empty($this->config->getSection('custom'))) {
+        $section = $this->config->getSection('custom');
+        if (empty($section)) {
             return true;
         }
 
