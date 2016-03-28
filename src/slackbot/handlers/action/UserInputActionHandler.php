@@ -80,7 +80,8 @@ class UserInputActionHandler extends BaseActionHandler
      * @param RequestDto $dto
      * @return bool
      */
-    public function checker(RequestDto $dto) {
+    public function checker(RequestDto $dto)
+    {
         return (int) $dto->get('text') > 0;
     }
 
@@ -88,7 +89,8 @@ class UserInputActionHandler extends BaseActionHandler
      * @param RequestDto $dto
      * @return null
      */
-    public function handler(RequestDto $dto) {
+    public function handler(RequestDto $dto)
+    {
         // 4a. Timeout, exiting
         if ($this->coreProcessor->isMessageTimedOut($this->handlerId)) {
             $this->slackFacade->getSlackApi()->chatPostMessage($this->recipientId, 'Sorry, response timed out');
@@ -134,12 +136,24 @@ class UserInputActionHandler extends BaseActionHandler
      * @param string $timeout timeout string in h/m/s, optionally - with unit at the end
      * @return int timeout size in seconds
      */
-    private function getTimeoutSize($timeout) {
+    private function getTimeoutSize($timeout)
+    {
         switch (substr($timeout, -1)) {
-            case 's': $multiplier = 1; break;
-            case 'm': $multiplier = 60; break;
-            case 'h': $multiplier = 60 * 60; break;
-            default: $multiplier = 1; break;
+            case 's':
+                $multiplier = 1;
+                break;
+
+            case 'm':
+                $multiplier = 60;
+                break;
+
+            case 'h':
+                $multiplier = 60 * 60;
+                break;
+
+            default:
+                $multiplier = 1;
+                break;
         }
         return (int) (substr($timeout, 0, -1) * $multiplier);
     }

@@ -26,7 +26,8 @@ class Config
      * @param Parser $parser
      * @param FileLoader $loader
      */
-    public function __construct(Parser $parser, FileLoader $loader) {
+    public function __construct(Parser $parser, FileLoader $loader)
+    {
         $this->parser = $parser;
         $this->loader = $loader;
     }
@@ -34,7 +35,8 @@ class Config
     /**
      * @param string $configPath
      */
-    public function loadData($configPath) {
+    public function loadData($configPath)
+    {
         $data = $this->parser->parse(
             $this->loader->load($configPath)
         );
@@ -74,7 +76,8 @@ class Config
      * @param string $searchCriteria
      * @return array
      */
-    public function getSectionFromArray($path, $searchCriteria) {
+    public function getSectionFromArray($path, $searchCriteria)
+    {
         $data = $this->getEntry($path);
         if (!is_array($data)) {
             return [];

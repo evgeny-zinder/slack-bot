@@ -24,7 +24,8 @@ class Posix
      * @param array $commands
      * @return string
      */
-    public static function execute(array $commands) {
+    public static function execute(array $commands)
+    {
         $result = null;
         foreach ($commands as $command) {
             $result = `$command`;

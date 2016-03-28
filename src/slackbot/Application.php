@@ -55,8 +55,8 @@ class Application
     {
         $coreBuilder = new CoreBuilder();
         $this->container = $coreBuilder->buildContainer(
-            $this->config,
-            $this->argParser
+            $this->argParser,
+            $this->config
         );
         Registry::set('container', $this->container);
 
@@ -96,7 +96,8 @@ class Application
      * Runs the main loop
      * @throws \Exception
      */
-    public function run() {
+    public function run()
+    {
         $this->app->run();
     }
 

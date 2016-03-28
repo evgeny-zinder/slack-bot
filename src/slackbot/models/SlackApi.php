@@ -22,7 +22,8 @@ class SlackApi
      * SlackApi constructor.
      * @param CurlRequest $curlRequest
      */
-    public function __construct(CurlRequest $curlRequest) {
+    public function __construct(CurlRequest $curlRequest)
+    {
         $this->curlRequest = $curlRequest;
     }
 
@@ -49,7 +50,8 @@ class SlackApi
      * @param array $options extra slack formatting options
      * @return array slack response
      */
-    public function chatPostMessage($channel, $message, $options = []) {
+    public function chatPostMessage($channel, $message, $options = [])
+    {
         $options['channel'] = $channel;
         $options['text'] = $message;
         return $this->processRequest(__FUNCTION__, $options);
@@ -136,7 +138,8 @@ class SlackApi
      * @return array
      * @throws \Exception
      */
-    private function processRequest($method, $data = []) {
+    private function processRequest($method, $data = [])
+    {
         $method = $this->getApiMethodName($method);
         $url = self::BASE_URL . $method;
         $data['token'] = $this->token;

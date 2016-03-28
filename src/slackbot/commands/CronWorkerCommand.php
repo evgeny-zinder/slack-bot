@@ -39,8 +39,7 @@ class CronWorkerCommand extends Command
         CurlRequest $curlRequest,
         CronExpression $cronExpression,
         FileLoader $fileLoader
-    )
-    {
+    ) {
         parent::__construct();
         $this->curlRequest = $curlRequest;
         $this->cronExpression = $cronExpression;

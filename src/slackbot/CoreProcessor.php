@@ -159,7 +159,8 @@ class CoreProcessor
      * @param RequestDto $dto
      * @return boolean|null
      */
-    public function processMessage(RequestDto $dto) {
+    public function processMessage(RequestDto $dto)
+    {
         if (0 === count($this->timedMessageHandlers)) {
             return;
         }
@@ -187,7 +188,8 @@ class CoreProcessor
      * @param string $handlerId
      * @return bool
      */
-    public function isMessageHandled($handlerId) {
+    public function isMessageHandled($handlerId)
+    {
         return $this->timedMessageHandlers[$handlerId]['handled'];
     }
 
@@ -196,7 +198,8 @@ class CoreProcessor
      * @param string $handlerId
      * @return bool
      */
-    public function isMessageTimedOut($handlerId) {
+    public function isMessageTimedOut($handlerId)
+    {
         return Util::arrayGet($this->timedMessageHandlers[$handlerId], 'timeout') === true;
     }
 
@@ -298,5 +301,4 @@ class CoreProcessor
         }
         return false;
     }
-
 }

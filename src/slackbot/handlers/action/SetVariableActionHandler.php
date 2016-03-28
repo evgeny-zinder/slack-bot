@@ -52,5 +52,4 @@ class SetVariableActionHandler extends BaseActionHandler
                 );
         }
     }
-
 }

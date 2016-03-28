@@ -27,7 +27,8 @@ class PostParser
      * @param string $str2
      * @return string
      */
-    public function strEquals($str1, $str2) {
+    public function strEquals($str1, $str2)
+    {
         return substr($str1, 0, strlen($str2)) === $str2;
     }
 

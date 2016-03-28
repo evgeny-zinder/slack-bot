@@ -19,7 +19,8 @@ class VariablesPlacer
      * Sets text to process
      * @param $text
      */
-    public function setText($text) {
+    public function setText($text)
+    {
         $this->text = $text;
     }
 
@@ -27,7 +28,8 @@ class VariablesPlacer
      * Sets variables list to substitute in "name => value" format
      * @param array $vars
      */
-    public function setVars(array $vars) {
+    public function setVars(array $vars)
+    {
         $this->vars = $vars;
     }
 

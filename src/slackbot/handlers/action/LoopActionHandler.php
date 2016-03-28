@@ -55,7 +55,8 @@ class LoopActionHandler extends BaseActionHandler
      * @param ActionDto $dto
      * @return null
      */
-    private function processWhileLoop(ActionDto $dto) {
+    private function processWhileLoop(ActionDto $dto)
+    {
         $actions = $dto->get('actions');
         while ($this->conditionResolver->isConditionMet(
             $dto->get('condition'),
@@ -78,7 +79,8 @@ class LoopActionHandler extends BaseActionHandler
      * @param ActionDto $dto
      * @return null
      */
-    private function processUntilLoop(ActionDto $dto) {
+    private function processUntilLoop(ActionDto $dto)
+    {
         $actions = $dto->get('actions');
         while (!$this->conditionResolver->isConditionMet(
             $dto->get('condition'),

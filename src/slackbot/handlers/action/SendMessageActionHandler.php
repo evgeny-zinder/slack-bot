@@ -76,5 +76,4 @@ class SendMessageActionHandler extends BaseActionHandler
         }
         return $string;
     }
-
 }

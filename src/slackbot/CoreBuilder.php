@@ -33,37 +33,37 @@ use Cron\CronExpression;
 
 class CoreBuilder
 {
-    public function buildContainer(Config $config = null, ArgvParser $argvParser)
+    public function buildContainer(ArgvParser $argvParser, Config $config = null)
     {
         $container = new Container();
 
-        $container['config'] = function() use ($config, $container) {
+        $container['config'] = function () use ($config, $container) {
             return (null !== $config)
                 ? $config
                 : new Config($container['yaml_parser'], $container['file_loader']);
         };
-        $container['variables_placer'] = function() {
+        $container['variables_placer'] = function () {
             return new VariablesPlacer();
         };
-        $container['cron_expression'] = function() {
+        $container['cron_expression'] = function () {
             return CronExpression::factory('@daily');
         };
-        $container['argv_parser'] = function() use ($argvParser) {
+        $container['argv_parser'] = function () use ($argvParser) {
             return $argvParser;
         };
-        $container['yaml_parser'] = function() {
+        $container['yaml_parser'] = function () {
             return new Parser();
         };
-        $container['file_loader'] = function() {
+        $container['file_loader'] = function () {
             return new FileLoader();
         };
-        $container['curl_request'] = function() {
+        $container['curl_request'] = function () {
             return new CurlRequest();
         };
-        $container['post_parser'] = function() {
+        $container['post_parser'] = function () {
             return new PostParser();
         };
-        $container['slack_api'] = function(Container $container) {
+        $container['slack_api'] = function (Container $container) {
             $slackApi = new SlackApi(
                 $container['curl_request']
             );
@@ -73,43 +73,43 @@ class CoreBuilder
             }
             return $slackApi;
         };
-        $container['slack_facade'] = function(Container $container) {
+        $container['slack_facade'] = function (Container $container) {
             return new SlackFacade(
                 $container['slack_api']
             );
         };
 
-        $container['condition_resolver'] = function() {
+        $container['condition_resolver'] = function () {
             return new ConditionResolver();
         };
-        $container['handler_execution_resolver'] = function(Container $container) {
+        $container['handler_execution_resolver'] = function (Container $container) {
             return new HandlerExecutionResolver(
                 $container['config'],
                 $container['slack_api']
             );
         };
-        $container['core_processor'] = function(Container $container) {
+        $container['core_processor'] = function (Container $container) {
             return new CoreProcessor(
                 $container['slack_facade'],
                 $container['handler_execution_resolver']
             );
         };
-        $container['output_manager'] = function(Container $container) {
+        $container['output_manager'] = function (Container $container) {
             return new OutputManager(
                 $container['slack_facade']
             );
         };
 
-        $container['request_test'] = function(Container $container) {
+        $container['request_test'] = function (Container $container) {
             return new TestRtmRequestHandler($container['slack_facade']);
         };
-        $container['action_send_message'] = function(Container $container) {
+        $container['action_send_message'] = function (Container $container) {
             return new SendMessageActionHandler($container['slack_facade'], $container['output_manager']);
         };
-        $container['action_set_variable'] = function(Container $container) {
+        $container['action_set_variable'] = function (Container $container) {
             return new SetVariableActionHandler($container['slack_facade']);
         };
-        $container['action_if'] = function(Container $container) {
+        $container['action_if'] = function (Container $container) {
             $handler = new IfActionHandler(
                 $container['slack_facade'],
                 $container['condition_resolver']
@@ -117,7 +117,7 @@ class CoreBuilder
             $handler->setCoreProcessor($container['core_processor']);
             return $handler;
         };
-        $container['action_loop'] = function(Container $container) {
+        $container['action_loop'] = function (Container $container) {
             $handler = new LoopActionHandler(
                 $container['slack_facade'],
                 $container['condition_resolver']
@@ -125,19 +125,19 @@ class CoreBuilder
             $handler->setCoreProcessor($container['core_processor']);
             return $handler;
         };
-        $container['action_user_input'] = function(Container $container) {
+        $container['action_user_input'] = function (Container $container) {
             return new UserInputActionHandler(
                 $container['slack_facade'],
                 $container['core_processor']
             );
         };
-        $container['action_continue'] = function() {
+        $container['action_continue'] = function () {
             return new ContinueActionHandler();
         };
-        $container['action_break'] = function() {
+        $container['action_break'] = function () {
             return new BreakActionHandler();
         };
-        $container['action_run_command'] = function(Container $container) {
+        $container['action_run_command'] = function (Container $container) {
             return new RunCommandActionHandler(
                 $container['slack_facade']
             );
@@ -161,7 +161,7 @@ class CoreBuilder
     {
         $server = new Server("SlackBot", "0.1");
 
-        $server->post('/playbook/run/', function(Request $request, Response $response, $next) {
+        $server->post('/playbook/run/', function (Request $request, Response $response, $next) {
             $rawData = $request->getData();
             $postParser = Registry::get('container')['post_parser'];
             $parsedData = $postParser->parse($rawData);
@@ -195,7 +195,7 @@ class CoreBuilder
             $next();
         });
 
-        $server->post('/process/message/', function(Request $request, Response $response, $next) {
+        $server->post('/process/message/', function (Request $request, Response $response, $next) {
             echo '[INFO] Got message from RTM process' . "\n";
 
             $rawData = $request->getData();
@@ -212,7 +212,7 @@ class CoreBuilder
             $next();
         });
 
-        $server->get('/info/cron/', function(Request $request, Response $response, $next) {
+        $server->get('/info/cron/', function (Request $request, Response $response, $next) {
             $response->writeJson(Registry::get('container')['config']->getSection('cron'));
             $response->end();
 

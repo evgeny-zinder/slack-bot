@@ -18,7 +18,8 @@ class Registry
      * @param string $key key name
      * @return mixed
      */
-    public static function get($key) {
+    public static function get($key)
+    {
         return Util::arrayGet(self::$data, $key);
     }
 
@@ -27,8 +28,8 @@ class Registry
      * @param string $key
      * @param mixed $value
      */
-    public static function set($key, $value) {
+    public static function set($key, $value)
+    {
         self::$data[$key] = $value;
     }
-
 }

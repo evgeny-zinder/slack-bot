@@ -11,7 +11,9 @@ use slackbot\models\Variables;
  */
 class ContinueActionHandler extends BaseActionHandler
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     /**
      * @param ActionDto $dto

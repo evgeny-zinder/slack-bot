@@ -61,5 +61,4 @@ class Variables
     {
         Registry::set('variables', []);
     }
-
 }

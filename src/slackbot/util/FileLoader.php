@@ -13,7 +13,8 @@ class FileLoader
      * @param string $fileName
      * @return string
      */
-    public function load($fileName) {
+    public function load($fileName)
+    {
         if (!file_exists($fileName) || !is_readable($fileName)) {
             throw new \RuntimeException(sprintf('File %s is not accessible', $fileName));
         }

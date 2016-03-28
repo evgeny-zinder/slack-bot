@@ -76,7 +76,8 @@ abstract class BaseActionHandler implements ActionHandlerInterface
     /**
      * @param array $actions
      */
-    protected function processActions($actions) {
+    protected function processActions($actions)
+    {
         foreach ($actions as $action) {
             if (true === Variables::get('flowcontrol.continue')) {
                 break;

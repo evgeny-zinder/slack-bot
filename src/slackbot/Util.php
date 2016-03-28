@@ -15,7 +15,8 @@ class Util
      * @param string $path
      * @return mixed
      */
-    public static function arrayGet($array, $path) {
+    public static function arrayGet($array, $path)
+    {
         $path = explode('.', $path);
         foreach ($path as $item) {
             if (!is_array($array) || !array_key_exists($item, $array)) {
