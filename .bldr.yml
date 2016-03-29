@@ -1,0 +1,64 @@
+bldr:
+  name: bldr-io/bldr
+  description: Super Extensible and Awesome Task Runner
+
+  profiles:
+    precommit:
+      description: Pre-commit hook
+      jobs:
+        - lint
+        - phpcs
+        - test
+
+  jobs:
+    prepare:
+      description: Cleans up old builds and prepares the new one
+      tasks:
+        -
+          type: filesystem:remove
+          files: [build/coverage, build/logs]
+        -
+          type: filesystem:mkdir
+          files: [build/coverage, build/logs]
+        -
+          type: filesystem:touch
+          files: [build/coverage/index.html]
+        -
+          type: exec
+          executable: composer
+          arguments: [install, --prefer-dist]
+
+    lint:
+      description: Lints the files of the project
+      tasks:
+        -
+          type: apply
+          src:
+            - { path: [src, tests], files: "*.php", recursive: true }
+          executable: php
+          arguments: [-l]
+
+    phpcs:
+      description: Runs the PHP Code Sniffer
+      tasks:
+        -
+          type: exec
+          executable: php
+          arguments:
+            - vendor/bin/phpcs
+            - -p
+            - --standard=PSR2
+            - --report=checkstyle
+            - --report-file=build/logs/checkstyle.xml
+            - src/
+
+    test:
+      description: Runs the PHPUnit Tests
+      tasks:
+        -
+          type: exec
+          executable: php
+          arguments:
+            - vendor/bin/phpunit
+            - --testdox
+            - --coverage-text=php://stdout
