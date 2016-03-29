@@ -10,6 +10,14 @@ bldr:
         - phpcs
         - test
 
+    build:
+      description: Jenkins build
+      jobs:
+        - lint
+        - phpcs
+        - test
+
+
   jobs:
     prepare:
       description: Cleans up old builds and prepares the new one
