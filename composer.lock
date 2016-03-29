@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c78c158941534630bddcaf76bdae065d",
-    "content-hash": "192fa55dbec72d9d0a29f77384f936e6",
+    "hash": "67caee19ef344e08301c13b7e9b42a08",
+    "content-hash": "fae9873fd990e1e1d959f5801dd78155",
     "packages": [
         {
             "name": "capmousse/react-restify",
@@ -470,17 +470,17 @@
         },
         {
             "name": "symfony/config",
-            "version": "v2.6.0",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Config",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "9282bb7f3251a95478a7198534577c02ab30b6b6"
+                "reference": "1bbd1159264c95ea0aeb342ae1923013331cc0f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/f4e3f09232b6a6525a812195e1ceb19401512854",
-                "reference": "9282bb7f3251a95478a7198534577c02ab30b6b6",
+                "url": "https://api.github.com/repos/symfony/config/zipball/1bbd1159264c95ea0aeb342ae1923013331cc0f7",
+                "reference": "1bbd1159264c95ea0aeb342ae1923013331cc0f7",
                 "shasum": ""
             },
             "require": {
@@ -490,7 +490,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -514,40 +514,36 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2014-11-20 13:24:23"
+            "time": "2013-11-26 16:40:27"
         },
         {
             "name": "symfony/console",
-            "version": "v2.6.0",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "d3bac228fd7a2aac9193e241b239880b3ba39a10"
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/d3bac228fd7a2aac9193e241b239880b3ba39a10",
-                "reference": "d3bac228fd7a2aac9193e241b239880b3ba39a10",
+                "url": "https://api.github.com/repos/symfony/console/zipball/3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1",
-                "symfony/process": "~2.1"
+                "symfony/event-dispatcher": "~2.1"
             },
             "suggest": {
-                "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": "",
-                "symfony/process": ""
+                "symfony/event-dispatcher": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -571,7 +567,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-11-20 13:24:23"
+            "time": "2013-11-27 09:10:40"
         },
         {
             "name": "symfony/filesystem",
@@ -624,17 +620,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.6.0",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "51c845cf3e4bfc182d1d5c05ed1c7338361d86f8"
+                "reference": "1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/51c845cf3e4bfc182d1d5c05ed1c7338361d86f8",
-                "reference": "51c845cf3e4bfc182d1d5c05ed1c7338361d86f8",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5",
+                "reference": "1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5",
                 "shasum": ""
             },
             "require": {
@@ -643,7 +639,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -657,17 +653,19 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-11-20 13:24:23"
+            "time": "2013-11-26 16:40:27"
         },
         {
             "name": "textalk/websocket",
@@ -824,121 +822,6 @@
                 "testing"
             ],
             "time": "2015-04-02 19:54:00"
-        },
-        {
-            "name": "pdepend/pdepend",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pdepend/pdepend.git",
-                "reference": "fbeaa10ee57114d790be5fb6778dcf0404267fef"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/fbeaa10ee57114d790be5fb6778dcf0404267fef",
-                "reference": "fbeaa10ee57114d790be5fb6778dcf0404267fef",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.3"
-            },
-            "bin": [
-                "src/bin/pdepend"
-            ],
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Official version of pdepend to be handled with Composer",
-            "time": "2012-09-12 11:09:19"
-        },
-        {
-            "name": "phploc/phploc",
-            "version": "2.1.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "50e063abd41833b3a5d29a2e8fbef5859ac28bdc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/50e063abd41833b3a5d29a2e8fbef5859ac28bdc",
-                "reference": "50e063abd41833b3a5d29a2e8fbef5859ac28bdc",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "sebastian/finder-facade": "~1.1",
-                "sebastian/git": "~2.0",
-                "sebastian/version": "~1.0.3",
-                "symfony/console": "~2.5"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4"
-            },
-            "bin": [
-                "phploc"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "A tool for quickly measuring the size of a PHP project.",
-            "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2015-10-22 13:44:19"
-        },
-        {
-            "name": "phpmd/phpmd",
-            "version": "1.5.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpmd/phpmd.git",
-                "reference": "f2d47500f4c5f80ee442d95829c62c2ece2bbeb6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/f2d47500f4c5f80ee442d95829c62c2ece2bbeb6",
-                "reference": "f2d47500f4c5f80ee442d95829c62c2ece2bbeb6",
-                "shasum": ""
-            },
-            "require": {
-                "pdepend/pdepend": "1.1.*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.*@stable",
-                "squizlabs/php_codesniffer": "@stable"
-            },
-            "bin": [
-                "src/bin/phpmd"
-            ],
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "../../pdepend/pdepend/src/main/php",
-                "src/main/php"
-            ],
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Official version of PHPMD handled with Composer.",
-            "time": "2014-09-16 14:26:49"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1543,141 +1426,6 @@
             "time": "2015-08-09 04:23:41"
         },
         {
-            "name": "sebastian/finder-facade",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/finder-facade.git",
-                "reference": "2a6f7f57efc0aa2d23297d9fd9e2a03111a8c0b9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/finder-facade/zipball/2a6f7f57efc0aa2d23297d9fd9e2a03111a8c0b9",
-                "reference": "2a6f7f57efc0aa2d23297d9fd9e2a03111a8c0b9",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/finder": "~2.3|~3.0",
-                "theseer/fdomdocument": "~1.3"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "FinderFacade is a convenience wrapper for Symfony's Finder component.",
-            "homepage": "https://github.com/sebastianbergmann/finder-facade",
-            "time": "2016-02-17 07:02:23"
-        },
-        {
-            "name": "sebastian/git",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/git.git",
-                "reference": "38638de3e94830a5cd7a5956135589b967609cd5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/38638de3e94830a5cd7a5956135589b967609cd5",
-                "reference": "38638de3e94830a5cd7a5956135589b967609cd5",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de"
-                }
-            ],
-            "description": "Simple wrapper for Git",
-            "homepage": "http://www.github.com/sebastianbergmann/git",
-            "keywords": [
-                "git"
-            ],
-            "time": "2016-02-21 15:02:23"
-        },
-        {
-            "name": "sebastian/phpcpd",
-            "version": "2.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/phpcpd.git",
-                "reference": "d3ad100fdf15805495f6ff19f473f4314c99390c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpcpd/zipball/d3ad100fdf15805495f6ff19f473f4314c99390c",
-                "reference": "d3ad100fdf15805495f6ff19f473f4314c99390c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "phpunit/php-timer": "~1.0",
-                "sebastian/finder-facade": "~1.1",
-                "sebastian/version": "~1.0",
-                "symfony/console": "~2.2",
-                "theseer/fdomdocument": "~1.4"
-            },
-            "bin": [
-                "phpcpd"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "Copy/Paste Detector (CPD) for PHP code.",
-            "homepage": "https://github.com/sebastianbergmann/phpcpd",
-            "time": "2015-03-26 14:47:38"
-        },
-        {
             "name": "sebastian/recursion-context",
             "version": "dev-master",
             "source": {
@@ -1839,95 +1587,6 @@
                 "standards"
             ],
             "time": "2014-12-04 22:32:15"
-        },
-        {
-            "name": "symfony/finder",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/finder.git",
-                "reference": "c3e7b8a86d3044a3dff2cc5a89f2c523ccf0e0fb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/c3e7b8a86d3044a3dff2cc5a89f2c523ccf0e0fb",
-                "reference": "c3e7b8a86d3044a3dff2cc5a89f2c523ccf0e0fb",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.9"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Finder\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Finder Component",
-            "homepage": "https://symfony.com",
-            "time": "2016-03-10 11:16:56"
-        },
-        {
-            "name": "theseer/fdomdocument",
-            "version": "1.6.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/theseer/fDOMDocument.git",
-                "reference": "d9ad139d6c2e8edf5e313ffbe37ff13344cf0684"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/d9ad139d6c2e8edf5e313ffbe37ff13344cf0684",
-                "reference": "d9ad139d6c2e8edf5e313ffbe37ff13344cf0684",
-                "shasum": ""
-            },
-            "require": {
-                "ext-dom": "*",
-                "lib-libxml": "*",
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convenience and to simplify the usage of DOM.",
-            "homepage": "https://github.com/theseer/fDOMDocument",
-            "time": "2015-05-27 22:58:02"
         }
     ],
     "aliases": [],
