@@ -177,7 +177,7 @@ class RtmStartCommand extends Command
                 $data = $this->client->receive();
 
                 $parsedData = json_decode($data, true);
-                if ('message' === $parsedData['type']) {
+                if ('message' === Util::arrayGet($parsedData, 'type')) {
                     echo sprintf(
                         "[INFO] Got message: '%s' from %s in %s\n",
                         Util::arrayGet($parsedData, 'text') ?: '<nothing>',
