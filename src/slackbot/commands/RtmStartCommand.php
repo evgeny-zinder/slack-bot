@@ -139,6 +139,10 @@ class RtmStartCommand extends Command
     {
         $result = $this->curlRequest->getCurlResult($this->authUrl);
         $result = json_decode($result['body'], true);
+        if (true !== Util::arrayGet($result, 'ok')) {
+            echo '[ERROR] Error connecting to Slack WebSocket: ' . Util::arrayGet($result, 'error');
+            return 1;
+        }
         $socketUrl = $result['url'];
         return $socketUrl;
     }
@@ -177,7 +181,7 @@ class RtmStartCommand extends Command
                 $data = $this->client->receive();
 
                 $parsedData = json_decode($data, true);
-                if ('message' === $parsedData['type']) {
+                if ('message' === Util::arrayGet($parsedData, 'type')) {
                     echo sprintf(
                         "[INFO] Got message: '%s' from %s in %s\n",
                         Util::arrayGet($parsedData, 'text') ?: '<nothing>',
