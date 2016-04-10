@@ -251,8 +251,15 @@ class CoreProcessor
 
         /** @var CommandHandlerInterface $commandHandler */
         foreach ($this->commandHandlers as $commandHandler) {
-            if ($commandHandler->getName() !== $command) {
-                continue;
+            $commandName = $commandHandler->getName();
+            if (is_array($commandName)) {
+                if (!in_array($command, $commandName)) {
+                    continue;
+                }
+            } else {
+                if ($commandName !== $command) {
+                    continue;
+                }
             }
 
             $allowed = $this->checkAccess($dto, $commandHandler);
