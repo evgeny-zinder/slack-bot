@@ -62,6 +62,28 @@ class SlackFacade
     }
 
     /**
+     * Returns user info by ID
+     * @param string $userId
+     * @return array|mixed
+     */
+    public function getUserInfoById($userId)
+    {
+        $data = $this->slackApi->usersInfo($userId);
+        return true === Util::arrayGet($data, 'ok') ? Util::arrayGet($data, 'user') : [];
+    }
+
+    /**
+     * Returns user name by ID
+     * @param string $userId
+     * @return null|string
+     */
+    public function getUserNameById($userId)
+    {
+        $name = Util::arrayGet($this->getUserInfoById($userId), 'name');
+        return null !== $name ? '@' . $name : null;
+    }
+
+    /**
      * Returns public channel info by its name
      * @param string $channelName
      * @return array

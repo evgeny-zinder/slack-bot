@@ -67,6 +67,17 @@ class SlackApi
     }
 
     /**
+     * Return user info by it's ID
+     * @param string $userId User ID
+     * @return array
+     */
+    public function usersInfo($userId)
+    {
+        $options['user'] = $userId;
+        return $this->processRequest(__FUNCTION__, $options);
+    }
+
+    /**
      * Return list of current team's channels
      * @return array
      */

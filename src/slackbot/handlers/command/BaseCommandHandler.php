@@ -10,6 +10,12 @@ use slackbot\models\Registry;
  */
 abstract class BaseCommandHandler implements CommandHandlerInterface
 {
+    /** @var string */
+    protected $callerId;
+
+    /** @var string */
+    protected $callerName;
+
     /**
      * @return string
      */
@@ -40,6 +46,38 @@ abstract class BaseCommandHandler implements CommandHandlerInterface
     public function getAcl()
     {
         return CommandHandlerInterface::ACL_ANY;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallerId()
+    {
+        return $this->callerId;
+    }
+
+    /**
+     * @param string $callerId
+     */
+    public function setCallerId($callerId)
+    {
+        $this->callerId = $callerId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallerName()
+    {
+        return $this->callerName;
+    }
+
+    /**
+     * @param string $callerName
+     */
+    public function setCallerName($callerName)
+    {
+        $this->callerName = $callerName;
     }
 
     /**

@@ -5,9 +5,11 @@ namespace slackbot;
 use slackbot\dto\ActionDto;
 use slackbot\dto\RequestDto;
 use slackbot\handlers\action\ActionHandlerInterface;
+use slackbot\handlers\command\BaseCommandHandler;
 use slackbot\handlers\command\CommandHandlerInterface;
 use slackbot\handlers\request\RequestHandlerInterface;
 use slackbot\models\HandlerExecutionResolver;
+use slackbot\models\Registry;
 use slackbot\models\SlackFacade;
 use slackbot\Util;
 
@@ -249,7 +251,7 @@ class CoreProcessor
 
         $command = substr($command, 1);
 
-        /** @var CommandHandlerInterface $commandHandler */
+        /** @var BaseCommandHandler $commandHandler */
         foreach ($this->commandHandlers as $commandHandler) {
             $commandName = $commandHandler->getName();
             if (is_array($commandName)) {
@@ -276,6 +278,11 @@ class CoreProcessor
 
             unset($words[0]);
             if ($commandHandler->canProcessCommand($words, $dto->getChannel())) {
+                /** @var SlackFacade $slackFacade */
+                $slackFacade = Registry::get('container')['slack_facade'];
+                $commandHandler->setCallerId($dto->getUser());
+                $commandHandler->setCallerName($slackFacade->getUserNameById($dto->getUser()));
+
                 $commandHandler->processCommand($words, $dto->getChannel());
             }
         }
