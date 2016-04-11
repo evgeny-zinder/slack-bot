@@ -1,22 +1,29 @@
 ---
 - hosts: all
+  sudo: true
   tasks:
 
     ###
     # Essentials
     ###
-    - name: update packages
-      command: apt-get update
+#    - name: update packages
+#      command: yum update
 
-    - name: install essintial packages
-      apt: pkg={{item}} state=installed
+    - name: get rpmforge repo
+      command: wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+
+    - name: add rpmforge repo
+      command: rpm -Uhv rpmforge-release*.rf.x86_64.rpm
+
+    - name: install essential packages
+      yum: pkg={{item}} state=installed
       with_items:
       - mc
       - htop
       - vim
       - git
       - fish
-      - supervisor
+      - libselinux-python
 
     - name: enable fish as default shell for vagrant user
       command: chsh vagrant -s /usr/bin/fish
@@ -34,8 +41,29 @@
     ###
     # Creating directories
     ###
+    - name: mkdir root dir
+      command: mkdir /opt/bots
+
     - name: setup app symlink
-      command: ln -s /vagrant /opt/slackbot
+      command: ln -s /vagrant /opt/bots/core
+
+    ###
+    # Installing supervisord
+    ###
+    - name: install python tools
+      yum: pkg=python-setuptools state=installed
+
+    - name: install supervisor
+      command: easy_install supervisor
+
+    - name: install supervisor control script
+      copy: src=files/supervisord dest=/etc/rc.d/init.d/supervisord mode=0755
+
+    - name: default supervisor config
+      copy: src=files/supervisord.conf dest=/etc/supervisord.conf mode=0644
+
+    - name: install superlance
+      command: easy_install superlance
 
     ###
     # Configuring supervisord
@@ -49,16 +77,25 @@
     ###
     # PHP setup
     ###
+    - name: add php repo
+      command: rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+
+    - name: add another php repo
+      command: rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
+
     - name: install PHP modules
-      apt: pkg={{item}} state=installed
+      yum: pkg={{item}} state=installed
       with_items:
-      - php5-cli
-      - php5-json
-      - php5-curl
-      - php5-mcrypt
+      - php56w-cli
+      - php56w-json
+      - php56w-curl
+      - php56w-mcrypt
+      - php56w-pdo
 
     ###
     # finalizating
     ###
     - name: restart supervisor
-      command: service supervisor restart
+      service: >
+        name=supervisord
+        state=restarted

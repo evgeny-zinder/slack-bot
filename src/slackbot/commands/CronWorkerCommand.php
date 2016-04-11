@@ -95,26 +95,38 @@ class CronWorkerCommand extends Command
         foreach ($response as $cronItem) {
             $this->cronExpression->setExpression(Util::arrayGet($cronItem, 'time'));
             if ($this->cronExpression->isDue()) {
-                $playbookFile = Util::arrayGet($cronItem, 'playbook');
-                $playbook = $this->fileLoader->load($playbookFile);
+                switch(Util::arrayGet($cronItem, 'type'))
+                {
+                    case 'playbook':
+                        $playbookFile = Util::arrayGet($cronItem, 'playbook');
+                        $playbook = $this->fileLoader->load($playbookFile);
 
-                $url = sprintf(
-                    'http://%s:%d/playbook/run/',
-                    $input->getOption('host'),
-                    $input->getOption('port')
-                );
+                        $url = sprintf(
+                            'http://%s:%d/playbook/run/',
+                            $input->getOption('host'),
+                            $input->getOption('port')
+                        );
 
-                $this->curlRequest->getCurlResult(
-                    $url,
-                    [
-                        CURLOPT_POST => true,
-                        CURLOPT_POSTFIELDS => [
-                            'playbook' => urlencode($playbook),
-                            'filename' => $playbookFile
-                        ],
-                        CURLOPT_TIMEOUT_MS => 100000
-                    ]
-                );
+                        $this->curlRequest->getCurlResult(
+                            $url,
+                            [
+                                CURLOPT_POST => true,
+                                CURLOPT_POSTFIELDS => [
+                                    'playbook' => urlencode($playbook),
+                                    'filename' => $playbookFile
+                                ],
+                                CURLOPT_TIMEOUT_MS => 100000
+                            ]
+                        );
+                        break;
+
+                    case 'command':
+                        break;
+
+                    case 'curl':
+                        break;
+                }
+
             }
         }
 
