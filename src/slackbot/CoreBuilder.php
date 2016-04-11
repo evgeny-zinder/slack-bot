@@ -15,7 +15,6 @@ use slackbot\handlers\action\RunCommandActionHandler;
 use slackbot\handlers\action\SendMessageActionHandler;
 use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
-use slackbot\handlers\request\TestRtmRequestHandler;
 use slackbot\models\ArgvParser;
 use slackbot\models\ConditionResolver;
 use slackbot\models\Config;
@@ -100,9 +99,6 @@ class CoreBuilder
             );
         };
 
-        $container['request_test'] = function (Container $container) {
-            return new TestRtmRequestHandler($container['slack_facade']);
-        };
         $container['action_send_message'] = function (Container $container) {
             return new SendMessageActionHandler($container['slack_facade'], $container['output_manager']);
         };

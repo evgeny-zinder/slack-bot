@@ -2,6 +2,9 @@
 
 namespace slackbot\commands;
 
+use slackbot\CoreProcessor;
+use slackbot\dto\RequestDto;
+use slackbot\models\Registry;
 use slackbot\Util;
 use slackbot\util\FileLoader;
 use Symfony\Component\Console\Command\Command;
@@ -88,7 +91,7 @@ class CronWorkerCommand extends Command
                 CURLOPT_TIMEOUT_MS => 100000
             ]
         )['body'], true);
-        if (!is_array($response) || 0 === count($response)) {
+        if (!is_array($response)) {
             throw new \RuntimeException('Error connecting to core server');
         }
 
@@ -121,6 +124,17 @@ class CronWorkerCommand extends Command
                         break;
 
                     case 'command':
+                        /** @var CoreProcessor $coreProcessor */
+                        $coreProcessor = Registry::get('container')['core_processor'];
+                        $dto = new RequestDto();
+                        $dto->setData([
+                            'type' => 'message',
+                            'channel' => 'cron',
+                            'user' => 'cron',
+                            'text' => Util::arrayGet($cronItem, 'command'),
+                            'ts' => time()
+                        ]);
+                        $coreProcessor->processCommand($dto);
                         break;
 
                     case 'curl':
