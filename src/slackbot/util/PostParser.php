@@ -40,6 +40,9 @@ class PostParser
     {
         $rawData = '';
         foreach ($post as $key => $value) {
+            if (is_array($value)) {
+                continue;
+            }
             $rawData .= $key . '=' . $value;
         }
         $rawData = preg_split('/[\n\r]+/', $rawData);
