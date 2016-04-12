@@ -101,14 +101,14 @@ class CronWorkerCommand extends Command
                 switch(Util::arrayGet($cronItem, 'type'))
                 {
                     case 'playbook':
-                        $playbookFile = Util::arrayGet($cronItem, 'playbook');
-                        $playbook = $this->fileLoader->load($playbookFile);
-
                         $url = sprintf(
                             'http://%s:%d/playbook/run/',
                             $input->getOption('host'),
                             $input->getOption('port')
                         );
+
+                        $playbookFile = Util::arrayGet($cronItem, 'playbook');
+                        $playbook = $this->fileLoader->load($playbookFile);
 
                         $this->curlRequest->getCurlResult(
                             $url,
@@ -124,17 +124,27 @@ class CronWorkerCommand extends Command
                         break;
 
                     case 'command':
-                        /** @var CoreProcessor $coreProcessor */
-                        $coreProcessor = Registry::get('container')['core_processor'];
-                        $dto = new RequestDto();
-                        $dto->setData([
-                            'type' => 'message',
-                            'channel' => 'cron',
-                            'user' => 'cron',
-                            'text' => Util::arrayGet($cronItem, 'command'),
-                            'ts' => time()
-                        ]);
-                        $coreProcessor->processCommand($dto);
+                        $url = sprintf(
+                            'http://%s:%d/command/run/',
+                            $input->getOption('host'),
+                            $input->getOption('port')
+                        );
+
+                        $command = Util::arrayGet($cronItem, 'command');
+                        if (null === $command) {
+                            break;
+                        }
+
+                        $this->curlRequest->getCurlResult(
+                            $url,
+                            [
+                                CURLOPT_POST => true,
+                                CURLOPT_POSTFIELDS => [
+                                    'command' => urlencode($command)
+                                ],
+                                CURLOPT_TIMEOUT_MS => 100000
+                            ]
+                        );
                         break;
 
                     case 'curl':

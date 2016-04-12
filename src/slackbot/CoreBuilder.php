@@ -191,6 +191,29 @@ class CoreBuilder
             $next();
         });
 
+        $server->post('/command/run/', function (Request $request, Response $response, $next) {
+            $rawData = $request->getData();
+
+            $command = urldecode($rawData['command']);
+
+            $coreProcessor = Registry::get('container')['core_processor'];
+            $dto = new RequestDto();
+            $dto->setData([
+                'type' => 'message',
+                'channel' => 'cron',
+                'user' => 'cron',
+                'text' => $command,
+                'ts' => time()
+            ]);
+            $coreProcessor->processCommand($dto);
+
+            $response->write('Playbook executed successfully');
+            $response->end();
+
+            echo '[INFO] Executing command ' . $command . "\n";
+            $next();
+        });
+
         $server->post('/process/message/', function (Request $request, Response $response, $next) {
             echo '[INFO] Got message from RTM process' . "\n";
 
