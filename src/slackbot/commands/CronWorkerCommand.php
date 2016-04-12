@@ -32,6 +32,9 @@ class CronWorkerCommand extends Command
     /** @var FileLoader */
     private $fileLoader;
 
+    /** @var string */
+    private $logPath;
+
     /**
      * CronWorkerCommand constructor.
      * @param CurlRequest $curlRequest cURL interface
@@ -69,7 +72,14 @@ class CronWorkerCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Slackbot port',
                 '8888'
-            )->ignoreValidationErrors();
+            )->addOption(
+                'log',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Log file path',
+                null
+            )
+            ->ignoreValidationErrors();
     }
 
     /**
@@ -79,11 +89,15 @@ class CronWorkerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->log('Cron worker started');
+        $this->logPath = $input->getOption('host');
+
         $cronInfoUrl = sprintf(
             'http://%s:%d/info/cron/',
             $input->getOption('host'),
             $input->getOption('port')
         );
+        $this->log('Core URL: ' . $cronInfoUrl);
 
         $response = json_decode($this->curlRequest->getCurlResult(
             $cronInfoUrl,
@@ -92,12 +106,15 @@ class CronWorkerCommand extends Command
             ]
         )['body'], true);
         if (!is_array($response)) {
+            $this->log('Core connection failed, exiting');
             throw new \RuntimeException('Error connecting to core server');
         }
 
         foreach ($response as $cronItem) {
             $this->cronExpression->setExpression(Util::arrayGet($cronItem, 'time'));
+            $this->log('Checking element: ' . Util::arrayGet($cronItem, 'time'));
             if ($this->cronExpression->isDue()) {
+                $this->log('Allowed for execution, type: ' . Util::arrayGet($cronItem, 'type'));
                 switch(Util::arrayGet($cronItem, 'type'))
                 {
                     case 'playbook':
@@ -153,6 +170,19 @@ class CronWorkerCommand extends Command
 
             }
         }
+        $this->log('Cron worker finished');
+    }
 
+    private function log($data)
+    {
+        if (null === $this->logPath) {
+            return;
+        }
+        if (!file_exists($this->logPath) || !is_readable($this->logPath)) {
+            return;
+        }
+        $fid = fopen($this->logPath, 'a');
+        fputs($fid, sprintf('[%s] %s', date('Y-m-d H:i:s', time()), $data));
+        fclose($fid);
     }
 }
