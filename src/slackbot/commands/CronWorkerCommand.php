@@ -86,7 +86,6 @@ class CronWorkerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->log('Cron worker started');
         $this->logPath = $input->getOption('log');
 
         $cronInfoUrl = sprintf(
@@ -94,7 +93,6 @@ class CronWorkerCommand extends Command
             $input->getOption('host'),
             $input->getOption('port')
         );
-        $this->log('Core URL: ' . $cronInfoUrl);
 
         $response = json_decode($this->curlRequest->getCurlResult(
             $cronInfoUrl,
@@ -109,9 +107,8 @@ class CronWorkerCommand extends Command
 
         foreach ($response as $cronItem) {
             $this->cronExpression->setExpression(Util::arrayGet($cronItem, 'time'));
-            $this->log('Checking element: ' . Util::arrayGet($cronItem, 'time'));
             if ($this->cronExpression->isDue()) {
-                $this->log('Allowed for execution, type: ' . Util::arrayGet($cronItem, 'type'));
+                $this->log('Executing: ' . Util::arrayGet($cronItem, 'type'));
                 switch(Util::arrayGet($cronItem, 'type'))
                 {
                     case 'playbook':
@@ -169,7 +166,6 @@ class CronWorkerCommand extends Command
 
             }
         }
-        $this->log('Cron worker finished');
     }
 
     private function log($data)
