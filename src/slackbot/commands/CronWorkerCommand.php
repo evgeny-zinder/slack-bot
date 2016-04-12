@@ -2,9 +2,6 @@
 
 namespace slackbot\commands;
 
-use slackbot\CoreProcessor;
-use slackbot\dto\RequestDto;
-use slackbot\models\Registry;
 use slackbot\Util;
 use slackbot\util\FileLoader;
 use Symfony\Component\Console\Command\Command;
@@ -90,7 +87,7 @@ class CronWorkerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->log('Cron worker started');
-        $this->logPath = $input->getOption('host');
+        $this->logPath = $input->getOption('log');
 
         $cronInfoUrl = sprintf(
             'http://%s:%d/info/cron/',
@@ -138,6 +135,7 @@ class CronWorkerCommand extends Command
                                 CURLOPT_TIMEOUT_MS => 100000
                             ]
                         );
+                        $this->log('Executed playbook: ' . $playbookFile);
                         break;
 
                     case 'command':
@@ -162,6 +160,7 @@ class CronWorkerCommand extends Command
                                 CURLOPT_TIMEOUT_MS => 100000
                             ]
                         );
+                        $this->log('Executed command: ' . $command);
                         break;
 
                     case 'curl':
