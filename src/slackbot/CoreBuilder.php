@@ -193,8 +193,10 @@ class CoreBuilder
 
         $server->post('/command/run/', function (Request $request, Response $response, $next) {
             $rawData = $request->getData();
+            $postParser = Registry::get('container')['post_parser'];
+            $parsedData = $postParser->parse($rawData);
 
-            $command = urldecode($rawData['command']);
+            $command = urldecode($parsedData['command']);
 
             $coreProcessor = Registry::get('container')['core_processor'];
             $dto = new RequestDto();
