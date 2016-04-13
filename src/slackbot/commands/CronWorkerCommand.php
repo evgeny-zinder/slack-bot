@@ -2,9 +2,6 @@
 
 namespace slackbot\commands;
 
-use slackbot\CoreProcessor;
-use slackbot\dto\RequestDto;
-use slackbot\models\Registry;
 use slackbot\Util;
 use slackbot\util\FileLoader;
 use Symfony\Component\Console\Command\Command;
@@ -31,6 +28,9 @@ class CronWorkerCommand extends Command
 
     /** @var FileLoader */
     private $fileLoader;
+
+    /** @var string */
+    private $logPath;
 
     /**
      * CronWorkerCommand constructor.
@@ -69,7 +69,14 @@ class CronWorkerCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Slackbot port',
                 '8888'
-            )->ignoreValidationErrors();
+            )->addOption(
+                'log',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Log file path',
+                null
+            )
+            ->ignoreValidationErrors();
     }
 
     /**
@@ -79,6 +86,8 @@ class CronWorkerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->logPath = $input->getOption('log');
+
         $cronInfoUrl = sprintf(
             'http://%s:%d/info/cron/',
             $input->getOption('host'),
@@ -92,12 +101,14 @@ class CronWorkerCommand extends Command
             ]
         )['body'], true);
         if (!is_array($response)) {
+            $this->log('Core connection failed, exiting');
             throw new \RuntimeException('Error connecting to core server');
         }
 
         foreach ($response as $cronItem) {
             $this->cronExpression->setExpression(Util::arrayGet($cronItem, 'time'));
             if ($this->cronExpression->isDue()) {
+                $this->log('Executing: ' . Util::arrayGet($cronItem, 'type'));
                 switch(Util::arrayGet($cronItem, 'type'))
                 {
                     case 'playbook':
@@ -121,6 +132,7 @@ class CronWorkerCommand extends Command
                                 CURLOPT_TIMEOUT_MS => 100000
                             ]
                         );
+                        $this->log('Executed playbook: ' . $playbookFile);
                         break;
 
                     case 'command':
@@ -145,6 +157,7 @@ class CronWorkerCommand extends Command
                                 CURLOPT_TIMEOUT_MS => 100000
                             ]
                         );
+                        $this->log('Executed command: ' . $command);
                         break;
 
                     case 'curl':
@@ -153,6 +166,18 @@ class CronWorkerCommand extends Command
 
             }
         }
+    }
 
+    private function log($data)
+    {
+        if (null === $this->logPath) {
+            return;
+        }
+        if (!file_exists($this->logPath) || !is_readable($this->logPath)) {
+            return;
+        }
+        $fid = fopen($this->logPath, 'a');
+        fputs($fid, sprintf('[%s] %s', date('Y-m-d H:i:s', time()), $data));
+        fclose($fid);
     }
 }
