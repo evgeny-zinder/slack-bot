@@ -10,6 +10,8 @@ use slackbot\dto\RequestDto;
  */
 interface RequestHandlerInterface
 {
+    const STOP_PROCESSING = -1;
+
     /**
      * @return string
      */

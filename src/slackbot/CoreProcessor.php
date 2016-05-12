@@ -133,7 +133,10 @@ class CoreProcessor
                 if (!$this->executionResolver->shouldExecute($handler, $dto)) {
                     continue;
                 }
-                $handler->processRequest($dto, $this->executionResolver->getParams());
+                $result = $handler->processRequest($dto, $this->executionResolver->getParams());
+                if ($result === RequestHandlerInterface::STOP_PROCESSING) {
+                    return;
+                }
             }
         }
     }
@@ -295,6 +298,8 @@ class CoreProcessor
      */
     protected function checkAccess(RequestDto $dto, CommandHandlerInterface $commandHandler)
     {
+//        $config = Registry::get('container')['config'];
+//        $acl = $config->getEntry('acl');
         $acl = $commandHandler->getAcl();
         if (CommandHandlerInterface::ACL_ANY === $acl) {
             return true;
