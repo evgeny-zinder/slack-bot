@@ -120,6 +120,10 @@ class CoreProcessor
             return;
         }
 
+        if (true === $dto->isBotMessage()) {
+            return;
+        }
+
         /** @var RequestHandlerInterface $handler */
         foreach ($this->requestHandlers as $handler) {
             if ($handler->canProcessRequest($dto)) {

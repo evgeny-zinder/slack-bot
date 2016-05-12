@@ -56,4 +56,12 @@ class RequestDto extends BaseDto
     {
         return $this->get('type');
     }
+
+    /**
+     * @return bool
+     */
+    public function isBotMessage()
+    {
+        return (null !== $this->get('bot_id')) || ('bot_message' === $this->get('subtype'));
+    }
 }
