@@ -2,7 +2,6 @@
 
 namespace slackbot\commands;
 
-use slackbot\Util;
 use slackbot\util\FileLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use slackbot\util\CurlRequest;
 use Cron\CronExpression;
+use eznio\ar\Ar;
 
 /**
  * Class CronWorkerCommand
@@ -106,10 +106,10 @@ class CronWorkerCommand extends Command
         }
 
         foreach ($response as $cronItem) {
-            $this->cronExpression->setExpression(Util::arrayGet($cronItem, 'time'));
+            $this->cronExpression->setExpression(Ar::get($cronItem, 'time'));
             if ($this->cronExpression->isDue()) {
-                $this->log('Executing: ' . Util::arrayGet($cronItem, 'type'));
-                switch(Util::arrayGet($cronItem, 'type'))
+                $this->log('Executing: ' . Ar::get($cronItem, 'type'));
+                switch(Ar::get($cronItem, 'type'))
                 {
                     case 'playbook':
                         $url = sprintf(
@@ -118,7 +118,7 @@ class CronWorkerCommand extends Command
                             $input->getOption('port')
                         );
 
-                        $playbookFile = Util::arrayGet($cronItem, 'playbook');
+                        $playbookFile = Ar::get($cronItem, 'playbook');
                         $playbook = $this->fileLoader->load($playbookFile);
 
                         $this->curlRequest->getCurlResult(
@@ -142,7 +142,7 @@ class CronWorkerCommand extends Command
                             $input->getOption('port')
                         );
 
-                        $command = Util::arrayGet($cronItem, 'command');
+                        $command = Ar::get($cronItem, 'command');
                         if (null === $command) {
                             break;
                         }

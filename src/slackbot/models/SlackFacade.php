@@ -2,7 +2,7 @@
 
 namespace slackbot\models;
 
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class SlackFacade
@@ -39,8 +39,8 @@ class SlackFacade
     public function getUserByName($userName)
     {
         $users = $this->slackApi->usersList();
-        $user = array_filter(Util::arrayGet($users, 'members'), function ($item) use ($userName) {
-            return $userName === Util::arrayGet($item, 'name');
+        $user = array_filter(Ar::get($users, 'members'), function ($item) use ($userName) {
+            return $userName === Ar::get($item, 'name');
         });
         return is_array($user) ? (current($user) ?: []) : [];
     }
@@ -53,12 +53,12 @@ class SlackFacade
      */
     public function getUserIdByName($userName, $shouldOpenImChannel = true)
     {
-        $userId = Util::arrayGet($this->getUserByName($userName), 'id');
+        $userId = Ar::get($this->getUserByName($userName), 'id');
         if (null === $userId || !$shouldOpenImChannel) {
             return $userId;
         }
         $imData = $this->getSlackApi()->imOpen($userId);
-        return Util::arrayGet(Util::arrayGet($imData, 'channel'), 'id');
+        return Ar::get(Ar::get($imData, 'channel'), 'id');
     }
 
     /**
@@ -69,7 +69,7 @@ class SlackFacade
     public function getUserInfoById($userId)
     {
         $data = $this->slackApi->usersInfo($userId);
-        return true === Util::arrayGet($data, 'ok') ? Util::arrayGet($data, 'user') : [];
+        return true === Ar::get($data, 'ok') ? Ar::get($data, 'user') : [];
     }
 
     /**
@@ -79,7 +79,7 @@ class SlackFacade
      */
     public function getUserNameById($userId)
     {
-        $name = Util::arrayGet($this->getUserInfoById($userId), 'name');
+        $name = Ar::get($this->getUserInfoById($userId), 'name');
         return null !== $name ? '@' . $name : null;
     }
 
@@ -91,8 +91,8 @@ class SlackFacade
     public function getChannelByName($channelName)
     {
         $channels = $this->slackApi->channelsList();
-        $channel = array_filter(Util::arrayGet($channels, 'channels'), function ($item) use ($channelName) {
-            return Util::arrayGet($item, 'name') === $channelName;
+        $channel = array_filter(Ar::get($channels, 'channels'), function ($item) use ($channelName) {
+            return Ar::get($item, 'name') === $channelName;
         });
         return is_array($channel) ? (current($channel) ?: []) : [];
 
@@ -105,7 +105,7 @@ class SlackFacade
      */
     public function getChannelIdByName($channelName)
     {
-        return Util::arrayGet($this->getChannelByName($channelName), 'id');
+        return Ar::get($this->getChannelByName($channelName), 'id');
     }
 
     /**
@@ -116,8 +116,8 @@ class SlackFacade
     public function getGroupByName($groupName)
     {
         $groups = $this->slackApi->groupsList();
-        $group = array_filter(Util::arrayGet($groups, 'groups'), function ($item) use ($groupName) {
-            return  $groupName === Util::arrayGet($item, 'name');
+        $group = array_filter(Ar::get($groups, 'groups'), function ($item) use ($groupName) {
+            return  $groupName === Ar::get($item, 'name');
         });
         return is_array($group) ? (current($group) ?: []) : [];
 
@@ -130,7 +130,7 @@ class SlackFacade
      */
     public function getGroupIdByName($groupName)
     {
-        return Util::arrayGet($this->getGroupByName($groupName), 'id');
+        return Ar::get($this->getGroupByName($groupName), 'id');
     }
 
     /**
@@ -231,7 +231,7 @@ class SlackFacade
             return [];
         }
         $data = $this->getSlackApi()->channelsInfo($channelId);
-        return Util::arrayGet(Util::arrayGet($data, 'channel'), 'members') ?: [];
+        return Ar::get(Ar::get($data, 'channel'), 'members') ?: [];
     }
 
     /**
@@ -246,6 +246,6 @@ class SlackFacade
             return [];
         }
         $data = $this->getSlackApi()->groupsInfo($groupId);
-        return Util::arrayGet($data, 'group.members') ?: [];
+        return Ar::get($data, 'group.members') ?: [];
     }
 }

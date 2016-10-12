@@ -2,7 +2,7 @@
 
 namespace slackbot\models;
 
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class Variables
@@ -29,7 +29,7 @@ class Variables
      */
     public static function get($name)
     {
-        return Util::arrayGet(Registry::get('variables'), $name);
+        return Ar::get(Registry::get('variables'), $name);
     }
 
     /**

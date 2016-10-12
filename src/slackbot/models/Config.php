@@ -4,7 +4,7 @@ namespace slackbot\models;
 
 use slackbot\util\FileLoader;
 use Symfony\Component\Yaml\Parser;
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class Config
@@ -53,7 +53,7 @@ class Config
      */
     public function getSection($section)
     {
-        return Util::arrayGet($this->data, $section) ?: [];
+        return Ar::get($this->data, $section) ?: [];
     }
 
     /**
@@ -67,7 +67,7 @@ class Config
             return $this->getSection($entry);
         }
         list($section, $entry) = explode('.', $entry, 2);
-        return Util::arrayGet($this->getSection($section), $entry);
+        return Ar::get($this->getSection($section), $entry);
     }
 
     /**
@@ -83,13 +83,13 @@ class Config
             return [];
         }
         $searchCriteriaData = explode('=', $searchCriteria);
-        $fieldName = Util::arrayGet($searchCriteriaData, 0);
-        $fieldValue = Util::arrayGet($searchCriteriaData, 1);
+        $fieldName = Ar::get($searchCriteriaData, 0);
+        $fieldValue = Ar::get($searchCriteriaData, 1);
         if (null === $fieldName || null === $fieldValue) {
             throw new \LogicException('Invalid config entry search criteria');
         }
         foreach ($data as $item) {
-            if (Util::arrayGet($item, $fieldName) === $fieldValue) {
+            if (Ar::get($item, $fieldName) === $fieldValue) {
                 return $item;
             }
         }

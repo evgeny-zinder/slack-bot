@@ -7,7 +7,7 @@ use slackbot\dto\ActionDto;
 use slackbot\dto\RequestDto;
 use slackbot\models\SlackFacade;
 use slackbot\models\Variables;
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class UserInputActionHandler
@@ -58,7 +58,7 @@ class UserInputActionHandler extends BaseActionHandler
         $messages = $dto->get('messages');
 
         // 1. Send "before" message
-        $beforeMessage = Util::arrayGet($messages, 'before');
+        $beforeMessage = Ar::get($messages, 'before');
         if (null !== $beforeMessage) {
             $this->slackFacade->getSlackApi()->chatPostMessage($this->recipientId, $beforeMessage);
         }
@@ -108,18 +108,18 @@ class UserInputActionHandler extends BaseActionHandler
 
             $response = $dto->get('text');
             Variables::set(
-                Util::arrayGet($this->dtoData, 'variable'),
+                Ar::get($this->dtoData, 'variable'),
                 $response
             );
 
             // 5. Send "after" message
-            $afterMessage = Util::arrayGet($this->dtoData, 'messages.after');
+            $afterMessage = Ar::get($this->dtoData, 'messages.after');
             if (null !== $afterMessage) {
                 $this->slackFacade->getSlackApi()->chatPostMessage($this->recipientId, $afterMessage);
             }
 
             // 6. Processing other actions.
-            $afterActions = Util::arrayGet($this->dtoData, 'after');
+            $afterActions = Ar::get($this->dtoData, 'after');
             if (0 === count($afterActions)) {
                 return;
             }

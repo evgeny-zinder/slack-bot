@@ -2,7 +2,8 @@
 
 namespace slackbot\dto;
 
-use slackbot\Util;
+
+use eznio\ar\Ar;
 
 class BaseDto
 {
@@ -19,7 +20,7 @@ class BaseDto
 
     /**
      * @param array $data
-     * @return RequestDto
+     * @return $this
      */
     public function setData($data)
     {
@@ -33,7 +34,7 @@ class BaseDto
      */
     public function get($field)
     {
-        return Util::arrayGet($this->data, $field);
+        return Ar::get($this->data, $field);
     }
 
     /**

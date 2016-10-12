@@ -5,6 +5,7 @@ namespace slackbot;
 use CapMousse\ReactRestify\Http\Request;
 use CapMousse\ReactRestify\Http\Response;
 use CapMousse\ReactRestify\Server;
+use eznio\ar\Ar;
 use Pimple\Container;
 use slackbot\dto\RequestDto;
 use slackbot\handlers\action\ContinueActionHandler;
@@ -168,7 +169,7 @@ class CoreBuilder
 
             /** @var SlackApi $slackApi */
             $slackApi = Registry::get('container')['slack_api'];
-            $playbookToken = Util::arrayGet(Util::arrayGet($playbook, 'auth'), 'token');
+            $playbookToken = Ar::get($playbook, 'auth.token');
 
             $oldToken = null;
             if (null !== $playbookToken) {
@@ -227,7 +228,7 @@ class CoreBuilder
             $coreProcessor = Registry::get('container')['core_processor'];
             $dto = new RequestDto();
             $dto->setSource('rtm');
-            $dto->setData(json_decode(Util::arrayGet($parsedData, 'message'), true));
+            $dto->setData(json_decode(Ar::arrayGet($parsedData, 'message'), true));
             $coreProcessor->process($dto);
 
             $next();

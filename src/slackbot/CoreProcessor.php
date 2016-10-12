@@ -11,7 +11,7 @@ use slackbot\handlers\request\RequestHandlerInterface;
 use slackbot\models\HandlerExecutionResolver;
 use slackbot\models\Registry;
 use slackbot\models\SlackFacade;
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class CoreProcessor
@@ -166,7 +166,6 @@ class CoreProcessor
     /**
      * Processes single user/bot message
      * @param RequestDto $dto
-     * @return boolean|null
      */
     public function processMessage(RequestDto $dto)
     {
@@ -209,7 +208,7 @@ class CoreProcessor
      */
     public function isMessageTimedOut($handlerId)
     {
-        return Util::arrayGet($this->timedMessageHandlers[$handlerId], 'timeout') === true;
+        return Ar::get($this->timedMessageHandlers[$handlerId], 'timeout') === true;
     }
 
     /**
@@ -251,7 +250,7 @@ class CoreProcessor
     public function processCommand(RequestDto $dto)
     {
         $words = preg_split('/\s+/is', $dto->getText());
-        $command = Util::arrayGet($words, 0);
+        $command = Ar::get($words, 0);
         if (null === $command || '!' !== substr($command, 0, 1)) {
             return;
         }

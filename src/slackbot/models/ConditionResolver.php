@@ -2,7 +2,7 @@
 
 namespace slackbot\models;
 
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class ConditionResolver
@@ -25,7 +25,7 @@ class ConditionResolver
             throw new \LogicException('Error parsing loop condition');
         }
 
-        $variableValue = (int) Util::arrayGet($variables, $matches[1]);
+        $variableValue = (int) Ar::get($variables, $matches[1]);
         $result = (int) $matches[3];
         switch ($matches[2]) {
             case '=':

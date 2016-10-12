@@ -10,8 +10,8 @@ use WebSocket\Client;
 use slackbot\util\CurlRequest;
 use WebSocket\Exception;
 use Symfony\Component\Console\Input\InputOption;
-use slackbot\Util;
 use slackbot\util\Posix;
+use eznio\ar\Ar;
 
 /**
  * Class RtmStartCommand
@@ -139,8 +139,8 @@ class RtmStartCommand extends Command
     {
         $result = $this->curlRequest->getCurlResult($this->authUrl);
         $result = json_decode($result['body'], true);
-        if (true !== Util::arrayGet($result, 'ok')) {
-            echo '[ERROR] Error connecting to Slack WebSocket: ' . Util::arrayGet($result, 'error');
+        if (true !== Ar::get($result, 'ok')) {
+            echo '[ERROR] Error connecting to Slack WebSocket: ' . Ar::get($result, 'error');
             return 1;
         }
         $socketUrl = $result['url'];
@@ -181,12 +181,12 @@ class RtmStartCommand extends Command
                 $data = $this->client->receive();
 
                 $parsedData = json_decode($data, true);
-                if ('message' === Util::arrayGet($parsedData, 'type')) {
+                if ('message' === Ar::get($parsedData, 'type')) {
                     echo sprintf(
                         "[INFO] Got message: '%s' from %s in %s\n",
-                        Util::arrayGet($parsedData, 'text') ?: '<nothing>',
-                        Util::arrayGet($parsedData, 'user') ?: 'bot',
-                        Util::arrayGet($parsedData, 'channel') ?: 'unknown channel'
+                        Ar::get($parsedData, 'text') ?: '<nothing>',
+                        Ar::get($parsedData, 'user') ?: 'bot',
+                        Ar::get($parsedData, 'channel') ?: 'unknown channel'
                     );
                     try {
                         $this->curlRequest->getCurlResult(

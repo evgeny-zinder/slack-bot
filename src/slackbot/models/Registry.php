@@ -2,7 +2,7 @@
 
 namespace slackbot\models;
 
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class Registry
@@ -20,7 +20,7 @@ class Registry
      */
     public static function get($key)
     {
-        return Util::arrayGet(self::$data, $key);
+        return Ar::get(self::$data, $key);
     }
 
     /**

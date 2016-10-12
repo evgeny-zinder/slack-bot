@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2feb4e2552b1ed7ff780cf5ca0197e81",
-    "content-hash": "32b8791637ed93ea5ec9adae0335e891",
+    "hash": "6bf690c2770167f1e2239614f3e176e1",
+    "content-hash": "9aa1b7f0f82389003d3c65b9d0a9fb00",
     "packages": [
         {
             "name": "capmousse/react-restify",
@@ -95,6 +95,47 @@
                 "event-emitter"
             ],
             "time": "2014-07-09 21:08:03"
+        },
+        {
+            "name": "eznio/ar",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eznio/ar.git",
+                "reference": "2c5bd6c7feb178dd5ffb5e3124e6bc134348a8a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eznio/ar/zipball/2c5bd6c7feb178dd5ffb5e3124e6bc134348a8a8",
+                "reference": "2c5bd6c7feb178dd5ffb5e3124e6bc134348a8a8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "eznio\\ar\\": "src",
+                    "eznio\\ar\\tests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Array shortcut utils",
+            "homepage": "https://github.com/eznio/ar",
+            "keywords": [
+                "array",
+                "map",
+                "reduce",
+                "util"
+            ],
+            "time": "2016-08-22 10:37:47"
         },
         {
             "name": "guzzlehttp/psr7",

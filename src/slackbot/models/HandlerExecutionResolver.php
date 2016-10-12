@@ -4,7 +4,7 @@ namespace slackbot\models;
 
 use slackbot\dto\RequestDto;
 use slackbot\handlers\request\RequestHandlerInterface;
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class HandlerExecutionResolver
@@ -57,15 +57,15 @@ class HandlerExecutionResolver
 
         $dtoChannelType = $dtoChannel[0];
         if ('D' === $dtoChannelType) {
-            return Util::arrayGet($handlerConfig, 'dm') ?: true;
+            return Ar::get($handlerConfig, 'dm') ?: true;
         }
 
         if ('C' === $dtoChannelType) {
             $dtoChannelInfo = $this->slackApi->channelsInfo($dtoChannel);
-            $dtoChannelName = '#' . Util::arrayGet($dtoChannelInfo, 'channel.name');
+            $dtoChannelName = '#' . Ar::get($dtoChannelInfo, 'channel.name');
         } else {
             $dtoChannelInfo = $this->slackApi->groupsInfo($dtoChannel);
-            $dtoChannelName = Util::arrayGet($dtoChannelInfo, 'group.name');
+            $dtoChannelName = Ar::get($dtoChannelInfo, 'group.name');
         }
 
         $defaultBehavior = $this->config->getEntry('custom.' . $handlerId . '.default');
@@ -81,7 +81,7 @@ class HandlerExecutionResolver
             return 'allow' === $defaultBehavior ? true : false;
         }
 
-        $this->params = Util::arrayGet($handlerChannelConfig, 'params') ?: [];
+        $this->params = Ar::get($handlerChannelConfig, 'params') ?: [];
         return true;
     }
 

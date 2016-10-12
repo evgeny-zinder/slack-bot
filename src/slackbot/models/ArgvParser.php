@@ -2,7 +2,7 @@
 
 namespace slackbot\models;
 
-use slackbot\Util;
+use eznio\ar\Ar;
 
 /**
  * Class ArgvParser
@@ -63,6 +63,6 @@ class ArgvParser
      */
     public function get($name)
     {
-        return Util::arrayGet($this->args, $name);
+        return Ar::get($this->args, $name);
     }
 }
