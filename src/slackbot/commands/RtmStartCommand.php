@@ -176,12 +176,15 @@ class RtmStartCommand extends Command
      */
     protected function processLoop()
     {
-        while (1) {
+        while (true) {
             try {
                 $data = $this->client->receive();
 
                 $parsedData = json_decode($data, true);
-                if ('message' === Ar::get($parsedData, 'type')) {
+                if (
+                    'message' === Ar::get($parsedData, 'type')
+                    && 'bot_message' !== Ar::get($parsedData, 'subtype')
+                ) {
                     echo sprintf(
                         "[INFO] Got message: '%s' from %s in %s\n",
                         Ar::get($parsedData, 'text') ?: '<nothing>',

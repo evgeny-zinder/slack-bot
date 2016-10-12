@@ -1,4 +1,5 @@
 /.idea/**
+/.vagrant/**
 /vendor/**
 /var/**
 config.yml

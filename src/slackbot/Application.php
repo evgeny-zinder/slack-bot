@@ -9,6 +9,7 @@ use Symfony\Component\Yaml\Parser;
 use slackbot\util\FileLoader;
 use slackbot\commands as commands;
 use Symfony\Component\Console\Application as ConsoleApp;
+use slackbot\logging\Logger;
 
 /**
  * Class Application
@@ -58,6 +59,7 @@ class Application
             $this->argParser,
             $this->config
         );
+        $coreBuilder->buildLogger($this->container);
         Registry::set('container', $this->container);
 
         $this->app = new ConsoleApp('CMS Slack Bot', '@package_version@');
@@ -89,7 +91,6 @@ class Application
             $this->container['cron_expression'],
             $this->container['file_loader']
         ));
-
     }
 
     /**

@@ -129,6 +129,15 @@ class SlackApi
     }
 
     /**
+     * Gets list of open IM channels
+     * @return array
+     */
+    public function imList()
+    {
+        return $this->processRequest(__FUNCTION__);
+    }
+
+    /**
      * Gets Slack API method name from called method name
      * @param string $method
      * @return string

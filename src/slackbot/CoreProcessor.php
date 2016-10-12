@@ -12,6 +12,7 @@ use slackbot\models\HandlerExecutionResolver;
 use slackbot\models\Registry;
 use slackbot\models\SlackFacade;
 use eznio\ar\Ar;
+use slackbot\logging\Logger;
 
 /**
  * Class CoreProcessor
@@ -105,6 +106,17 @@ class CoreProcessor
         $this->processRequest($dto);
 
         if ('message' === $dto->getType()) {
+
+            /** @var Logger $logger */
+            $logger = Registry::get('container')['logger'];
+            $logger->info(sprintf(
+                "channel: %s, user: %s, message: %s",
+                $dto->getChannel(),
+                $dto->getUser(),
+                $dto->getText()
+            ));
+
+
             $this->processCommand($dto);
             $this->processMessage($dto);
         }
@@ -129,7 +141,7 @@ class CoreProcessor
             if ($handler->canProcessRequest($dto)) {
                 if (
                     !$handler->shouldReceiveOwnMessages() &&
-                    'bot' === $dto->getUsername()
+                    'bot' === $dto->getUser()
                 ) {
                     continue;
                 }

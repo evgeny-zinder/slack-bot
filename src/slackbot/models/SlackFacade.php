@@ -84,6 +84,46 @@ class SlackFacade
     }
 
     /**
+     * Returns user name by ID
+     * @param string $dmId
+     * @return null|string
+     */
+    public function getUserInfoByDmId($dmId)
+    {
+        $userId = $this->getUserIdByDmId($dmId);
+        return $this->getUserInfoById($userId);
+    }
+
+    public function getUserIdByDmId($dmId)
+    {
+        $dms = Ar::get($this->getSlackApi()->imList(), 'ims');
+        return Ar::reduce($dms, function($current, $value) use ($dmId) {
+            if (null !== $value) {
+                return $value;
+            }
+            return Ar::get($current, 'id') == $dmId ? Ar::get($current, 'user') : null;
+        });
+    }
+
+    /**
+     * Returns public channel info by its name
+     * @param string $channelId
+     * @return array
+     */
+    public function getChannelById($channelId)
+    {
+        if ('<' === $channelId[0]) {
+            return preg_replace('/[\<\>\#\@]*/', '', $channelId);
+        }
+
+        $channels = $this->slackApi->channelsList();
+        $channel = array_filter(Ar::get($channels, 'channels'), function ($item) use ($channelId) {
+            return Ar::get($item, 'id') === $channelId;
+        });
+        return is_array($channel) ? (current($channel) ?: []) : [];
+    }
+
+    /**
      * Returns public channel info by its name
      * @param string $channelName
      * @return array
@@ -108,6 +148,21 @@ class SlackFacade
         return Ar::get($this->getChannelByName($channelName), 'id');
     }
 
+    /**
+     * Returns private group info by its Id
+     * @param string $groupId
+     * @return array
+     */
+    public function getGroupById($groupId)
+    {
+        $groups = $this->slackApi->groupsList();
+        $group = array_filter(Ar::get($groups, 'groups'), function ($item) use ($groupId) {
+            return  $groupId === Ar::get($item, 'id');
+        });
+        return is_array($group) ? (current($group) ?: []) : [];
+
+    }
+    
     /**
      * Returns private group info by its name
      * @param string $groupName

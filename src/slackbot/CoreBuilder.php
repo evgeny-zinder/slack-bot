@@ -16,6 +16,10 @@ use slackbot\handlers\action\RunCommandActionHandler;
 use slackbot\handlers\action\SendMessageActionHandler;
 use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
+use slackbot\logging\handlers\ConsoleOutputHandler;
+use slackbot\logging\handlers\SlackHandler;
+use slackbot\logging\Logger;
+use slackbot\logging\NamesResolver;
 use slackbot\models\ArgvParser;
 use slackbot\models\ConditionResolver;
 use slackbot\models\Config;
@@ -77,6 +81,10 @@ class CoreBuilder
             return new SlackFacade(
                 $container['slack_api']
             );
+        };
+
+        $container['names_resolver'] = function(Container $container) {
+            return new NamesResolver($container['slack_facade']);
         };
 
         $container['condition_resolver'] = function () {
@@ -218,8 +226,6 @@ class CoreBuilder
         });
 
         $server->post('/process/message/', function (Request $request, Response $response, $next) {
-            echo '[INFO] Got message from RTM process' . "\n";
-
             $rawData = $request->getData();
             $postParser = Registry::get('container')['post_parser'];
             $parsedData = $postParser->parse($rawData);
@@ -242,5 +248,37 @@ class CoreBuilder
         });
 
         return $server;
+    }
+
+    public function buildLogger(Container $container)
+    {
+        $logger = new Logger($container['names_resolver']);
+
+        /** @var Config $config */
+        $config = $container['config'];
+        $loggingConfig = $config->getSection('logging');
+
+        foreach ($loggingConfig as $loggingEntry) {
+            $channels = Ar::get($loggingEntry, 'channels');
+            if (!is_array($channels) || 0 === count($channels)) {
+                continue;
+            }
+            $minimumLevel = Ar::get($loggingEntry, 'minimum');
+            if (null !== $minimumLevel) {
+                $minimumLevel = Ar::get(Logger::TYPE_NAMES_REV, $minimumLevel);
+                if (null === $minimumLevel) {
+                    continue;
+                }
+            }
+
+            $handler = (new SlackHandler($container['slack_facade']))
+                ->setChannels($channels)
+                ->setFilter($minimumLevel);
+
+            $logger->addHandler($handler);
+        }
+
+        $logger->addHandler(new ConsoleOutputHandler());
+        $container['logger'] = $logger;
     }
 }
