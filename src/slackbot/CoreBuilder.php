@@ -228,7 +228,7 @@ class CoreBuilder
             $coreProcessor = Registry::get('container')['core_processor'];
             $dto = new RequestDto();
             $dto->setSource('rtm');
-            $dto->setData(json_decode(Ar::arrayGet($parsedData, 'message'), true));
+            $dto->setData(json_decode(Ar::get($parsedData, 'message'), true));
             $coreProcessor->process($dto);
 
             $next();
