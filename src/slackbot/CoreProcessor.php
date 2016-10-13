@@ -107,16 +107,14 @@ class CoreProcessor
 
         if ('message' === $dto->getType()) {
 
-            /** @var Logger $logger */
-            $logger = Registry::get('container')['logger'];
-            $logger->info(sprintf(
-                "channel: %s, user: %s, message: %s",
+            Logger::get()->raw(
+                "is: %s, channel: %s, user: %s, message: %s",
+                $dto->getId(),
                 $dto->getChannel(),
                 $dto->getUser(),
                 $dto->getText()
-            ));
-
-
+            );
+            
             $this->processCommand($dto);
             $this->processMessage($dto);
         }
@@ -128,11 +126,15 @@ class CoreProcessor
      */
     protected function processRequest(RequestDto $dto)
     {
+        Logger::get()->raw("is: %s, staring raw request processing", $dto->getId());
+
         if (0 === count($this->requestHandlers)) {
+            Logger::get()->raw("is: %s, no request handlers found, stopper raw request processing", $dto->getId());
             return;
         }
 
         if (true === $dto->isBotMessage()) {
+            Logger::get()->raw("is: %s, bot message, stopped raw request processing", $dto->getId());
             return;
         }
 
@@ -268,6 +270,15 @@ class CoreProcessor
         }
 
         $command = substr($command, 1);
+
+        Logger::get()->info(
+            "id: %s, found command: ",
+            $dto->getChannel(),
+            $dto->getUser(),
+            $dto->getText()
+        );
+
+
 
         /** @var BaseCommandHandler $commandHandler */
         foreach ($this->commandHandlers as $commandHandler) {

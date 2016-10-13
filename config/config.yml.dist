@@ -16,3 +16,9 @@ cron:
   - name: Run test command every hour
     time: "* */1 * * *"
     playbook: sample.yml
+
+commands:
+  autoload: true
+  paths:
+    - name: root directory
+      location: src/slackbot/commands

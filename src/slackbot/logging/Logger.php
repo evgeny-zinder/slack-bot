@@ -5,22 +5,18 @@ namespace slackbot\logging;
 
 use eznio\ar\Ar;
 use slackbot\logging\handlers\HandlerInterface;
+use slackbot\models\Registry;
 
 class Logger
 {
-    const TYPE_INFO = 1;
-    const TYPE_WARNING = 2;
-    const TYPE_ERROR = 4;
-    const TYPE_CRITICAL = 8;
-
-    const TYPE_NAMES_REV = [
-        'info' => self::TYPE_INFO,
-        'warning' => self::TYPE_WARNING,
-        'error' => self::TYPE_ERROR,
-        'critical' => self::TYPE_CRITICAL,
-    ];
+    const TYPE_RAW = 1;
+    const TYPE_INFO = 2;
+    const TYPE_WARNING = 4;
+    const TYPE_ERROR = 8;
+    const TYPE_CRITICAL = 16;
 
     const TYPE_NAMES = [
+        self::TYPE_RAW => 'raw',
         self::TYPE_INFO => 'info',
         self::TYPE_WARNING => 'warning',
         self::TYPE_ERROR => 'error',
@@ -31,6 +27,9 @@ class Logger
 
     /** @var NamesResolver */
     protected $namesResolver;
+
+    /** @var bool */
+    protected $shouldResolveNames = false;
 
     public function __construct(NamesResolver $namesResolver)
     {
@@ -47,33 +46,59 @@ class Logger
         return $this->handlers;
     }
 
-    public function info($message)
+    public function setResolveNames($resolve)
     {
-        $this->send(self::TYPE_INFO, $message);
+        $this->shouldResolveNames = $resolve;
     }
 
-    public function warning($message)
+    public function raw($message, ...$placeholders)
     {
-        $this->send(self::TYPE_WARNING, $message);
+        $this->send(self::TYPE_INFO, $message, $placeholders);
     }
 
-    public function error($message)
+    public function info($message, ...$placeholders)
     {
-        $this->send(self::TYPE_ERROR, $message);
+        $this->send(self::TYPE_INFO, $message, $placeholders);
     }
 
-    public function critical($message)
+    public function warning($message, ...$placeholders)
     {
-        $this->send(self::TYPE_CRITICAL, $message);
+        $this->send(self::TYPE_WARNING, $message, $placeholders);
     }
 
-    public function send($type, $message) {
-        $message = $this->resolveNamesInMessage($message);
+    public function error($message, ...$placeholders)
+    {
+        $this->send(self::TYPE_ERROR, $message, $placeholders);
+    }
+
+    public function critical($message, ...$placeholders)
+    {
+        $this->send(self::TYPE_CRITICAL, $message, $placeholders);
+    }
+
+    public function send($type, $message, $placeholders = []) {
+        if (count($placeholders) > 0) {
+            $placeholders = array_merge([$message], $placeholders);
+            $message = call_user_func_array('sprintf', $placeholders);
+        }
+        if (true === $this->shouldResolveNames) {
+            $message = $this->resolveNamesInMessage($message);
+        }
+
         Ar::each($this->handlers, function($handler) use ($type, $message) {
             /** @var HandlerInterface $handler */
             $handler->send($type, $message);
         });
 
+    }
+
+    /**
+     * @return Logger
+     */
+    public static function get()
+    {
+        $container = Registry::get('container');
+        return $container['logger'];
     }
 
     protected function resolveNamesInMessage($message)

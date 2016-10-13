@@ -90,7 +90,7 @@ class SlackHandler implements HandlerInterface
         if (null === $type) {
             return false;
         }
-
-        return !($type & $this->filter == $type);
+        
+        return ($type & $this->filter) != $type;
     }
 }

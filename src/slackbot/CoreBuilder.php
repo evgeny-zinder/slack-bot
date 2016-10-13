@@ -162,6 +162,11 @@ class CoreBuilder
         return $container;
     }
 
+//    public function buildCommandsCache()
+//    {
+//
+//    }
+//
     public function buildServer()
     {
         $server = new Server("SlackBot", "0.1");
@@ -258,25 +263,23 @@ class CoreBuilder
         $config = $container['config'];
         $loggingConfig = $config->getSection('logging');
 
-        foreach ($loggingConfig as $loggingEntry) {
+        $shouldResolve = Ar::get($loggingConfig, 'resolve') ?: false;
+        $logger->setResolveNames($shouldResolve);
+
+        $loggingEntries = Ar::get($loggingConfig, 'handlers');
+        Ar::each($loggingEntries, function($loggingEntry) use ($logger, $container) {
             $channels = Ar::get($loggingEntry, 'channels');
             if (!is_array($channels) || 0 === count($channels)) {
-                continue;
+                return;
             }
-            $minimumLevel = Ar::get($loggingEntry, 'minimum');
-            if (null !== $minimumLevel) {
-                $minimumLevel = Ar::get(Logger::TYPE_NAMES_REV, $minimumLevel);
-                if (null === $minimumLevel) {
-                    continue;
-                }
-            }
+            $filter = Ar::get($loggingEntry, 'filter') ?: 255;  
 
             $handler = (new SlackHandler($container['slack_facade']))
                 ->setChannels($channels)
-                ->setFilter($minimumLevel);
+                ->setFilter($filter);
 
             $logger->addHandler($handler);
-        }
+        });
 
         $logger->addHandler(new ConsoleOutputHandler());
         $container['logger'] = $logger;

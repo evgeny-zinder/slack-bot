@@ -5,7 +5,18 @@ namespace slackbot\dto;
 class RequestDto extends BaseDto
 {
     /** @var string */
+    protected $id = null;
+
+    /** @var string */
     private $source;
+
+    public function getId()
+    {
+        if (null === $this->id) {
+            $this->id = uniqid();
+        }
+        return $this->id;
+    }
 
     /**
      * @return string
@@ -23,14 +34,6 @@ class RequestDto extends BaseDto
     {
         $this->source = $source;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->get('username');
     }
 
     /**
