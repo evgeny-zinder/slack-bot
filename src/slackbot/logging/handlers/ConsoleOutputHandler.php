@@ -40,7 +40,7 @@ class ConsoleOutputHandler implements HandlerInterface
     /**
      * @param $type
      * @param $message
-     * @return null
+     * @return void
      */
     public function send($type, $message)
     {
@@ -53,7 +53,7 @@ class ConsoleOutputHandler implements HandlerInterface
 
     /**
      * @param $type
-     * @return bool|int
+     * @return bool
      */
     protected function isFiltered($type)
     {
@@ -61,6 +61,6 @@ class ConsoleOutputHandler implements HandlerInterface
             return false;
         }
 
-        return !($type & $this->filter == $type);
+        return !(($type & $this->filter) == $type);
     }
 }

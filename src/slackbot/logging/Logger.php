@@ -9,18 +9,22 @@ use slackbot\models\Registry;
 
 class Logger
 {
-    const TYPE_RAW = 1;
-    const TYPE_INFO = 2;
+    const TYPE_CRITICAL = 1;
+    const TYPE_ERROR = 2;
     const TYPE_WARNING = 4;
-    const TYPE_ERROR = 8;
-    const TYPE_CRITICAL = 16;
+    const TYPE_INFO = 8;
+    const TYPE_DEBUG = 16;
+    const TYPE_MESSAGE = 32;
+    const TYPE_RAW = 64;
 
     const TYPE_NAMES = [
-        self::TYPE_RAW => 'raw',
-        self::TYPE_INFO => 'info',
-        self::TYPE_WARNING => 'warning',
+        self::TYPE_CRITICAL => 'critical',
         self::TYPE_ERROR => 'error',
-        self::TYPE_CRITICAL => 'critical'
+        self::TYPE_WARNING => 'warning',
+        self::TYPE_INFO => 'info',
+        self::TYPE_DEBUG => 'debug',
+        self::TYPE_MESSAGE => 'message',
+        self::TYPE_RAW => 'raw',
     ];
 
     protected $handlers = [];
@@ -53,7 +57,17 @@ class Logger
 
     public function raw($message, ...$placeholders)
     {
-        $this->send(self::TYPE_INFO, $message, $placeholders);
+        $this->send(self::TYPE_RAW, $message, $placeholders);
+    }
+
+    public function message($message, ...$placeholders)
+    {
+        $this->send(self::TYPE_MESSAGE, $message, $placeholders);
+    }
+
+    public function debug($message, ...$placeholders)
+    {
+        $this->send(self::TYPE_DEBUG, $message, $placeholders);
     }
 
     public function info($message, ...$placeholders)

@@ -103,21 +103,31 @@ class CoreProcessor
      */
     public function process(RequestDto $dto)
     {
+        Logger::get()->debug("id: %s, staring overall request processing", $dto->getId());
+
+        Logger::get()->debug("id: %s, staring raw request processing", $dto->getId());
         $this->processRequest($dto);
+        Logger::get()->debug("id: %s, finished raw request processing", $dto->getId());
 
         if ('message' === $dto->getType()) {
 
-            Logger::get()->raw(
-                "is: %s, channel: %s, user: %s, message: %s",
+            Logger::get()->message(
+                "id: %s, channel: %s, user: %s, message: %s",
                 $dto->getId(),
                 $dto->getChannel(),
                 $dto->getUser(),
                 $dto->getText()
             );
-            
+
+            Logger::get()->debug("id: %s, started command processing", $dto->getId());
             $this->processCommand($dto);
+            Logger::get()->debug("id: %s, finished command processing", $dto->getId());
+
+            Logger::get()->debug("id: %s, started message processing", $dto->getId());
             $this->processMessage($dto);
+            Logger::get()->debug("id: %s, finished message processing", $dto->getId());
         }
+        Logger::get()->debug("id: %s, finished overall request processing", $dto->getId());
     }
 
     /**
@@ -126,7 +136,7 @@ class CoreProcessor
      */
     protected function processRequest(RequestDto $dto)
     {
-        Logger::get()->raw("is: %s, staring raw request processing", $dto->getId());
+        Logger::get()->raw("id: %s, staring raw request processing", $dto->getId());
 
         if (0 === count($this->requestHandlers)) {
             Logger::get()->raw("is: %s, no request handlers found, stopper raw request processing", $dto->getId());
@@ -272,13 +282,12 @@ class CoreProcessor
         $command = substr($command, 1);
 
         Logger::get()->info(
-            "id: %s, found command: ",
-            $dto->getChannel(),
+            "id: %s, %s is executing command \"%s\" at %s",
+            $dto->getId(),
             $dto->getUser(),
-            $dto->getText()
+            $dto->getText(),
+            $dto->getChannel()
         );
-
-
 
         /** @var BaseCommandHandler $commandHandler */
         foreach ($this->commandHandlers as $commandHandler) {
@@ -302,6 +311,14 @@ class CoreProcessor
                         $commandHandler->getName()
                     )
                 );
+                Logger::get()->warning(
+                    "id: %s, access denied for %s trying to run \"%s\" at %s",
+                    $dto->getId(),
+                    $dto->getUser(),
+                    $dto->getText(),
+                    $dto->getChannel()
+                );
+
                 continue;
             }
 
@@ -312,7 +329,18 @@ class CoreProcessor
                 $commandHandler->setCallerId($dto->getUser());
                 $commandHandler->setCallerName($slackFacade->getUserNameById($dto->getUser()));
 
+                Logger::get()->debud(
+                    "id: %s, starting command handler %s",
+                    $dto->getId(),
+                    $commandHandler->getName()
+                );
                 $commandHandler->processCommand($words, $dto->getChannel());
+                Logger::get()->debud(
+                    "id: %s, finished command handler %s",
+                    $dto->getId(),
+                    $commandHandler->getName()
+                );
+
             }
         }
     }

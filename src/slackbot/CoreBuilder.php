@@ -266,7 +266,7 @@ class CoreBuilder
         $shouldResolve = Ar::get($loggingConfig, 'resolve') ?: false;
         $logger->setResolveNames($shouldResolve);
 
-        $loggingEntries = Ar::get($loggingConfig, 'handlers');
+        $loggingEntries = Ar::get($loggingConfig, 'handlers') ?: [];
         Ar::each($loggingEntries, function($loggingEntry) use ($logger, $container) {
             $channels = Ar::get($loggingEntry, 'channels');
             if (!is_array($channels) || 0 === count($channels)) {
