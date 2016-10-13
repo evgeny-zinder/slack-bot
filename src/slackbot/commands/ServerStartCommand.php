@@ -2,7 +2,10 @@
 
 namespace slackbot\commands;
 
+use eznio\ar\Ar;
+use Pimple\Container;
 use slackbot\models\Registry;
+use slackbot\models\SlackApi;
 use slackbot\util\Posix;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +29,9 @@ class ServerStartCommand extends Command
 
     /** @var ArgvParser */
     private $argParser;
+
+    /** @var array */
+    private $testResponse = [];
 
 
     public function __construct(Config $config, ArgvParser $argvParser)
@@ -60,11 +66,20 @@ class ServerStartCommand extends Command
     {
         if (!$this->checkPidFile()) {
             $output->write('Error: server is already running, exiting');
-            return;
+            return 1;
         }
 
         /** @var CoreBuilder $builder */
         $builder = new CoreBuilder($this->config, $this->argParser);
+
+        if (!$this->checkSlackConnection()) {
+            $output->writeln('Cannot connect to Slack, exiting.');
+            $output->writeln(sprintf(
+                'Slack reports: <error>%s</error>',
+                Ar::get($this->testResponse, 'error')
+            ));
+            return 1;
+        }
 
         /** @var \CapMousse\ReactRestify\Server $server */
         $server = $builder->buildServer();
@@ -78,6 +93,7 @@ class ServerStartCommand extends Command
      */
     protected function checkPidFile()
     {
+        /** @var Config $config */
         $config = Registry::get('container')['config'];
         $pidFile = $config->getEntry('server.pidfile');
         if (null === $pidFile) {
@@ -107,5 +123,17 @@ class ServerStartCommand extends Command
 
         $runner = new Runner($server);
         $runner->listen($port);
+    }
+
+    protected function checkSlackConnection()
+    {
+        /** @var Container $container */
+        $container = Registry::get('container');
+
+        /** @var SlackApi $slackApi */
+        $slackApi = $container['slack_api'];
+        $this->testResponse = $slackApi->apiTest();
+
+        return (bool) Ar::get($this->testResponse, 'ok');
     }
 }

@@ -138,6 +138,15 @@ class SlackApi
     }
 
     /**
+     * Test API call to check connectivity
+     * @return array
+     */
+    public function apiTest()
+    {
+        return $this->processRequest(__FUNCTION__);
+    }
+
+    /**
      * Gets Slack API method name from called method name
      * @param string $method
      * @return string
