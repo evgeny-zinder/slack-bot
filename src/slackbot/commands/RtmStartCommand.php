@@ -80,7 +80,7 @@ class RtmStartCommand extends Command
     {
         if (!$this->checkPidFile($this->config->getEntry('server.rtmpidfile'))) {
             $output->write('Error: RTM listener is already running, exiting');
-            return;
+            return 1;
         }
 
         $this->authUrl = $this->getAuthUrl();
@@ -140,8 +140,8 @@ class RtmStartCommand extends Command
         $result = $this->curlRequest->getCurlResult($this->authUrl);
         $result = json_decode($result['body'], true);
         if (true !== Ar::get($result, 'ok')) {
-            echo '[ERROR] Error connecting to Slack WebSocket: ' . Ar::get($result, 'error');
-            return 1;
+            echo 'Error connecting to Slack WebSocket: ' . Ar::get($result, 'error');
+            exit(1);
         }
         $socketUrl = $result['url'];
         return $socketUrl;
