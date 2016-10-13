@@ -13,6 +13,7 @@ use slackbot\models\Registry;
 use slackbot\models\SlackFacade;
 use eznio\ar\Ar;
 use slackbot\logging\Logger;
+use slackbot\models\Config;
 
 /**
  * Class CoreProcessor
@@ -318,8 +319,7 @@ class CoreProcessor
                     $dto->getText(),
                     $dto->getChannel()
                 );
-
-                continue;
+                return;
             }
 
             unset($words[0]);
@@ -329,14 +329,14 @@ class CoreProcessor
                 $commandHandler->setCallerId($dto->getUser());
                 $commandHandler->setCallerName($slackFacade->getUserNameById($dto->getUser()));
 
-                Logger::get()->debud(
-                    "id: %s, starting command handler %s",
+                Logger::get()->debug(
+                    "id: %s, starting %s command handler",
                     $dto->getId(),
                     $commandHandler->getName()
                 );
                 $commandHandler->processCommand($words, $dto->getChannel());
-                Logger::get()->debud(
-                    "id: %s, finished command handler %s",
+                Logger::get()->debug(
+                    "id: %s, finished %s command handler",
                     $dto->getId(),
                     $commandHandler->getName()
                 );
@@ -352,11 +352,20 @@ class CoreProcessor
      */
     protected function checkAccess(RequestDto $dto, CommandHandlerInterface $commandHandler)
     {
-//        $config = Registry::get('container')['config'];
-//        $acl = $config->getEntry('acl');
+        /** @var Config $config */
+        $config = Registry::get('container')['config'];
         $acl = $commandHandler->getAcl();
         if (CommandHandlerInterface::ACL_ANY === $acl) {
             return true;
+        } elseif (CommandHandlerInterface::ACL_ADMIN === $acl) {
+            $currentUser = $dto->getUser();
+            $currentUserName = $this->slackFacade->getUserNameById($currentUser);
+
+            $admins = $config->getEntry('auth.admins') ?: [];
+            if (0 === count($admins)) {
+                return false;
+            }
+            return in_array($currentUserName, $admins);
         } else {
             if (!is_array($acl)) {
                 throw new \RuntimeException('Wrong ACL format: array expected');
@@ -368,10 +377,7 @@ class CoreProcessor
             }
             $aclUsers = array_unique($aclUsers);
 
-            if (in_array($currentUser, $aclUsers)) {
-                return true;
-            }
+            return in_array($currentUser, $aclUsers);
         }
-        return false;
     }
 }

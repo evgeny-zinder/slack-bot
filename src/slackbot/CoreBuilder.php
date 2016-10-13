@@ -16,6 +16,7 @@ use slackbot\handlers\action\RunCommandActionHandler;
 use slackbot\handlers\action\SendMessageActionHandler;
 use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
+use slackbot\handlers\command\RestartCommandHandler;
 use slackbot\logging\handlers\ConsoleOutputHandler;
 use slackbot\logging\handlers\SlackHandler;
 use slackbot\logging\Logger;
@@ -157,6 +158,18 @@ class CoreBuilder
         $container['core_processor']->addActionHandler($container['action_break']);
         $container['core_processor']->addActionHandler($container['action_run_command']);
 
+        if (class_exists('\slackbot\handlers\command\TestCommandHandler')) {
+            $container['command_test'] = function () {
+                return new \slackbot\handlers\command\TestCommandHandler();
+            };
+            $container['core_processor']->addCommandHandler($container['command_test']);
+        }
+
+        $container['command_restart'] = function () {
+            return new RestartCommandHandler();
+        };
+        $container['core_processor']->addCommandHandler($container['command_restart']);
+
         $container['server'] = $this->buildServer();
 
         return $container;
@@ -268,20 +281,30 @@ class CoreBuilder
 
         $loggingEntries = Ar::get($loggingConfig, 'handlers') ?: [];
         Ar::each($loggingEntries, function($loggingEntry) use ($logger, $container) {
-            $channels = Ar::get($loggingEntry, 'channels');
-            if (!is_array($channels) || 0 === count($channels)) {
-                return;
-            }
-            $filter = Ar::get($loggingEntry, 'filter') ?: 255;  
+            $filter = Ar::get($loggingEntry, 'filter') ?: 255;
 
-            $handler = (new SlackHandler($container['slack_facade']))
-                ->setChannels($channels)
-                ->setFilter($filter);
+            $handlerName = Ar::get($loggingEntry, 'handler');
+
+            switch ($handlerName) {
+                case 'slack':
+                    $channels = Ar::get($loggingEntry, 'channels') ?: [];
+                    $handler = (new SlackHandler($container['slack_facade']))
+                        ->setChannels($channels)
+                        ->setFilter($filter);
+                    break;
+
+                case 'console':
+                    $handler = (new ConsoleOutputHandler())
+                        ->setFilter($filter);
+                    break;
+
+                default:
+                    return;
+            }
 
             $logger->addHandler($handler);
         });
 
-        $logger->addHandler(new ConsoleOutputHandler());
         $container['logger'] = $logger;
     }
 }

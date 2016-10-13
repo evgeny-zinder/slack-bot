@@ -44,11 +44,13 @@ class ConsoleOutputHandler implements HandlerInterface
      */
     public function send($type, $message)
     {
-        echo sprintf(
-            "[%s] %s\n",
-            strtoupper(Ar::get(Logger::TYPE_NAMES, $type)) ?: '?',
-            $message
-        );
+        if (!$this->isFiltered($type)) {
+            echo sprintf(
+                "[%s] %s\n",
+                strtoupper(Ar::get(Logger::TYPE_NAMES, $type)) ?: '?',
+                $message
+            );
+        }
     }
 
     /**
