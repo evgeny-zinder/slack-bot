@@ -3,6 +3,7 @@
 namespace slackbot\logging\handlers;
 
 
+use slackbot\logging\Logger;
 use slackbot\models\SlackFacade;
 
 class SlackHandler implements HandlerInterface
@@ -77,7 +78,8 @@ class SlackHandler implements HandlerInterface
     public function send($type, $message)
     {
         if (false === $this->isFiltered($type)) {
-            $this->slackFacade->multiSendMessage($this->channels, $message);
+            $options = [ 'in_logger' => true ];
+            $this->slackFacade->multiSendMessage($this->channels, $message, $options);
         }
     }
 

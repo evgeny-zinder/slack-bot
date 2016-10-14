@@ -17,6 +17,7 @@ use slackbot\handlers\action\SendMessageActionHandler;
 use slackbot\handlers\action\SetVariableActionHandler;
 use slackbot\handlers\action\UserInputActionHandler;
 use slackbot\handlers\command\RestartCommandHandler;
+use slackbot\handlers\command\StatusCommandHandler;
 use slackbot\logging\handlers\ConsoleOutputHandler;
 use slackbot\logging\handlers\SlackHandler;
 use slackbot\logging\Logger;
@@ -41,6 +42,8 @@ class CoreBuilder
     public function buildContainer(ArgvParser $argvParser, Config $config = null)
     {
         $container = new Container();
+
+        $container['started'] = time();
 
         $container['config'] = function () use ($config, $container) {
             return (null !== $config)
@@ -169,6 +172,11 @@ class CoreBuilder
             return new RestartCommandHandler();
         };
         $container['core_processor']->addCommandHandler($container['command_restart']);
+
+        $container['command_status'] = function () {
+            return new StatusCommandHandler();
+        };
+        $container['core_processor']->addCommandHandler($container['command_status']);
 
         $container['server'] = $this->buildServer();
 

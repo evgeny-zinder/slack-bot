@@ -303,4 +303,38 @@ class SlackFacade
         $data = $this->getSlackApi()->groupsInfo($groupId);
         return Ar::get($data, 'group.members') ?: [];
     }
+
+    /**
+     * Returns ID of currently connected client
+     * @return string
+     */
+    public function getMyId()
+    {
+        Return Ar::get($this->slackApi->rtmStart(), 'self.id');
+    }
+
+    /**
+     * Returns slack name of currently connected client
+     * @return string
+     */
+    public function getMyName()
+    {
+        Return Ar::get($this->slackApi->rtmStart(), 'self.name');
+    }
+
+    public function getUserChannels($userId)
+    {
+        $channels = Ar::get($this->slackApi->channelsList(), 'channels');
+        return Ar::filter($channels, function($channel) use ($userId) {
+            return in_array($userId, Ar::get($channel, 'members') ?: []);
+        });
+    }
+
+    public function getUserGroups($userId)
+    {
+        $groups = Ar::get($this->slackApi->groupsList(), 'groups');
+        return Ar::filter($groups, function($group) use ($userId) {
+            return in_array($userId, Ar::get($group, 'members') ?: []);
+        });
+    }
 }

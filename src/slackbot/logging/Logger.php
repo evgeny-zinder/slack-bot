@@ -95,7 +95,7 @@ class Logger
             $placeholders = array_merge([$message], $placeholders);
             $message = call_user_func_array('sprintf', $placeholders);
         }
-        if (true === $this->shouldResolveNames) {
+        if (true === $this->shouldResolveNames && self::TYPE_RAW !== $type) {
             $message = $this->resolveNamesInMessage($message);
         }
 
@@ -103,7 +103,6 @@ class Logger
             /** @var HandlerInterface $handler */
             $handler->send($type, $message);
         });
-
     }
 
     /**

@@ -2,7 +2,10 @@
 
 namespace slackbot\models;
 
+
 use slackbot\util\CurlRequest;
+use slackbot\logging\Logger;
+use eznio\ar\Ar;
 
 /**
  * Class SlackApi
@@ -147,6 +150,15 @@ class SlackApi
     }
 
     /**
+     * Test API call to check connectivity
+     * @return array
+     */
+    public function rtmStart()
+    {
+        return $this->processRequest(__FUNCTION__);
+    }
+
+    /**
      * Gets Slack API method name from called method name
      * @param string $method
      * @return string
@@ -173,6 +185,14 @@ class SlackApi
         $url = self::BASE_URL . $method;
         $data['token'] = $this->token;
 
+        if (true !== Ar::get($data, 'in_logger')) {
+            Logger::get()->raw(
+                "➡️ %s: %s",
+                $url,
+                json_encode($data)
+            );
+        }
+
         $result = $this->curlRequest->getCurlResult(
             $url,
             [
@@ -180,6 +200,15 @@ class SlackApi
                 CURLOPT_POSTFIELDS => $data
             ]
         )['body'];
+
+        if (true !== Ar::get($data, 'in_logger')) {
+            Logger::get()->raw(
+                "⬅️ %s: %s",
+                $url,
+                $result
+            );
+        }
+
         return json_decode($result, true);
     }
 }

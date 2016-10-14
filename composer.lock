@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6bf690c2770167f1e2239614f3e176e1",
-    "content-hash": "9aa1b7f0f82389003d3c65b9d0a9fb00",
+    "hash": "a7f381ba1a07a741396aa16845312bf7",
+    "content-hash": "3727d84709e590ef88289ef267e9cc74",
     "packages": [
         {
             "name": "capmousse/react-restify",
@@ -136,6 +136,48 @@
                 "util"
             ],
             "time": "2016-08-22 10:37:47"
+        },
+        {
+            "name": "eznio/tabler",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eznio/tabler.git",
+                "reference": "d9fcb1825472578003d88eb23cfd7abee9a7e73f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eznio/tabler/zipball/d9fcb1825472578003d88eb23cfd7abee9a7e73f",
+                "reference": "d9fcb1825472578003d88eb23cfd7abee9a7e73f",
+                "shasum": ""
+            },
+            "require": {
+                "eznio/ar": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "eznio\\tabler\\": "src",
+                    "eznio\\tabler\\tests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "CLI ASCII table drawer",
+            "homepage": "https://github.com/eznio/tabler",
+            "keywords": [
+                "ascii",
+                "cli",
+                "console",
+                "table"
+            ],
+            "time": "2016-09-08 23:10:35"
         },
         {
             "name": "guzzlehttp/psr7",

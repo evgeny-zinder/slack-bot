@@ -97,6 +97,7 @@ abstract class BaseCommandHandler implements CommandHandlerInterface
     protected function postMessage($channel, $message, $options = [])
     {
         $container = $this->getContainer();
+        $options['in_logger'] = true;
         $container['slack_facade']->getSlackApi()->chatPostMessage($channel, $message, $options);
     }
 }

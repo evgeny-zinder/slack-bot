@@ -9,6 +9,17 @@ foreach ($autoloadFiles as $autoloadFile) {
     }
 }
 
-$app = new \slackbot\Application($argv);
-$app->bootstrap();
-$app->run();
+try {
+    $app = new \slackbot\Application($argv);
+    $app->bootstrap();
+    $app->run();
+} catch (Exception $e) {
+    echo sprintf(
+        "EXCEPTION!\n%s:%s - %s\n",
+        $e->getFile(),
+        $e->getLine(),
+        $e->getMessage()
+    );
+
+    echo $e->getTraceAsString();
+}
