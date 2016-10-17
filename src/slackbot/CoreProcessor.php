@@ -361,7 +361,7 @@ class CoreProcessor
             $currentUser = $dto->getUser();
             $currentUserName = $this->slackFacade->getUserNameById($currentUser);
 
-            $admins = $config->getEntry('auth.admins') ?: [];
+            $admins = $config->getEntry('acl.admins') ?: [];
             if (0 === count($admins)) {
                 return false;
             }
