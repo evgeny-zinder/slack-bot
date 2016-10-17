@@ -87,14 +87,7 @@ class ServerStartCommand extends Command
         try {
             $this->runServer($server);
         } catch (\Exception $e) {
-            echo sprintf(
-                "EXCEPTION!\n%s:%s - %s\n",
-                $e->getFile(),
-                $e->getLine(),
-                $e->getMessage()
-            );
-
-            echo $e->getTraceAsString();
+            $this->runServer($server);
         }
     }
 

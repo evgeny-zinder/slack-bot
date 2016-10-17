@@ -8,6 +8,9 @@ namespace slackbot\util;
  */
 class CurlRequest
 {
+    const RECONNECT_ATTEMPTS = 5;
+    const RECONNECT_DELAY = 100;
+
     /** @var array */
     protected $curlOptDefaults = [
         CURLOPT_POST => 0,
@@ -30,11 +33,18 @@ class CurlRequest
         curl_setopt_array($ch, $options);
         curl_setopt($ch, CURLOPT_URL, $url);
 
-        if (!$response = curl_exec($ch)) {
-            $curlError = curl_error($ch);
-            throw new \Exception(
-                "Curl error: $curlError"
-            );
+        for ($i = 1; $i <= self::RECONNECT_ATTEMPTS; $i++) {
+            if (!$response = curl_exec($ch)) {
+                if ($i < self::RECONNECT_ATTEMPTS) {
+                    usleep(self::RECONNECT_DELAY);
+                    continue;
+                } else {
+                    $curlError = curl_error($ch);
+                    throw new \Exception(
+                        "Curl error: $curlError"
+                    );
+                }
+            }
         }
 
         $info = curl_getinfo($ch);
