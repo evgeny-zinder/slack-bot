@@ -137,15 +137,13 @@ class CoreProcessor
      */
     protected function processRequest(RequestDto $dto)
     {
-        Logger::get()->raw("id: %s, staring raw request processing", $dto->getId());
-
         if (0 === count($this->requestHandlers)) {
-            Logger::get()->raw("is: %s, no request handlers found, stopper raw request processing", $dto->getId());
+            Logger::get()->debug("is: %s, no request handlers found, stopper raw request processing", $dto->getId());
             return;
         }
 
         if (true === $dto->isBotMessage()) {
-            Logger::get()->raw("is: %s, bot message, stopped raw request processing", $dto->getId());
+            Logger::get()->debug("is: %s, bot message, stopped raw request processing", $dto->getId());
             return;
         }
 

@@ -101,6 +101,18 @@ class SlackApi
     }
 
     /**
+     * Leaves given channel
+     * @param string $channelId
+     * @param array $options
+     * @return array
+     */
+    public function channelsLeave($channelId)
+    {
+        $options['channel'] = $channelId;
+        return $this->processRequest(__FUNCTION__);
+    }
+
+    /**
      * Return list of private groups accessible by bot
      * @return array
      */

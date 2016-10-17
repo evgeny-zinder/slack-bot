@@ -14,6 +14,12 @@ class SlackFacade
     /** @var SlackApi */
     private $slackApi;
 
+    /** @var string|null */
+    private static $myId = null;
+
+    /** @var string|null */
+    private static $myName = null;
+
     /**
      * SlackFacade constructor.
      * @param SlackApi $slackApi
@@ -310,7 +316,10 @@ class SlackFacade
      */
     public function getMyId()
     {
-        Return Ar::get($this->slackApi->rtmStart(), 'self.id');
+        if (null === self::$myId) {
+            self::$myId = Ar::get($this->slackApi->rtmStart(), 'self.id');
+        }
+        return self::$myId;
     }
 
     /**
@@ -319,7 +328,10 @@ class SlackFacade
      */
     public function getMyName()
     {
-        Return Ar::get($this->slackApi->rtmStart(), 'self.name');
+        if (null === self::$myName) {
+            self::$myName = Ar::get($this->slackApi->rtmStart(), 'self.name');
+        }
+        return self::$myName;
     }
 
     public function getUserChannels($userId)

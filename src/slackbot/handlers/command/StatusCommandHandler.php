@@ -19,7 +19,7 @@ class StatusCommandHandler extends BaseCommandHandler
 
     public function getAcl()
     {
-        return CommandHandlerInterface::ACL_ANY;
+        return CommandHandlerInterface::ACL_ADMIN;
     }
 
     public function processCommand(array $args, $channel)

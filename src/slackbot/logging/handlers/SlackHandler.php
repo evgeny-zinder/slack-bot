@@ -3,7 +3,6 @@
 namespace slackbot\logging\handlers;
 
 
-use slackbot\logging\Logger;
 use slackbot\models\SlackFacade;
 
 class SlackHandler implements HandlerInterface
