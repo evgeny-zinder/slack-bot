@@ -83,7 +83,19 @@ class ServerStartCommand extends Command
 
         /** @var \CapMousse\ReactRestify\Server $server */
         $server = $builder->buildServer();
-        $this->runServer($server);
+
+        try {
+            $this->runServer($server);
+        } catch (\Exception $e) {
+            echo sprintf(
+                "EXCEPTION!\n%s:%s - %s\n",
+                $e->getFile(),
+                $e->getLine(),
+                $e->getMessage()
+            );
+
+            echo $e->getTraceAsString();
+        }
     }
 
     /**

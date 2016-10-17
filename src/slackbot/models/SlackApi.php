@@ -3,6 +3,8 @@
 namespace slackbot\models;
 
 
+use Mockery\CountValidator\Exception;
+use slackbot\caching\ApiCache;
 use slackbot\util\CurlRequest;
 use slackbot\logging\Logger;
 use eznio\ar\Ar;
@@ -103,7 +105,6 @@ class SlackApi
     /**
      * Leaves given channel
      * @param string $channelId
-     * @param array $options
      * @return array
      */
     public function channelsLeave($channelId)
@@ -193,34 +194,64 @@ class SlackApi
      */
     private function processRequest($method, $data = [])
     {
+        $methodsToFilter = [
+            'api.test',
+            'rtm.start',
+            'chat.postMessage'
+        ];
+
         $method = $this->getApiMethodName($method);
+
         $url = self::BASE_URL . $method;
         $data['token'] = $this->token;
 
         if (true !== Ar::get($data, 'in_logger')) {
             Logger::get()->raw(
-                "➡️ %s: %s",
+                "➡️ %s",
                 $url,
                 json_encode($data)
             );
         }
 
-        $result = $this->curlRequest->getCurlResult(
-            $url,
-            [
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => $data
-            ]
-        )['body'];
+        /** @var ApiCache $cache */
+        $cache = Registry::get('container')['api_cache'];
+
+        $cachedResponse = $cache->get($url, $data);
+        if (null !== $cachedResponse && !in_array($method, $methodsToFilter)) {
+            if (true !== Ar::get($data, 'in_logger')) {
+                Logger::get()->raw(
+                    "⬅️ %s: cache hit",
+                    $url
+                );
+            }
+
+            return $cachedResponse;
+        }
+
+        try {
+            $result = $this->curlRequest->getCurlResult(
+                $url,
+                [
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => $data
+                ]
+            )['body'];
+        } catch (Exception $e) {
+            var_dump($e->getFile(), $e->getLine(), $e->getMessage(), $e->getTraceAsString());
+            exit;
+        }
 
         if (true !== Ar::get($data, 'in_logger')) {
             Logger::get()->raw(
-                "⬅️ %s: %s",
+                "⬅️ %s",
                 $url,
                 $result
             );
         }
 
+        if (!in_array($method, $methodsToFilter)) {
+            $cache->set($url, $data, json_decode($result, true));
+        }
         return json_decode($result, true);
     }
 }

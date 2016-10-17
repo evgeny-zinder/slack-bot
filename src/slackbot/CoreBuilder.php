@@ -7,6 +7,8 @@ use CapMousse\ReactRestify\Http\Response;
 use CapMousse\ReactRestify\Server;
 use eznio\ar\Ar;
 use Pimple\Container;
+use slackbot\caching\ApiCache;
+use slackbot\caching\storages\MemoryStorage;
 use slackbot\dto\RequestDto;
 use slackbot\handlers\action\ContinueActionHandler;
 use slackbot\handlers\action\BreakActionHandler;
@@ -110,6 +112,10 @@ class CoreBuilder
             return new OutputManager(
                 $container['slack_facade']
             );
+        };
+
+        $container['api_cache'] = function () {
+            return new ApiCache(new MemoryStorage());
         };
 
         $container['action_send_message'] = function (Container $container) {

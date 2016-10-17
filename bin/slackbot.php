@@ -13,7 +13,7 @@ try {
     $app = new \slackbot\Application($argv);
     $app->bootstrap();
     $app->run();
-} catch (Exception $e) {
+} catch (\Exception $e) {
     echo sprintf(
         "EXCEPTION!\n%s:%s - %s\n",
         $e->getFile(),
