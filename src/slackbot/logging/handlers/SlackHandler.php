@@ -79,7 +79,7 @@ class SlackHandler implements HandlerInterface
     {
         if (false === $this->isFiltered($type)) {
             $options = [ 'in_logger' => true ];
-            $this->slackFacade->multiSendMessage($this->channels, $message, $options);
+            $this->slackFacade->multiSendMessage($this->channels, '```' . substr($message, 0, 3000) . '```', $options);
         }
     }
 
