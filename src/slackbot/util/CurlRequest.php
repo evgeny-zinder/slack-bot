@@ -8,16 +8,13 @@ namespace slackbot\util;
  */
 class CurlRequest
 {
-    const RECONNECT_ATTEMPTS = 5;
-    const RECONNECT_DELAY = 100;
-
     /** @var array */
     protected $curlOptDefaults = [
         CURLOPT_POST => 0,
         CURLOPT_HEADER => 1,
         CURLOPT_HTTPGET => 1,
         CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_TIMEOUT => 100
+        CURLOPT_TIMEOUT => 1000
     ];
 
     /**
