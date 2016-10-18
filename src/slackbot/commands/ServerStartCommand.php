@@ -83,12 +83,7 @@ class ServerStartCommand extends Command
 
         /** @var \CapMousse\ReactRestify\Server $server */
         $server = $builder->buildServer();
-
-        try {
-            $this->runServer($server);
-        } catch (\Exception $e) {
-            $this->runServer($server);
-        }
+        $this->runServer($server);
     }
 
     /**

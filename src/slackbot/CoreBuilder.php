@@ -258,6 +258,11 @@ class CoreBuilder
         });
 
         $server->post('/process/message/', function (Request $request, Response $response, $next) {
+            $response->sendHeaders();
+            //$response->writeJson(['ok' => true]);
+            $response->write('ok');
+            $response->end();
+
             $rawData = $request->getData();
             $postParser = Registry::get('container')['post_parser'];
             $parsedData = $postParser->parse($rawData);

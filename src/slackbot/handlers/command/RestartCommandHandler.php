@@ -2,11 +2,7 @@
 
 namespace slackbot\handlers\command;
 
-use slackbot\handlers\command\CommandHandlerInterface;
 use slackbot\logging\Logger;
-use slackbot\models\Registry;
-use slackbot\models\SlackFacade;
-use slackbot\Util;
 use slackbot\util\Posix;
 
 class RestartCommandHandler extends BaseCommandHandler
