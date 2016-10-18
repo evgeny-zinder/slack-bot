@@ -3,7 +3,6 @@
 namespace slackbot\models;
 
 
-use Mockery\CountValidator\Exception;
 use slackbot\caching\ApiCache;
 use slackbot\util\CurlRequest;
 use slackbot\logging\Logger;
@@ -16,6 +15,8 @@ use eznio\ar\Ar;
 class SlackApi
 {
     const BASE_URL = 'https://slack.com/api/';
+    const RECONNECT_ATTEMPTS = 5;
+    const RECONNECT_DELAY = 100;
 
     /** @var string */
     private $token;
@@ -228,18 +229,15 @@ class SlackApi
             return $cachedResponse;
         }
 
-        try {
-            $result = $this->curlRequest->getCurlResult(
-                $url,
-                [
-                    CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => $data
-                ]
-            )['body'];
-        } catch (Exception $e) {
-            var_dump($e->getFile(), $e->getLine(), $e->getMessage(), $e->getTraceAsString());
-            exit;
-        }
+
+        $result = $this->curlRequest->getCurlResult(
+            $url,
+            [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $data
+            ]
+        )['body'];
+
 
         if (true !== Ar::get($data, 'in_logger')) {
             Logger::get()->raw(
