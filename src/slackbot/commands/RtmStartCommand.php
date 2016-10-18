@@ -21,8 +21,6 @@ use eznio\ar\Ar;
  */
 class RtmStartCommand extends Command
 {
-    const BASE_URL = 'https://slack.com/api/rtm.start';
-
     /** @var Config */
     private $config;
 
@@ -40,6 +38,9 @@ class RtmStartCommand extends Command
 
     /** @var string */
     private $serverUrl;
+
+    /** @var string */
+    private $rtmUrl;
 
     /**
      * RtmStartCommand constructor.
@@ -68,6 +69,12 @@ class RtmStartCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Config file location'
+            )->addOption(
+                'rtmUrl',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'RTM server URL',
+                'https://slack.com/api/rtm.start'
             );
     }
 
@@ -83,13 +90,18 @@ class RtmStartCommand extends Command
             return 1;
         }
 
+        $this->rtmUrl = $input->getOption('rtmUrl');
         $this->authUrl = $this->getAuthUrl();
         $this->socketUrl = $this->getSocketUrl();
         $this->serverUrl = $this->getServerUrl();
         echo "[INFO] Server URL: {$this->serverUrl}\n";
+        echo "[INFO] Connecting to RTM URL: {$this->rtmUrl}\n";
+        echo "[INFO] Got socket URL: {$this->socketUrl}\n";
 
         $this->client = $this->createClient();
         $this->processLoop();
+
+        return 0;
     }
 
     /**
@@ -166,7 +178,7 @@ class RtmStartCommand extends Command
         $urlParams = [
             'token' => $token
         ];
-        $authUrl = self::BASE_URL . '?' . http_build_query($urlParams);
+        $authUrl = $this->rtmUrl . '?' . http_build_query($urlParams);
         return $authUrl;
     }
 

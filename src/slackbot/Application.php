@@ -91,6 +91,8 @@ class Application
             $this->container['cron_expression'],
             $this->container['file_loader']
         ));
+        $this->app->add(new commands\ApiStubStartCommand());
+        $this->app->add(new commands\RtmStubStartCommand());
     }
 
     /**
