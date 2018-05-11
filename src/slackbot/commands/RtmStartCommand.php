@@ -193,6 +193,11 @@ class RtmStartCommand extends Command
                 $data = $this->client->receive();
 
                 $parsedData = json_decode($data, true);
+
+                if (!is_array($parsedData)) {
+                    continue;
+                }
+
                 if (
                     'message' === Ar::get($parsedData, 'type')
                     && 'bot_message' !== Ar::get($parsedData, 'subtype')
